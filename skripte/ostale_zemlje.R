@@ -15,13 +15,27 @@ library(ecb)
 # =============================================================================
 
 # Define all Euro Area countries (using correct Eurostat codes)
-euro_countries <- c("AT", "BE", "CY", "EE", "FI", "FR", "DE", "EL", "IE", 
+euro_countries <- c("AT", "BE", "BG", "CY", "EE", "FI", "FR", "DE", "EL", "IE", 
                     "IT", "LV", "LT", "LU", "MT", "NL", "PT", "SK", "SI", "ES")
 
-country_names <- c("Austria", "Belgium", "Cyprus", "Estonia", "Finland", 
+country_names <- c("Austria", "Belgium", "Bulgaria", "Cyprus", "Estonia", "Finland", 
                    "France", "Germany", "Greece", "Ireland", "Italy", 
                    "Latvia", "Lithuania", "Luxembourg", "Malta", "Netherlands", 
                    "Portugal", "Slovakia", "Slovenia", "Spain")
+
+# ECB uses different country codes than Eurostat for some countries
+# This mapping converts Eurostat codes to ECB codes where they differ
+ecb_country_codes <- c(
+   "EL" = "GR"   # Greece: Eurostat uses EL, ECB uses GR
+)
+
+# Function to get ECB country code from Eurostat code
+get_ecb_code <- function(eurostat_code) {
+   if (eurostat_code %in% names(ecb_country_codes)) {
+      return(ecb_country_codes[[eurostat_code]])
+   }
+   return(eurostat_code)
+}
 
 # Set time filter for all Eurostat data (from 2015-01 onwards)
 time_filter <- list(sinceTimePeriod = "2015-01")
@@ -132,7 +146,7 @@ disaggregate_q_to_m <- function(df_quarterly, value_col_name) {
    })
 }
 
-# Function to extract D12 trend using X-11 Henderson filter (FIXED SCOPING)
+# Function to extract D12 trend using X-11 Henderson filter
 extract_d12_trend <- function(data, value_col) {
    # Input validation
    if (is.null(data) || nrow(data) == 0) return(NULL)
@@ -205,7 +219,7 @@ extract_d12_trend <- function(data, value_col) {
    return(result)
 }
 
-# Function to index data with base date (FIXED: consistent with Croatia)
+# Function to index data with base date
 index_data <- function(data, base_date) {
    if (is.null(data) || nrow(data) == 0) return(NULL)
    
@@ -221,7 +235,7 @@ index_data <- function(data, base_date) {
             }
          }
       )) %>%
-      mutate(across(.cols = -time, .fns = ~ round(.x, 4)))
+      mutate(across(.cols = -time, .fns = ~ round(.x, 5)))
 }
 
 # =============================================================================
@@ -397,8 +411,10 @@ process_country <- function(country_code, country_name, current_index = NULL, to
    )
    
    # 13. Non-performing loans (NPL) from ECB
+   # Note: ECB uses different country codes than Eurostat (e.g., GR instead of EL for Greece)
+   ecb_code <- get_ecb_code(country_code)
    npl_data <- tryCatch({
-      get_data(paste0("CBD2.Q.", country_code, ".W0.11._Z._Z.A.F.I3632._Z._Z._Z._Z._Z._Z.PC"))
+      get_data(paste0("CBD2.Q.", ecb_code, ".W0.11._Z._Z.A.F.I3632._Z._Z._Z._Z._Z._Z.PC"))
    }, error = function(e) {
       message(paste("NPL data not available for", country_name))
       return(NULL)
@@ -502,7 +518,7 @@ process_country <- function(country_code, country_name, current_index = NULL, to
    # INDEXING AND SEASONAL ADJUSTMENT
    # =========================================================================
    
-   # Index and adjust tourism data (FIXED: using consistent base_date)
+   # Index and adjust tourism data 
    indexed_tourism_adjusted <- NULL
    if (!is.null(tourism_clean) && nrow(tourism_clean) > 0) {
       indexed_tourism <- index_data(tourism_clean, base_date)
@@ -545,10 +561,31 @@ process_country <- function(country_code, country_name, current_index = NULL, to
       }
    }
    
-   # Index NPL data (FIXED: using consistent base_date)
-   indexed_npl <- NULL
+   # Disaggregate NPL data (quarterly) to monthly, then index and seasonally adjust
+   indexed_npl_adjusted <- NULL
    if (!is.null(npl_clean) && nrow(npl_clean) > 0) {
-      indexed_npl <- index_data(npl_clean, base_date)
+      # First disaggregate quarterly NPL to monthly
+      npl_monthly <- disaggregate_q_to_m(npl_clean, "NPL")
+      
+      if (!is.null(npl_monthly) && nrow(npl_monthly) > 0) {
+         # Index the monthly NPL data
+         indexed_npl <- index_data(npl_monthly, base_date)
+         
+         # Apply seasonal adjustment if we have enough observations
+         if (!is.null(indexed_npl) && nrow(indexed_npl) >= min_seasonal_obs) {
+            start_date <- min(indexed_npl$time)
+            adjusted_npl <- adjust_series_x13(indexed_npl$NPL, start_date, frequency = 12)
+            indexed_npl_adjusted <- data.frame(
+               time = indexed_npl$time,
+               NPL = adjusted_npl
+            )
+            message(paste("  NPL data seasonally adjusted for", country_name))
+         } else if (!is.null(indexed_npl)) {
+            # Not enough data for seasonal adjustment, use indexed data as-is
+            indexed_npl_adjusted <- indexed_npl
+            message(paste("  NPL data: insufficient observations for seasonal adjustment, using indexed data for", country_name))
+         }
+      }
    }
    
    # =========================================================================
@@ -617,8 +654,8 @@ process_country <- function(country_code, country_name, current_index = NULL, to
          rename(d12_unemployment = unemployment)
    }
    
-   # NPL
-   d12_npl <- extract_d12_trend(indexed_npl, "NPL")
+   # NPL (now using seasonally adjusted monthly data)
+   d12_npl <- extract_d12_trend(indexed_npl_adjusted, "NPL")
    
    # =========================================================================
    # COMBINE ALL D12 TRENDS
@@ -705,43 +742,82 @@ process_country <- function(country_code, country_name, current_index = NULL, to
       # Select only the variables in this group from final_data
       group_data <- final_data %>%
          select(time, any_of(var_list)) %>%
-         arrange(time) %>%
-         drop_na()
+         arrange(time)
       
-      if (nrow(group_data) == 0) {
-         message(paste("No data available for group:", group_name))
-         return(NULL)
-      }
+      # Get list of available variables (excluding time)
+      available_vars <- names(group_data)[names(group_data) != "time"]
       
-      # Check if we have enough data points
-      if (nrow(group_data) < min_observations) {
-         message(paste("Insufficient data for group:", group_name, "- need at least", min_observations, "months"))
-         return(NULL)
-      }
-      
-      # Check if we have any variables besides time
-      y_group <- group_data %>% select(-time)
-      if (ncol(y_group) == 0) {
+      if (length(available_vars) == 0) {
          message(paste("No variables available for group:", group_name))
          return(NULL)
       }
       
-      # HP filter decomposition
-      cycle_data_group <- tryCatch({
-         ytrend_group <- hp2(y_group, lambda = hp_lambda)
-         ycycle_group <- ((y_group - ytrend_group) / ytrend_group) * 100
-         bind_cols(time = group_data$time, as.data.frame(ycycle_group))
-      }, error = function(e) {
-         message(paste("HP filter failed for group:", group_name, "-", e$message))
+      # Process each variable independently to avoid truncation due to different time ranges
+      all_results <- list()
+      
+      for (var_name in available_vars) {
+         # Extract single variable data and drop NAs only for this variable
+         var_data <- group_data %>%
+            select(time, all_of(var_name)) %>%
+            filter(!is.na(.data[[var_name]]))
+         
+         if (nrow(var_data) < min_observations) {
+            message(paste("  Skipping", var_name, "- insufficient observations (", nrow(var_data), ")"))
+            next
+         }
+         
+         # HP filter decomposition for this variable
+         # hp2() requires a data frame, so we pass the column as a data frame
+         cycle_result <- tryCatch({
+            y_df <- data.frame(value = var_data[[var_name]])
+            ytrend_df <- hp2(y_df, lambda = hp_lambda)
+            ytrend <- ytrend_df$value
+            y_var <- var_data[[var_name]]
+            ycycle <- ((y_var - ytrend) / ytrend) * 100
+            data.frame(time = var_data$time, cycle = ycycle)
+         }, error = function(e) {
+            message(paste("  HP filter failed for", var_name, "-", e$message))
+            NULL
+         })
+         
+         if (is.null(cycle_result)) next
+         
+         # Standardize cycle (z-scores)
+         cycle_result$cycle <- as.numeric(scale(cycle_result$cycle))
+         
+         # Calculate MoM changes
+         mom_result <- var_data %>%
+            arrange(time) %>%
+            mutate(mom = {
+               prev <- lag(.data[[var_name]])
+               ifelse(abs(prev) < 1e-10, NA_real_, ((.data[[var_name]] - prev) / abs(prev)) * 100)
+            }) %>%
+            filter(!is.na(mom)) %>%
+            select(time, mom)
+         
+         # Standardize MoM (z-scores)
+         mom_result$mom <- as.numeric(scale(mom_result$mom))
+         
+         # Combine cycle and MoM (cycle loses first row to match MoM length)
+         cycle_trimmed <- cycle_result %>% slice(-1)
+         
+         combined_var <- full_join(
+            mom_result %>% rename(MoM = mom),
+            cycle_trimmed %>% rename(Cycle = cycle),
+            by = "time"
+         ) %>%
+            mutate(variable = var_name)
+         
+         all_results[[var_name]] <- combined_var
+      }
+      
+      if (length(all_results) == 0) {
+         message(paste("No variables processed successfully for group:", group_name))
          return(NULL)
-      })
+      }
       
-      if (is.null(cycle_data_group)) return(NULL)
-      
-      # Standardize cycle (z-scores)
-      standardized_cycle_group <- cycle_data_group %>%
-         mutate(across(.cols = -time, .fns = ~ as.numeric(scale(.x)))) %>%
-         slice(-1)  # Remove first row to match MoM
+      # Combine all variables
+      combined_group <- bind_rows(all_results)
       
       # Rename function for Croatian output
       safe_rename_cycle <- function(df) {
@@ -766,69 +842,37 @@ process_country <- function(country_code, country_name, current_index = NULL, to
             "d12_NPL" = "Neprihodonosni krediti (ECB)"
          )
          
-         for (old_name in names(rename_map)) {
-            if (old_name %in% names(df)) {
-               df <- df %>% rename(!!rename_map[old_name] := !!old_name)
-            }
-         }
+         # Apply renaming to variable column
+         df <- df %>%
+            mutate(variable = ifelse(variable %in% names(rename_map), 
+                                     rename_map[variable], 
+                                     variable))
          return(df)
       }
       
-      standardized_cycle_group <- safe_rename_cycle(standardized_cycle_group)
-      
-      # Month-over-month changes (FIXED: protection against division by zero)
-      mom_data_group <- group_data %>%
-         arrange(time) %>%
-         mutate(across(.cols = -time, 
-                       .fns = ~ {
-                          prev <- lag(.x)
-                          ifelse(abs(prev) < 1e-10, NA_real_, ((.x - prev) / abs(prev)) * 100)
-                       })) %>%
-         drop_na()
-      
-      # Standardize MoM (z-scores)
-      standardized_mom_group <- mom_data_group %>%
-         mutate(across(.cols = -time, .fns = ~ as.numeric(scale(.x))))
-      
-      standardized_mom_group <- safe_rename_cycle(standardized_mom_group)
+      combined_group <- safe_rename_cycle(combined_group)
       
       # Invert counter-cyclical indicators (higher values = worse economy)
       counter_cyclical <- c("Stečajne prijave", "Nezaposlenost", "Neprihodonosni krediti (ECB)")
       
-      for (indicator in counter_cyclical) {
-         if (indicator %in% names(standardized_mom_group)) {
-            standardized_mom_group <- standardized_mom_group %>%
-               mutate(!!indicator := -get(indicator))
-            standardized_cycle_group <- standardized_cycle_group %>%
-               mutate(!!indicator := -get(indicator))
-         }
-      }
-      
-      # Round values
-      standardized_cycle_group <- standardized_cycle_group %>%
-         mutate(across(.cols = -time, .fns = ~ round(.x, 5)))
-      standardized_mom_group <- standardized_mom_group %>%
-         mutate(across(.cols = -time, .fns = ~ round(.x, 5)))
-      
-      # Pivot to long format for Flourish
-      mom_long <- standardized_mom_group %>%
-         pivot_longer(cols = -time, names_to = "variable", values_to = "MoM")
-      
-      cycle_long <- standardized_cycle_group %>%
-         pivot_longer(cols = -time, names_to = "variable", values_to = "Cycle")
-      
-      # Combine MoM and Cycle
-      combined_group <- full_join(mom_long, cycle_long, by = c("time", "variable"))
-      
-      # Format for output
       combined_group <- combined_group %>%
-         mutate(time = format(time, "%B %Y")) %>%
+         mutate(
+            MoM = ifelse(variable %in% counter_cyclical, -MoM, MoM),
+            Cycle = ifelse(variable %in% counter_cyclical, -Cycle, Cycle)
+         )
+      
+      # Round values and format
+      combined_group <- combined_group %>%
+         mutate(
+            MoM = round(MoM, 5),
+            Cycle = round(Cycle, 5),
+            time = format(time, "%B %Y")
+         ) %>%
          rename(
             "Mjesečna promjena (%)" = MoM,
             "Odstupanje od trenda (%)" = Cycle,
             "Varijabla" = variable
-         ) %>%
-         mutate(across(.cols = -c("time", "Varijabla"), .fns = ~ round(.x, 3)))
+         )
       
       return(combined_group)
    }
@@ -886,7 +930,7 @@ for (i in seq_along(euro_countries)) {
    if (!is.null(result)) {
       all_results[[country_names[i]]] <- result
    }
-   Sys.sleep(1)  # Be polite to Eurostat servers
+   Sys.sleep(1)  
 }
 
 # =============================================================================
@@ -930,6 +974,12 @@ if (length(all_results) > 0) {
          writeData(wb, "5_kasni_indikatori_stecaj", country_data$lagging)
       }
       
+      # Add combined sheet with all variables
+      if (!is.null(country_data$combined)) {
+         addWorksheet(wb, "6_svi_indikatori")
+         writeData(wb, "6_svi_indikatori", country_data$combined)
+      }
+      
       saveWorkbook(wb, filename, overwrite = TRUE)
       message(paste("  -", filename))
    }
@@ -968,4 +1018,51 @@ if (length(all_results) > 0) {
    print(summary_df)
    write.xlsx(summary_df, file = "Processing_Summary.xlsx")
    message("  - Processing_Summary.xlsx")
+}
+
+# =============================================================================
+# AXIS BOUNDARIES SUMMARY (for Flourish animation)
+# =============================================================================
+
+if (length(all_results) > 0) {
+   message("\n========== GENERATING AXIS BOUNDARIES SUMMARY ==========")
+   
+   # Calculate min/max for each country
+   axis_boundaries <- lapply(names(all_results), function(country) {
+      country_data <- all_results[[country]]$combined
+      
+      if (is.null(country_data)) return(NULL)
+      
+      data.frame(
+         Country = country,
+         MoM_Min = min(country_data$`Mjesečna promjena (%)`, na.rm = TRUE),
+         MoM_Max = max(country_data$`Mjesečna promjena (%)`, na.rm = TRUE),
+         Cycle_Min = min(country_data$`Odstupanje od trenda (%)`, na.rm = TRUE),
+         Cycle_Max = max(country_data$`Odstupanje od trenda (%)`, na.rm = TRUE)
+      )
+   })
+   
+   axis_boundaries_df <- bind_rows(axis_boundaries)
+   
+   # Add overall min/max across all countries
+   overall_row <- data.frame(
+      Country = "OVERALL (All Countries)",
+      MoM_Min = min(axis_boundaries_df$MoM_Min, na.rm = TRUE),
+      MoM_Max = max(axis_boundaries_df$MoM_Max, na.rm = TRUE),
+      Cycle_Min = min(axis_boundaries_df$Cycle_Min, na.rm = TRUE),
+      Cycle_Max = max(axis_boundaries_df$Cycle_Max, na.rm = TRUE)
+   )
+   
+   axis_boundaries_df <- bind_rows(axis_boundaries_df, overall_row)
+   
+   # Round for readability
+   axis_boundaries_df <- axis_boundaries_df %>%
+      mutate(across(where(is.numeric), ~ round(.x, 3)))
+   
+   # Save to Excel
+   write.xlsx(axis_boundaries_df, file = "Axis_Boundaries_Summary.xlsx")
+   
+   message("\n  Axis Boundaries for Flourish:")
+   print(axis_boundaries_df)
+   message("\n  - Axis_Boundaries_Summary.xlsx")
 }
