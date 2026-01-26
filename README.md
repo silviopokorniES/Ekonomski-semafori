@@ -30,7 +30,7 @@ The methodology transforms diverse macroeconomic indicators into a two-dimension
 business-cycle-analysis/
 ├── README.md                           # This file
 ├── samo_hrvatska.R                     # Croatia-specific analysis (22 indicators)
-├── updated_ostatak_zemalja.R          # Analysis for 19 other Euro Area countries
+├── ostatak_zemalja.R          # Analysis for 19 other Euro Area countries
 ├── methodology/
 │   ├── business_cycle_methodology.md  # Complete methodology (English)
 │   └── metodologija_poslovni_ciklus_HR.md  # Methodology (Croatian)
@@ -106,7 +106,7 @@ source("samo_hrvatska.R")
 
 ```r
 # Load the script
-source("updated_ostatak_zemalja.R")
+source("ostatak_zemalja.R")
 
 # The script will:
 # 1. Process all 19 Euro Area countries sequentially
