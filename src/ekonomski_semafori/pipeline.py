@@ -35,7 +35,7 @@ import pandas as pd
 from ekonomski_semafori import cycle as cyc
 from ekonomski_semafori import trend
 from ekonomski_semafori.adjust import X13Error, disaggregate, seasonal_adjust, x13_binary
-from ekonomski_semafori.config import CONFIG_DIR, Country, Indicator, Settings, check_overrides, merge_override
+from ekonomski_semafori.config import CONFIG_DIR, Country, Indicator, Settings, check_overrides, load_x13_models, merge_override
 from ekonomski_semafori.fetch import EmptyResponseError, fetch_ecb, fetch_eurostat, fetch_local
 
 log = logging.getLogger(__name__)
@@ -96,7 +96,10 @@ def _contiguous(series: pd.Series, indicator: Indicator) -> pd.Series:
     return full
 
 
-def _prepare(series: pd.Series, indicator: Indicator, settings: Settings, history_start: date | None, as_of: date) -> pd.Series:
+Models = dict[tuple[str, str, str], dict[str, str]]
+
+
+def _prepare(series: pd.Series, indicator: Indicator, settings: Settings, history_start: date | None, as_of: date, model: dict[str, str] | None = None) -> pd.Series:
     """Truncate, make contiguous, reject stale series, disaggregate, seasonally adjust."""
     if not (series.index.day == 1).all():
         raise ValueError(f"{indicator.id}: time index must be at period start")
@@ -114,7 +117,7 @@ def _prepare(series: pd.Series, indicator: Indicator, settings: Settings, histor
     if not indicator.already_sa:
         if len(series) >= settings.min_seasonal_obs:
             x13 = settings.x13
-            series = seasonal_adjust(series, x13["outlier_types"], x13["outlier_critical"], x13["aictest"])
+            series = seasonal_adjust(series, x13["outlier_types"], x13["outlier_critical"], x13["aictest"], model)
         else:
             log.warning("%s: only %d observations, X-13 skipped, raw series used", indicator.id, len(series))
     return series
@@ -127,14 +130,17 @@ def run_indicator(
     history_start: date | None = None,
     raw: pd.Series | None = None,
     as_of: date | None = None,
+    models: Models | None = None,
 ) -> pd.DataFrame:
     """Compute [time, mom_z, cycle_z] for one pair. `raw` replaces the fetch (tests,
     fixtures); `as_of` is the reference month for the stale-series guard (today
-    by default). Raises SkippedIndicator when the pair cannot be computed."""
+    by default); `models` is the frozen X-13 registry (automatic selection when a
+    pair has no entry). Raises SkippedIndicator when the pair cannot be computed."""
     indicator = merge_override(indicator, country.overrides.get(indicator.id, {}))
+    models = models or {}
     series = raw if raw is not None else fetch_series(country, indicator)
-    sa = _prepare(series.astype(float), indicator, settings, history_start, as_of or date.today())
-    short = sa if indicator.skip_henderson else trend.henderson(sa)
+    sa = _prepare(series.astype(float), indicator, settings, history_start, as_of or date.today(), models.get((country.code, indicator.id, "sa")))
+    short = sa if indicator.skip_henderson else trend.henderson(sa, models.get((country.code, indicator.id, "trend")))
     short = short.dropna()
     if len(short) < settings.min_observations:
         raise SkippedIndicator(f"{len(short)} observations after trend extraction, need {settings.min_observations}")
@@ -191,13 +197,15 @@ def run_all(
     if settings.trend_method != "hp_on_d12" and settings.trend_method not in LONG_RUN_TRENDS:
         raise ValueError(f"trend_method {settings.trend_method!r} has no implementation in pipeline.LONG_RUN_TRENDS")
     log.info("X-13 binary: %s", x13_binary())
+    models = load_x13_models(CONFIG_DIR.parent / settings.x13_models if settings.x13_models else None)
+    log.info("frozen X-13 models: %d entries%s", len(models), "" if models else " (automatic selection everywhere)")
     frames = []
     for country in countries.values():
         for indicator in indicators:
             if not indicator.applies_to(country.code):
                 continue
             try:
-                frame = run_indicator(country, indicator, settings, history_start, as_of=as_of)
+                frame = run_indicator(country, indicator, settings, history_start, as_of=as_of, models=models)
             except (SkippedIndicator, *SKIPPABLE) as err:
                 log.warning("skipped %s %s: %s: %s", country.code, indicator.id, type(err).__name__, err)
                 if skips is not None:

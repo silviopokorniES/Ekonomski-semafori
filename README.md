@@ -41,7 +41,8 @@ Check it with `python -c "from ekonomski_semafori.adjust import x13_binary; prin
 ## Monthly run
 
 1. Update the two Croatian Excel inputs (data/README.md).
-2. Run:
+2. Once a year, re-identify the X-13 models with `python scripts/identify_x13_models.py`, compare the registry with the committed one, and commit.
+3. Run:
 
 ```bash
 python scripts/run_monthly.py

@@ -57,10 +57,20 @@ def x13_binary() -> Path:
     raise FileNotFoundError("X-13 binary not found: set X13PATH to the folder holding x13as_ascii or x13ashtml (see README)")
 
 
-def run_x13(series: pd.Series, spec: str, tables: tuple[str, ...]) -> dict[str, pd.Series]:
+def model_blocks(model: dict[str, str] | None) -> str:
+    """The transform and model blocks of a spec: automatic selection when model is
+    None, otherwise the frozen transform (log or none) and ARIMA orders."""
+    if model is None:
+        return "transform{\n  function = auto\n}\n\nautomdl{\n\n}\n\n"
+    return f"transform{{\n  function = {model['transform']}\n}}\n\narima{{\n  model = {model['arima']}\n}}\n\n"
+
+
+def run_x13(series: pd.Series, spec: str, tables: tuple[str, ...], diagnostics: bool = False) -> dict[str, pd.Series | dict[str, str]]:
     """Run X-13 on a monthly series. `spec` holds every block after the series block;
     `tables` names the saved output tables to read back (for example s11, d12).
-    Returns each table as a Series aligned to series.index."""
+    Returns each table as a Series aligned to series.index; with diagnostics, also
+    the key "udg" with the diagnostics summary (selected model under arimamdl,
+    transform under aictrans)."""
     values = series.to_numpy(dtype=float)
     if not isinstance(series.index, pd.DatetimeIndex) or not np.isfinite(values).all():
         raise ValueError("run_x13 needs a DatetimeIndex and finite values only")
@@ -71,7 +81,8 @@ def run_x13(series: pd.Series, spec: str, tables: tuple[str, ...]) -> dict[str, 
         (folder / "iofile.dta").write_text("\n".join(data_lines) + "\n", encoding="ascii")
         header = 'series{\n  title = "iofile"\n  file = "iofile.dta"\n  format = "datevalue"\n  period = 12\n}\n\n'
         (folder / "iofile.spc").write_text(header + spec, encoding="ascii")
-        proc = subprocess.run([str(binary), "iofile"], cwd=folder, capture_output=True, text=True)
+        args = [str(binary), "iofile"] + (["-s"] if diagnostics else [])
+        proc = subprocess.run(args, cwd=folder, capture_output=True, text=True)
         error_files = [f for f in (folder / "iofile.err", folder / "iofile_err.html") if f.exists()]
         errors = _plain_text("\n".join(f.read_text(errors="replace") for f in error_files))
         # The HTML build exits 0 even on a spec error, so the text is the only reliable signal.
@@ -88,6 +99,9 @@ def run_x13(series: pd.Series, spec: str, tables: tuple[str, ...]) -> dict[str, 
             frame = pd.read_csv(path, sep="\t", skiprows=2, header=None, names=["date", "value"])
             index = pd.to_datetime(frame["date"].astype(str), format="%Y%m")
             out[table] = pd.Series(frame["value"].to_numpy(dtype=float), index=index, name=series.name).reindex(series.index)
+        if diagnostics:
+            lines = (folder / "iofile.udg").read_text(errors="replace").splitlines()
+            out["udg"] = {k.strip(): v.strip() for k, _, v in (line.partition(":") for line in lines) if k}
         return out
 
 
@@ -99,24 +113,35 @@ def _plain_text(html: str) -> str:
     return "\n".join(line for line in lines if line)
 
 
+def sa_spec(outlier_types: str, outlier_critical: float, aictest: str | None, model: dict[str, str] | None) -> str:
+    """Spec of the seasonal adjustment step (SEATS s11) with the reference settings;
+    aictest None writes an empty regression block, as regression.aictest = NULL in R."""
+    regression = f"regression{{\n  aictest = ({aictest})\n}}" if aictest else "regression{\n\n}"
+    return (
+        model_blocks(model)
+        + "seats{\n  noadmiss = yes\n  save = (s11)\n}\n\n"
+        + f"{regression}\n\n"
+        + f"outlier{{\n  types = {outlier_types}\n  critical = {outlier_critical:g}\n}}\n\n"
+        + "estimate{\n\n}\n"
+    )
+
+
 def seasonal_adjust(
     sa_input: pd.Series,
     outlier_types: str = "AO",
     outlier_critical: float = 4.0,
     aictest: str | None = None,
+    model: dict[str, str] | None = None,
 ) -> pd.Series:
-    """Final seasonally adjusted series (SEATS s11) with the reference settings.
-    aictest None writes an empty regression block, as regression.aictest = NULL in R."""
-    regression = f"regression{{\n  aictest = ({aictest})\n}}" if aictest else "regression{\n\n}"
-    spec = (
-        "transform{\n  function = auto\n}\n\n"
-        "seats{\n  noadmiss = yes\n  save = (s11)\n}\n\n"
-        f"{regression}\n\n"
-        f"outlier{{\n  types = {outlier_types}\n  critical = {outlier_critical:g}\n}}\n\n"
-        "automdl{\n\n}\n\n"
-        "estimate{\n\n}\n"
-    )
-    return run_x13(sa_input, spec, ("s11",))["s11"]
+    """Final seasonally adjusted series (SEATS s11). With a frozen model (transform
+    and ARIMA orders) the automatic selection is skipped; if that model fails, the
+    automatic one is used and a warning names the series."""
+    if model is not None:
+        try:
+            return run_x13(sa_input, sa_spec(outlier_types, outlier_critical, aictest, model), ("s11",))["s11"]
+        except X13Error as err:
+            log.warning("seasonal_adjust %s: frozen model %s failed (%s), falling back to automatic selection", sa_input.name, model, str(err)[:120])
+    return run_x13(sa_input, sa_spec(outlier_types, outlier_critical, aictest, None), ("s11",))["s11"]
 
 
 def disaggregate(quarterly: pd.Series) -> pd.Series:

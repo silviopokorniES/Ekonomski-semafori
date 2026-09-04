@@ -113,7 +113,7 @@ def test_settings(tmp_path: Path) -> None:
     bad.write_text(
         "hp_lambda: 129600\nmin_observations: 24\nmin_seasonal_obs: 36\n"
         "output_start: 2015-02-01\ntrend_method: bandpass\nzscore_window: full\n"
-        "momentum: cycle_change\nzscore_scale: mad\nzscore_min_obs: 84\nzscore_end: null\naxis_clip: 3\n"
+        "momentum: cycle_change\nzscore_scale: mad\nzscore_min_obs: 84\nzscore_end: null\naxis_clip: 3\nx13_models: null\n"
         "x13: {outlier_types: AO, outlier_critical: 4.0, aictest: null}\n",
         encoding="utf-8",
     )

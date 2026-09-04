@@ -54,7 +54,9 @@ Contiguity. Gaps of up to three periods inside a series are filled by linear int
 
 Quarterly to monthly. Quarterly series (GDP, consumption, investment, permits, NPL) are converted to months with the Denton-Cholette method and a constant indicator, so that the three months of a quarter average to the quarterly value and the monthly path is as smooth as possible (Denton 1971; with a constant indicator this is the Boot, Feibes and Lisman 1967 smoother). No related monthly indicator is used. The monthly path carries no information beyond the quarterly figures: within-quarter movements are interpolated, and the months after the last published quarter are extrapolated until the next quarter arrives.
 
-Seasonal adjustment. Series that Eurostat does not publish adjusted (overnight stays, balance of payments flows, NPL, the Croatian Excel inputs) are adjusted with X-13ARIMA-SEATS (Census Bureau, version 1.1 build 61): automatic model and transformation selection, additive outliers only with a critical value of 4.0, no automatic trading-day or Easter regressors, SEATS decomposition. Adjustment runs on levels. Series shorter than 36 months are used unadjusted.
+Seasonal adjustment. Series that Eurostat does not publish adjusted (overnight stays, balance of payments flows, NPL, the Croatian Excel inputs) are adjusted with X-13ARIMA-SEATS (Census Bureau, version 1.1 build 61): additive outliers only with a critical value of 4.0, no automatic trading-day or Easter regressors, SEATS decomposition. Adjustment runs on levels. Series shorter than 36 months are used unadjusted.
+
+Models. The transformation (log or none) and the ARIMA orders for every series and step are identified once by X-13's automatic procedure and frozen in config/x13_models.yaml. The monthly run re-estimates the parameters and the outliers with the model fixed, so month-to-month changes in the adjusted series and in the trend come from data, not from a different model being picked. The models are re-identified at an annual review and any change is recorded in the changelog. A series without a frozen model, or whose frozen model fails to estimate, falls back to automatic selection with a warning in the log.
 
 Short-run trend. The X-11 Henderson trend-cycle (table D12) of the adjusted series. It removes the irregular component and keeps movements of a year or longer.
 
@@ -76,7 +78,7 @@ The last months of every dot are provisional. The Henderson filter uses asymmetr
 
 Quarterly-origin dots move smoothly by construction. Their monthly momentum is interpolated and their newest months are extrapolated.
 
-X-13 selects an ARIMA model automatically each month. In testing, two model candidates with almost equal fit could flip on rounding differences, moving the trend of a series by several percent. Freezing models per series with an annual review is planned.
+Between annual reviews the X-13 models are fixed. In testing with automatic selection every month, two model candidates with almost equal fit could flip on rounding differences and move the trend of a series by several percent; freezing removes that source of revision but not the end-point revisions above.
 
 The lagging series are slow and partly administrative. Bankruptcy filings depend on insolvency law and, in 2020 and 2021, on moratoria; NPL ratios fell through supervisory clean-ups; both lag the cycle by a year or more. Read them as confirmation of earlier turns.
 
@@ -88,7 +90,7 @@ The pipeline is Python 3.12 (environment.yml). The R scripts that produced the e
 
 ## 6. Planned changes
 
-Frozen X-13 models per series; capacity utilisation, real gross value added, house prices, loans and inflation as further indicators; a separate panel for lagging and financial-cycle series; a comparison of trend filters (one-sided HP, Christiano-Fitzgerald, Hamilton) on revision size and turning-point dating.
+Capacity utilisation, real gross value added, house prices, loans and inflation as further indicators; a separate panel for lagging and financial-cycle series; a comparison of trend filters (one-sided HP, Christiano-Fitzgerald, Hamilton) on revision size and turning-point dating.
 
 ## References
 

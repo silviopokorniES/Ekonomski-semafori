@@ -2,6 +2,7 @@
 
 import numpy as np
 import pandas as pd
+import pytest
 
 from conftest import fixture_pairs
 from ekonomski_semafori.trend import henderson, hp
@@ -20,6 +21,28 @@ def test_henderson_matches_r(r_fixtures) -> None:
         worst[tag] = float(np.nanmax(np.abs(result.to_numpy() - expected) / np.abs(expected)))
     bad = {k: v for k, v in worst.items() if not v < 1e-3}
     assert not bad, f"relative gap above 1e-3: {bad}"
+
+
+def test_frozen_model_spec_and_fallback(r_fixtures, tmp_path) -> None:
+    from ekonomski_semafori.adjust import model_blocks
+    from ekonomski_semafori.config import load_x13_models
+
+    auto, frozen = model_blocks(None), model_blocks({"transform": "log", "arima": "(0 1 1)(0 1 1)"})
+    assert "automdl" in auto and "function = auto" in auto
+    assert "arima{\n  model = (0 1 1)(0 1 1)" in frozen and "function = log" in frozen and "automdl" not in frozen
+    folder, index = r_fixtures
+    tag, inp, out = fixture_pairs(folder, index, "HR", "extract_d12_trend")[0]
+    col = [c for c in inp.columns if c != "time"][0]
+    series = pd.Series(inp[col].to_numpy(dtype=float), index=pd.to_datetime(inp["time"]), name=col)
+    fixed = henderson(series, {"transform": "none", "arima": "(0 1 1)(0 1 1)"})
+    assert fixed.notna().sum() == len(series)
+    registry = tmp_path / "x13_models.yaml"
+    registry.write_text("models:\n  HR:\n    gdp:\n      trend: {transform: log, arima: (0 1 1)(0 1 1)}\n", encoding="utf-8")
+    assert load_x13_models(registry) == {("HR", "gdp", "trend"): {"transform": "log", "arima": "(0 1 1)(0 1 1)"}}
+    registry.write_text("models:\n  HR:\n    gdp:\n      trend: {transform: sqrt, arima: (0 1 1)(0 1 1)}\n", encoding="utf-8")
+    with pytest.raises(ValueError):
+        load_x13_models(registry)
+    assert load_x13_models(tmp_path / "absent.yaml") == {}
 
 
 def test_hp_matches_r(r_fixtures) -> None:

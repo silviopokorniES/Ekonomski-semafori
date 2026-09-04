@@ -11,6 +11,7 @@ zscore_scale: mad          # sd: mean and sample standard deviation; mad: median
 zscore_min_obs: 84         # an indicator with fewer observations in the window is skipped (about one full cycle)
 zscore_end: null           # null: window runs to the latest observation; a date freezes the parameters (set at the annual review)
 axis_clip: 3               # z-scores beyond this are clipped in the published files and flagged; the vintage archive keeps the raw values
+x13_models: config/x13_models.yaml   # frozen transform and ARIMA orders per (country, indicator, step); null or a missing file means automatic selection
 x13:                       # same settings as adjust_series_x13 in the R scripts
   outlier_types: AO
   outlier_critical: 4.0

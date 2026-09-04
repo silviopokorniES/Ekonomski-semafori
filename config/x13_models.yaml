@@ -1,0 +1,1870 @@
+# Frozen X-13 models, identified 2026-09-04 by scripts/identify_x13_models.py.
+# transform: log or none; arima: (p d q)(P D Q). Re-identify at the annual review and diff before committing.
+models:
+  AT:
+    building_permits:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    construction:
+      trend:
+        arima: (1 1 2)(1 0 1)
+        transform: log
+    consumer_confidence:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    esi:
+      trend:
+        arima: (3 1 1)
+        transform: none
+    exports_goods:
+      sa:
+        arima: (3 0 0)(0 1 1)
+        transform: log
+      trend:
+        arima: (0 1 1)(0 1 1)
+        transform: log
+    exports_services:
+      sa:
+        arima: (1 0 1)(1 1 0)
+        transform: log
+      trend:
+        arima: (1 1 2)(1 0 1)
+        transform: none
+    gdp:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    household_consumption:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    imports_goods:
+      sa:
+        arima: (2 0 2)(1 0 0)
+        transform: log
+      trend:
+        arima: (1 1 2)(0 0 1)
+        transform: log
+    imports_services:
+      sa:
+        arima: (0 1 1)(0 1 1)
+        transform: none
+      trend:
+        arima: (0 1 2)(1 0 0)
+        transform: none
+    industrial_production:
+      trend:
+        arima: (1 1 2)(1 0 1)
+        transform: log
+    investment:
+      trend:
+        arima: (3 1 1)(1 0 1)
+        transform: log
+    npl:
+      sa:
+        arima: (3 1 1)(1 0 0)
+        transform: log
+      trend:
+        arima: (2 3 1)(1 0 1)
+        transform: log
+    order_books:
+      trend:
+        arima: (2 1 1)(1 0 1)
+        transform: none
+    overnight_stays:
+      sa:
+        arima: (3 0 0)(0 1 1)
+        transform: none
+      trend:
+        arima: (2 1 1)(0 0 1)
+        transform: none
+    retail:
+      trend:
+        arima: (1 1 2)(1 0 1)
+        transform: none
+    total_production:
+      trend:
+        arima: (1 1 0)
+        transform: log
+    unemployment:
+      trend:
+        arima: (1 1 0)(1 0 1)
+        transform: log
+    wholesale:
+      trend:
+        arima: (1 0 1)
+        transform: log
+  BE:
+    bankruptcies:
+      trend:
+        arima: (0 1 2)
+        transform: none
+    building_permits:
+      trend:
+        arima: (3 1 1)
+        transform: log
+    construction:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    consumer_confidence:
+      trend:
+        arima: (1 0 0)
+        transform: none
+    esi:
+      trend:
+        arima: (1 1 1)(1 0 1)
+        transform: none
+    exports_goods:
+      sa:
+        arima: (2 1 2)(0 1 1)
+        transform: log
+      trend:
+        arima: (3 1 1)
+        transform: none
+    exports_services:
+      sa:
+        arima: (0 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (2 1 0)
+        transform: log
+    gdp:
+      trend:
+        arima: (3 1 1)
+        transform: log
+    household_consumption:
+      trend:
+        arima: (3 1 1)(1 0 1)
+        transform: log
+    imports_goods:
+      sa:
+        arima: (3 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (1 1 0)
+        transform: log
+    imports_services:
+      sa:
+        arima: (0 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (1 1 2)(1 0 1)
+        transform: log
+    industrial_production:
+      trend:
+        arima: (0 1 1)
+        transform: log
+    investment:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    npl:
+      sa:
+        arima: (3 1 1)(1 0 1)
+        transform: log
+      trend:
+        arima: (2 1 2)(1 0 0)
+        transform: log
+    order_books:
+      trend:
+        arima: (3 1 1)(1 0 1)
+        transform: none
+    overnight_stays:
+      sa:
+        arima: (1 1 0)(0 1 1)
+        transform: none
+      trend:
+        arima: (0 1 1)
+        transform: none
+    registrations:
+      trend:
+        arima: (3 0 1)(0 0 1)
+        transform: none
+    retail:
+      trend:
+        arima: (0 1 1)
+        transform: log
+    total_production:
+      trend:
+        arima: (1 0 0)
+        transform: log
+    unemployment:
+      trend:
+        arima: (2 1 2)
+        transform: none
+    wholesale:
+      trend:
+        arima: (0 1 1)
+        transform: log
+  BG:
+    bankruptcies:
+      trend:
+        arima: (1 0 1)
+        transform: none
+    building_permits:
+      trend:
+        arima: (3 1 1)
+        transform: log
+    construction:
+      trend:
+        arima: (0 2 2)(0 0 1)
+        transform: log
+    consumer_confidence:
+      trend:
+        arima: (1 1 1)(0 0 1)
+        transform: none
+    esi:
+      trend:
+        arima: (1 1 0)
+        transform: none
+    exports_goods:
+      sa:
+        arima: (1 1 0)(0 1 1)
+        transform: log
+      trend:
+        arima: (1 1 0)
+        transform: log
+    exports_services:
+      sa:
+        arima: (0 1 0)(0 1 1)
+        transform: log
+      trend:
+        arima: (1 1 1)(1 0 1)
+        transform: log
+    gdp:
+      trend:
+        arima: (2 2 1)(0 0 1)
+        transform: none
+    household_consumption:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: none
+    imports_goods:
+      sa:
+        arima: (0 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (0 1 1)
+        transform: log
+    imports_services:
+      sa:
+        arima: (0 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (0 1 1)
+        transform: none
+    industrial_production:
+      trend:
+        arima: (2 1 1)(1 0 1)
+        transform: none
+    investment:
+      trend:
+        arima: (3 1 0)(0 0 1)
+        transform: none
+    npl:
+      sa:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+      trend:
+        arima: (2 1 0)(1 0 0)
+        transform: log
+    order_books:
+      trend:
+        arima: (3 1 1)(0 1 1)
+        transform: none
+    registrations:
+      trend:
+        arima: (1 0 1)(1 0 0)
+        transform: none
+    retail:
+      trend:
+        arima: (2 2 1)(0 0 1)
+        transform: log
+    total_production:
+      trend:
+        arima: (1 1 0)
+        transform: none
+    unemployment:
+      trend:
+        arima: (3 1 1)(1 0 1)
+        transform: none
+    wholesale:
+      trend:
+        arima: (1 2 2)(1 0 1)
+        transform: log
+  CY:
+    building_permits:
+      trend:
+        arima: (3 1 1)
+        transform: log
+    consumer_confidence:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    esi:
+      trend:
+        arima: (1 1 0)
+        transform: none
+    gdp:
+      trend:
+        arima: (3 1 1)(1 0 1)
+        transform: log
+    household_consumption:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: none
+    investment:
+      trend:
+        arima: (3 0 1)(1 0 0)
+        transform: none
+    npl:
+      sa:
+        arima: (1 1 2)(1 0 0)
+        transform: log
+      trend:
+        arima: (2 2 2)(0 0 1)
+        transform: log
+    order_books:
+      trend:
+        arima: (1 1 0)(1 0 1)
+        transform: none
+    overnight_stays:
+      sa:
+        arima: (3 1 1)(0 1 1)
+        transform: none
+      trend:
+        arima: (2 1 1)
+        transform: none
+    unemployment:
+      trend:
+        arima: (3 1 0)(0 0 1)
+        transform: log
+    wholesale:
+      trend:
+        arima: (2 1 2)(0 1 1)
+        transform: none
+  DE:
+    bankruptcies:
+      trend:
+        arima: (0 1 1)
+        transform: log
+    building_permits:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    construction:
+      trend:
+        arima: (0 1 1)
+        transform: log
+    consumer_confidence:
+      trend:
+        arima: (2 1 0)
+        transform: none
+    esi:
+      trend:
+        arima: (2 1 0)(1 0 1)
+        transform: none
+    exports_goods:
+      sa:
+        arima: (3 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (1 1 2)
+        transform: log
+    exports_services:
+      sa:
+        arima: (3 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (3 1 1)(1 0 1)
+        transform: log
+    gdp:
+      trend:
+        arima: (3 1 1)
+        transform: log
+    household_consumption:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    imports_goods:
+      sa:
+        arima: (3 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (0 1 2)
+        transform: log
+    imports_services:
+      sa:
+        arima: (3 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    industrial_production:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: none
+    investment:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: none
+    npl:
+      sa:
+        arima: (2 2 1)(0 0 1)
+        transform: log
+      trend:
+        arima: (3 1 1)(1 0 1)
+        transform: log
+    order_books:
+      trend:
+        arima: (3 1 1)(1 0 1)
+        transform: none
+    overnight_stays:
+      sa:
+        arima: (1 1 0)(0 1 1)
+        transform: none
+      trend:
+        arima: (1 1 1)(1 0 1)
+        transform: none
+    registrations:
+      trend:
+        arima: (1 0 1)
+        transform: none
+    retail:
+      trend:
+        arima: (0 1 1)
+        transform: log
+    total_production:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    unemployment:
+      trend:
+        arima: (3 2 1)(1 0 1)
+        transform: log
+    wholesale:
+      trend:
+        arima: (1 1 2)
+        transform: log
+  EE:
+    building_permits:
+      trend:
+        arima: (3 1 1)(1 0 1)
+        transform: log
+    consumer_confidence:
+      trend:
+        arima: (1 1 0)
+        transform: none
+    esi:
+      trend:
+        arima: (2 1 0)
+        transform: none
+    exports_goods:
+      sa:
+        arima: (3 1 0)(0 1 1)
+        transform: log
+      trend:
+        arima: (1 1 0)
+        transform: none
+    exports_services:
+      sa:
+        arima: (0 1 0)(0 1 1)
+        transform: log
+      trend:
+        arima: (0 1 0)(0 0 1)
+        transform: log
+    gdp:
+      trend:
+        arima: (3 2 1)(1 0 1)
+        transform: log
+    household_consumption:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    imports_goods:
+      sa:
+        arima: (3 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (1 1 2)
+        transform: log
+    imports_services:
+      sa:
+        arima: (0 1 0)(0 1 1)
+        transform: log
+      trend:
+        arima: (1 1 0)(0 0 1)
+        transform: log
+    industrial_production:
+      trend:
+        arima: (0 1 1)
+        transform: log
+    investment:
+      trend:
+        arima: (3 1 1)
+        transform: log
+    npl:
+      sa:
+        arima: (3 1 1)(1 0 1)
+        transform: log
+      trend:
+        arima: (3 1 1)(1 0 1)
+        transform: log
+    order_books:
+      trend:
+        arima: (1 1 2)(0 0 1)
+        transform: none
+    overnight_stays:
+      sa:
+        arima: (0 0 0)(0 1 1)
+        transform: none
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    retail:
+      trend:
+        arima: (1 1 2)
+        transform: log
+    total_production:
+      trend:
+        arima: (0 1 1)
+        transform: log
+    unemployment:
+      trend:
+        arima: (2 1 2)
+        transform: log
+    wholesale:
+      trend:
+        arima: (0 1 0)(0 0 1)
+        transform: log
+  EL:
+    building_permits:
+      trend:
+        arima: (3 1 0)(0 0 1)
+        transform: log
+    consumer_confidence:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    esi:
+      trend:
+        arima: (0 1 1)(0 1 1)
+        transform: none
+    exports_goods:
+      sa:
+        arima: (0 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (0 1 1)
+        transform: log
+    exports_services:
+      sa:
+        arima: (0 1 0)(1 1 1)
+        transform: log
+      trend:
+        arima: (1 1 2)(0 0 1)
+        transform: none
+    gdp:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: none
+    household_consumption:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: none
+    imports_goods:
+      sa:
+        arima: (2 1 0)(0 1 1)
+        transform: log
+      trend:
+        arima: (0 1 1)
+        transform: log
+    imports_services:
+      sa:
+        arima: (3 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (0 1 1)
+        transform: none
+    industrial_production:
+      trend:
+        arima: (0 1 1)(0 0 1)
+        transform: log
+    investment:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: none
+    npl:
+      sa:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+      trend:
+        arima: (3 1 1)(0 1 1)
+        transform: log
+    order_books:
+      trend:
+        arima: (0 1 2)
+        transform: none
+    overnight_stays:
+      sa:
+        arima: (3 0 0)(0 1 1)
+        transform: none
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: none
+    retail:
+      trend:
+        arima: (2 2 1)(1 0 1)
+        transform: none
+    total_production:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    unemployment:
+      trend:
+        arima: (2 2 1)(0 0 1)
+        transform: none
+    wholesale:
+      trend:
+        arima: (1 1 1)(0 0 1)
+        transform: log
+  ES:
+    building_permits:
+      trend:
+        arima: (3 1 1)
+        transform: log
+    construction:
+      trend:
+        arima: (1 2 2)(0 0 1)
+        transform: log
+    consumer_confidence:
+      trend:
+        arima: (1 1 0)(1 0 1)
+        transform: none
+    esi:
+      trend:
+        arima: (2 1 2)
+        transform: none
+    gdp:
+      trend:
+        arima: (3 2 1)(0 0 1)
+        transform: none
+    household_consumption:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: none
+    industrial_production:
+      trend:
+        arima: (2 2 1)(1 0 1)
+        transform: none
+    investment:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: none
+    npl:
+      sa:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+      trend:
+        arima: (2 2 1)(1 0 1)
+        transform: log
+    order_books:
+      trend:
+        arima: (2 1 1)
+        transform: none
+    overnight_stays:
+      sa:
+        arima: (3 0 0)(0 1 1)
+        transform: none
+      trend:
+        arima: (3 1 1)(0 1 1)
+        transform: none
+    registrations:
+      trend:
+        arima: (0 1 1)(0 0 1)
+        transform: none
+    retail:
+      trend:
+        arima: (2 2 1)(1 0 1)
+        transform: none
+    unemployment:
+      trend:
+        arima: (1 1 0)(0 0 1)
+        transform: log
+    wholesale:
+      trend:
+        arima: (2 1 0)
+        transform: log
+  FI:
+    building_permits:
+      trend:
+        arima: (3 1 1)
+        transform: none
+    consumer_confidence:
+      trend:
+        arima: (1 1 0)
+        transform: none
+    esi:
+      trend:
+        arima: (2 1 2)
+        transform: none
+    exports_goods:
+      sa:
+        arima: (3 1 1)(1 0 0)
+        transform: log
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    exports_services:
+      sa:
+        arima: (2 1 0)(1 1 1)
+        transform: none
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: none
+    gdp:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    household_consumption:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    imports_goods:
+      sa:
+        arima: (3 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (1 1 0)
+        transform: log
+    imports_services:
+      sa:
+        arima: (2 1 0)(0 1 1)
+        transform: none
+      trend:
+        arima: (1 1 2)
+        transform: none
+    industrial_production:
+      trend:
+        arima: (1 2 2)(1 0 1)
+        transform: log
+    investment:
+      trend:
+        arima: (3 1 1)
+        transform: log
+    npl:
+      sa:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    order_books:
+      trend:
+        arima: (1 1 2)
+        transform: none
+    overnight_stays:
+      sa:
+        arima: (3 1 1)(0 1 1)
+        transform: none
+      trend:
+        arima: (3 1 0)(1 0 1)
+        transform: none
+    total_production:
+      trend:
+        arima: (2 1 2)(1 0 1)
+        transform: none
+    unemployment:
+      trend:
+        arima: (3 1 1)
+        transform: none
+    wholesale:
+      trend:
+        arima: (0 2 2)(1 0 1)
+        transform: log
+  FR:
+    bankruptcies:
+      trend:
+        arima: (0 1 1)(1 0 0)
+        transform: none
+    building_permits:
+      trend:
+        arima: (3 1 1)(1 0 1)
+        transform: none
+    construction:
+      trend:
+        arima: (1 1 2)
+        transform: none
+    consumer_confidence:
+      trend:
+        arima: (1 1 1)(1 0 1)
+        transform: none
+    esi:
+      trend:
+        arima: (1 1 1)
+        transform: none
+    exports_goods:
+      sa:
+        arima: (3 1 1)(0 1 1)
+        transform: none
+      trend:
+        arima: (2 1 0)
+        transform: none
+    exports_services:
+      sa:
+        arima: (2 1 2)(0 1 1)
+        transform: none
+      trend:
+        arima: (1 1 0)
+        transform: none
+    gdp:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    household_consumption:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    imports_goods:
+      sa:
+        arima: (3 1 1)(0 1 1)
+        transform: none
+      trend:
+        arima: (3 1 1)
+        transform: none
+    imports_services:
+      sa:
+        arima: (2 1 0)(0 1 1)
+        transform: log
+      trend:
+        arima: (1 1 2)
+        transform: log
+    industrial_production:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    investment:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    npl:
+      sa:
+        arima: (2 2 1)(1 0 1)
+        transform: log
+      trend:
+        arima: (2 2 1)(0 0 1)
+        transform: log
+    order_books:
+      trend:
+        arima: (1 1 2)
+        transform: none
+    overnight_stays:
+      sa:
+        arima: (1 1 0)(0 1 1)
+        transform: none
+      trend:
+        arima: (0 1 1)
+        transform: none
+    registrations:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    retail:
+      trend:
+        arima: (1 1 2)(1 0 1)
+        transform: log
+    unemployment:
+      trend:
+        arima: (2 1 1)
+        transform: none
+    wholesale:
+      trend:
+        arima: (0 1 1)(0 1 1)
+        transform: none
+  HR:
+    bankruptcies:
+      trend:
+        arima: (0 1 2)
+        transform: log
+    building_permits:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    cars_registered:
+      sa:
+        arima: (0 1 1)(0 1 1)
+        transform: none
+      trend:
+        arima: (1 0 0)(1 0 0)
+        transform: none
+    construction:
+      trend:
+        arima: (1 2 2)
+        transform: none
+    consumer_confidence:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    esi:
+      trend:
+        arima: (1 1 0)
+        transform: none
+    exports_goods:
+      sa:
+        arima: (2 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (0 1 1)
+        transform: log
+    exports_services:
+      sa:
+        arima: (0 1 0)(1 1 1)
+        transform: log
+      trend:
+        arima: (2 1 1)(0 0 1)
+        transform: log
+    gdp:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: none
+    household_consumption:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: none
+    imports_goods:
+      sa:
+        arima: (3 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (1 1 0)
+        transform: log
+    imports_services:
+      sa:
+        arima: (0 1 1)(0 1 1)
+        transform: none
+      trend:
+        arima: (1 2 2)(0 0 1)
+        transform: none
+    industrial_production:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    insured_persons:
+      sa:
+        arima: (1 1 0)(1 1 1)
+        transform: none
+      trend:
+        arima: (1 1 2)
+        transform: log
+    investment:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    npl:
+      sa:
+        arima: (3 1 1)(1 0 0)
+        transform: log
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    order_books:
+      trend:
+        arima: (2 1 2)
+        transform: none
+    registrations:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    retail:
+      trend:
+        arima: (0 2 2)
+        transform: none
+    total_production:
+      trend:
+        arima: (0 2 2)
+        transform: none
+    trucks_registered:
+      sa:
+        arima: (0 1 1)(0 1 1)
+        transform: none
+      trend:
+        arima: (0 1 1)
+        transform: none
+    unemployment:
+      trend:
+        arima: (1 1 2)
+        transform: none
+    wholesale:
+      trend:
+        arima: (2 1 0)
+        transform: log
+  IE:
+    building_permits:
+      trend:
+        arima: (3 1 1)(1 0 1)
+        transform: log
+    consumer_confidence:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    esi:
+      trend:
+        arima: (0 1 1)(0 0 1)
+        transform: none
+    gdp:
+      trend:
+        arima: (3 1 1)(1 0 1)
+        transform: log
+    household_consumption:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    industrial_production:
+      trend:
+        arima: (2 1 0)(0 0 1)
+        transform: log
+    investment:
+      trend:
+        arima: (2 1 1)(0 0 1)
+        transform: log
+    npl:
+      sa:
+        arima: (3 1 1)(1 0 1)
+        transform: log
+      trend:
+        arima: (3 1 1)(1 0 1)
+        transform: log
+    order_books:
+      trend:
+        arima: (0 1 1)(0 0 1)
+        transform: none
+    overnight_stays:
+      sa:
+        arima: (3 0 1)(0 1 0)
+        transform: none
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: none
+    retail:
+      trend:
+        arima: (2 1 1)
+        transform: none
+    unemployment:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: none
+  IT:
+    building_permits:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    construction:
+      trend:
+        arima: (3 1 1)(1 0 1)
+        transform: none
+    consumer_confidence:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    esi:
+      trend:
+        arima: (0 1 0)(1 0 1)
+        transform: none
+    exports_goods:
+      sa:
+        arima: (2 1 1)(0 1 1)
+        transform: none
+      trend:
+        arima: (1 1 2)
+        transform: none
+    exports_services:
+      sa:
+        arima: (1 1 0)(0 1 1)
+        transform: none
+      trend:
+        arima: (1 1 1)
+        transform: none
+    gdp:
+      trend:
+        arima: (3 1 1)
+        transform: none
+    household_consumption:
+      trend:
+        arima: (3 1 1)
+        transform: none
+    imports_goods:
+      sa:
+        arima: (3 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (1 1 0)
+        transform: log
+    imports_services:
+      sa:
+        arima: (0 1 0)(0 1 1)
+        transform: none
+      trend:
+        arima: (1 1 2)
+        transform: none
+    industrial_production:
+      trend:
+        arima: (3 1 1)(1 0 1)
+        transform: none
+    investment:
+      trend:
+        arima: (3 1 1)
+        transform: none
+    npl:
+      sa:
+        arima: (3 1 1)(1 0 1)
+        transform: log
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    order_books:
+      trend:
+        arima: (2 1 0)(1 0 1)
+        transform: none
+    overnight_stays:
+      sa:
+        arima: (3 1 1)(0 1 1)
+        transform: none
+      trend:
+        arima: (1 1 0)(1 0 1)
+        transform: none
+    retail:
+      trend:
+        arima: (0 2 2)(0 0 1)
+        transform: none
+    total_production:
+      trend:
+        arima: (1 1 0)
+        transform: none
+    unemployment:
+      trend:
+        arima: (1 2 1)(1 0 1)
+        transform: none
+    wholesale:
+      trend:
+        arima: (0 1 1)
+        transform: log
+  LT:
+    building_permits:
+      trend:
+        arima: (3 1 1)
+        transform: log
+    consumer_confidence:
+      trend:
+        arima: (1 1 0)
+        transform: none
+    esi:
+      trend:
+        arima: (1 1 0)
+        transform: none
+    exports_goods:
+      sa:
+        arima: (0 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (1 1 0)
+        transform: log
+    exports_services:
+      sa:
+        arima: (0 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (2 1 1)(1 0 1)
+        transform: log
+    gdp:
+      trend:
+        arima: (3 1 1)(1 0 1)
+        transform: log
+    household_consumption:
+      trend:
+        arima: (3 1 1)
+        transform: log
+    imports_goods:
+      sa:
+        arima: (0 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (1 1 0)
+        transform: log
+    imports_services:
+      sa:
+        arima: (2 1 0)(1 0 1)
+        transform: log
+      trend:
+        arima: (3 1 0)(0 0 1)
+        transform: log
+    industrial_production:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    investment:
+      trend:
+        arima: (3 1 1)(1 0 1)
+        transform: none
+    npl:
+      sa:
+        arima: (3 1 1)
+        transform: log
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    order_books:
+      trend:
+        arima: (1 1 2)(0 0 1)
+        transform: none
+    overnight_stays:
+      sa:
+        arima: (2 1 1)(0 1 1)
+        transform: none
+      trend:
+        arima: (1 1 1)
+        transform: log
+    retail:
+      trend:
+        arima: (0 1 1)(0 1 1)
+        transform: log
+    total_production:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    unemployment:
+      trend:
+        arima: (3 1 1)(1 0 1)
+        transform: none
+    wholesale:
+      trend:
+        arima: (1 1 1)
+        transform: log
+  LU:
+    building_permits:
+      trend:
+        arima: (3 1 0)(1 0 0)
+        transform: log
+    construction:
+      trend:
+        arima: (2 0 2)
+        transform: none
+    consumer_confidence:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    esi:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: none
+    exports_goods:
+      sa:
+        arima: (0 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (0 1 1)(0 1 1)
+        transform: log
+    exports_services:
+      sa:
+        arima: (2 1 2)(0 1 1)
+        transform: log
+      trend:
+        arima: (1 1 2)(1 0 1)
+        transform: log
+    gdp:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    household_consumption:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    imports_goods:
+      sa:
+        arima: (0 1 1)(0 1 1)
+        transform: none
+      trend:
+        arima: (0 1 1)
+        transform: none
+    imports_services:
+      sa:
+        arima: (2 1 2)(0 1 1)
+        transform: log
+      trend:
+        arima: (1 1 0)
+        transform: log
+    industrial_production:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    investment:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    npl:
+      sa:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    order_books:
+      trend:
+        arima: (1 1 0)
+        transform: none
+    overnight_stays:
+      sa:
+        arima: (0 1 1)(0 1 1)
+        transform: none
+      trend:
+        arima: (1 2 2)(0 0 1)
+        transform: none
+    retail:
+      trend:
+        arima: (3 1 1)(1 0 1)
+        transform: log
+    wholesale:
+      trend:
+        arima: (1 1 0)
+        transform: none
+  LV:
+    bankruptcies:
+      trend:
+        arima: (1 0 1)(0 0 1)
+        transform: log
+    building_permits:
+      trend:
+        arima: (2 1 2)
+        transform: log
+    consumer_confidence:
+      trend:
+        arima: (1 1 0)
+        transform: none
+    exports_goods:
+      sa:
+        arima: (2 1 2)(0 1 1)
+        transform: log
+      trend:
+        arima: (1 1 0)
+        transform: log
+    exports_services:
+      sa:
+        arima: (0 1 0)(0 1 1)
+        transform: log
+      trend:
+        arima: (1 1 0)
+        transform: log
+    gdp:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    household_consumption:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    imports_goods:
+      sa:
+        arima: (3 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (1 1 2)
+        transform: log
+    imports_services:
+      sa:
+        arima: (2 1 2)(0 1 1)
+        transform: log
+      trend:
+        arima: (1 1 2)
+        transform: log
+    industrial_production:
+      trend:
+        arima: (1 1 2)(1 0 1)
+        transform: none
+    investment:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    npl:
+      sa:
+        arima: (3 1 1)(1 0 0)
+        transform: log
+      trend:
+        arima: (3 1 1)
+        transform: log
+    order_books:
+      trend:
+        arima: (1 1 0)
+        transform: none
+    overnight_stays:
+      sa:
+        arima: (0 1 0)(0 1 1)
+        transform: none
+      trend:
+        arima: (0 1 1)
+        transform: none
+    registrations:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    retail:
+      trend:
+        arima: (1 2 1)(1 0 1)
+        transform: log
+    total_production:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    unemployment:
+      trend:
+        arima: (3 1 1)
+        transform: log
+    wholesale:
+      trend:
+        arima: (1 1 1)(0 0 1)
+        transform: log
+  MT:
+    bankruptcies:
+      trend:
+        arima: (1 0 1)
+        transform: none
+    building_permits:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    consumer_confidence:
+      trend:
+        arima: (2 1 0)
+        transform: none
+    esi:
+      trend:
+        arima: (0 1 1)(0 1 1)
+        transform: none
+    exports_goods:
+      sa:
+        arima: (0 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (1 0 1)
+        transform: none
+    exports_services:
+      sa:
+        arima: (0 1 0)(0 1 1)
+        transform: none
+      trend:
+        arima: (1 1 1)
+        transform: none
+    gdp:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    household_consumption:
+      trend:
+        arima: (3 1 1)(1 0 1)
+        transform: log
+    imports_goods:
+      sa:
+        arima: (2 1 0)(0 1 1)
+        transform: log
+      trend:
+        arima: (1 1 0)(1 0 1)
+        transform: log
+    industrial_production:
+      trend:
+        arima: (2 1 1)(1 0 1)
+        transform: log
+    investment:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    npl:
+      sa:
+        arima: (1 1 2)
+        transform: log
+      trend:
+        arima: (1 1 2)
+        transform: log
+    order_books:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    overnight_stays:
+      sa:
+        arima: (1 1 0)(0 1 1)
+        transform: none
+      trend:
+        arima: (0 1 0)(1 0 1)
+        transform: none
+    registrations:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    total_production:
+      trend:
+        arima: (2 1 2)
+        transform: none
+    wholesale:
+      trend:
+        arima: (0 2 2)(1 0 1)
+        transform: log
+  NL:
+    bankruptcies:
+      trend:
+        arima: (1 1 0)
+        transform: log
+    building_permits:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    construction:
+      trend:
+        arima: (0 1 1)(0 0 1)
+        transform: none
+    consumer_confidence:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    esi:
+      trend:
+        arima: (1 1 1)
+        transform: none
+    gdp:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    household_consumption:
+      trend:
+        arima: (2 2 1)(0 0 1)
+        transform: log
+    industrial_production:
+      trend:
+        arima: (0 1 2)
+        transform: none
+    investment:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    npl:
+      sa:
+        arima: (3 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (3 1 1)(1 0 1)
+        transform: log
+    order_books:
+      trend:
+        arima: (1 1 2)(1 0 1)
+        transform: none
+    overnight_stays:
+      sa:
+        arima: (2 0 0)(0 1 1)
+        transform: none
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: none
+    retail:
+      trend:
+        arima: (1 1 2)
+        transform: log
+    unemployment:
+      trend:
+        arima: (1 1 1)
+        transform: none
+    wholesale:
+      trend:
+        arima: (1 0 0)(0 1 1)
+        transform: log
+  PT:
+    bankruptcies:
+      trend:
+        arima: (0 1 1)
+        transform: log
+    building_permits:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    construction:
+      trend:
+        arima: (1 2 1)
+        transform: log
+    consumer_confidence:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    esi:
+      trend:
+        arima: (2 1 1)(0 0 1)
+        transform: none
+    exports_goods:
+      sa:
+        arima: (2 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (0 1 1)(0 1 1)
+        transform: log
+    exports_services:
+      sa:
+        arima: (2 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (1 1 2)
+        transform: log
+    gdp:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: none
+    household_consumption:
+      trend:
+        arima: (3 1 1)(1 0 1)
+        transform: none
+    imports_goods:
+      sa:
+        arima: (3 1 0)(0 1 1)
+        transform: log
+      trend:
+        arima: (1 1 0)
+        transform: log
+    imports_services:
+      sa:
+        arima: (3 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (1 1 2)
+        transform: log
+    industrial_production:
+      trend:
+        arima: (0 1 2)
+        transform: none
+    investment:
+      trend:
+        arima: (3 1 1)
+        transform: none
+    npl:
+      sa:
+        arima: (3 1 1)(1 0 1)
+        transform: log
+      trend:
+        arima: (2 2 1)(0 0 1)
+        transform: log
+    order_books:
+      trend:
+        arima: (1 1 0)
+        transform: none
+    overnight_stays:
+      sa:
+        arima: (2 1 2)(0 1 1)
+        transform: none
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: none
+    registrations:
+      trend:
+        arima: (1 1 1)
+        transform: none
+    retail:
+      trend:
+        arima: (0 2 2)
+        transform: none
+    unemployment:
+      trend:
+        arima: (3 1 1)
+        transform: log
+    wholesale:
+      trend:
+        arima: (1 0 0)
+        transform: none
+  SI:
+    bankruptcies:
+      trend:
+        arima: (0 1 1)(0 1 1)
+        transform: none
+    building_permits:
+      trend:
+        arima: (3 1 1)
+        transform: log
+    construction:
+      trend:
+        arima: (0 1 1)(0 1 1)
+        transform: log
+    consumer_confidence:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    esi:
+      trend:
+        arima: (0 1 1)(0 1 1)
+        transform: none
+    exports_goods:
+      sa:
+        arima: (3 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (2 1 0)
+        transform: none
+    exports_services:
+      sa:
+        arima: (0 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (0 1 1)
+        transform: log
+    gdp:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    household_consumption:
+      trend:
+        arima: (3 1 1)(1 0 1)
+        transform: log
+    imports_goods:
+      sa:
+        arima: (3 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (2 1 2)
+        transform: log
+    imports_services:
+      sa:
+        arima: (0 1 1)(0 1 1)
+        transform: log
+      trend:
+        arima: (2 1 2)(1 0 1)
+        transform: log
+    industrial_production:
+      trend:
+        arima: (0 1 1)
+        transform: log
+    investment:
+      trend:
+        arima: (3 1 1)
+        transform: none
+    npl:
+      sa:
+        arima: (3 1 1)
+        transform: log
+      trend:
+        arima: (2 1 2)
+        transform: log
+    order_books:
+      trend:
+        arima: (0 1 0)(1 0 1)
+        transform: none
+    overnight_stays:
+      sa:
+        arima: (2 1 2)(0 1 1)
+        transform: none
+      trend:
+        arima: (1 1 0)
+        transform: log
+    registrations:
+      trend:
+        arima: (0 1 1)(0 1 1)
+        transform: none
+    retail:
+      trend:
+        arima: (0 1 1)(0 0 1)
+        transform: log
+    total_production:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    unemployment:
+      trend:
+        arima: (2 1 2)
+        transform: none
+    wholesale:
+      trend:
+        arima: (0 1 1)
+        transform: log
+  SK:
+    building_permits:
+      trend:
+        arima: (2 1 0)(0 1 1)
+        transform: log
+    construction:
+      trend:
+        arima: (2 1 0)(1 0 1)
+        transform: log
+    consumer_confidence:
+      trend:
+        arima: (2 1 2)
+        transform: none
+    esi:
+      trend:
+        arima: (1 1 0)
+        transform: none
+    exports_goods:
+      sa:
+        arima: (3 1 1)(0 1 1)
+        transform: none
+      trend:
+        arima: (2 1 1)(0 0 1)
+        transform: none
+    exports_services:
+      sa:
+        arima: (0 1 1)(0 1 1)
+        transform: none
+      trend:
+        arima: (0 1 0)(1 0 1)
+        transform: none
+    household_consumption:
+      trend:
+        arima: (3 1 0)(0 0 1)
+        transform: log
+    imports_goods:
+      sa:
+        arima: (3 1 1)(0 1 1)
+        transform: none
+      trend:
+        arima: (3 1 1)
+        transform: none
+    imports_services:
+      sa:
+        arima: (2 1 1)(0 1 1)
+        transform: none
+      trend:
+        arima: (0 2 2)(1 0 0)
+        transform: none
+    industrial_production:
+      trend:
+        arima: (0 1 1)(0 1 1)
+        transform: log
+    investment:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: none
+    npl:
+      sa:
+        arima: (2 1 0)(1 0 1)
+        transform: none
+      trend:
+        arima: (2 1 2)
+        transform: none
+    order_books:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    overnight_stays:
+      sa:
+        arima: (3 0 1)(0 1 1)
+        transform: none
+      trend:
+        arima: (1 1 0)
+        transform: none
+    retail:
+      trend:
+        arima: (2 1 1)(0 0 1)
+        transform: none
+    total_production:
+      trend:
+        arima: (0 1 1)
+        transform: none
+    unemployment:
+      trend:
+        arima: (3 1 1)(0 0 1)
+        transform: log
+    wholesale:
+      trend:
+        arima: (2 1 0)
+        transform: log

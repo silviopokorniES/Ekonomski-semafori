@@ -8,9 +8,11 @@ hp by default; alternatives (hp_onesided, baxter_king, christiano_fitzgerald,
 hamilton, bn_ucm) are added in Phase 5. The cycle code must not know which
 method produced the trend.
 Assumptions: henderson reproduces extract_d12_trend in the R scripts: three X-13
-specs tried in order (automdl with td and easter tests; fixed airline model;
-fixed random walk without outliers), then a 12-month centered moving average
-as the last resort. The rung used is logged. A missing X-13 binary is not a
+specs tried in order (automatic model with td and easter tests; fixed airline
+model; fixed random walk without outliers), then a 12-month centered moving
+average as the last resort. With a frozen model (transform and ARIMA orders from
+config/x13_models.yaml) that model is tried first and the automatic ladder is
+the fallback. The rung used is logged. A missing X-13 binary is not a
 per-series failure and propagates (FileNotFoundError) instead of degrading
 every series to the moving average.
 """
@@ -22,7 +24,7 @@ import logging
 import pandas as pd
 from statsmodels.tsa.filters.hp_filter import hpfilter
 
-from ekonomski_semafori.adjust import X13Error, run_x13, x13_binary
+from ekonomski_semafori.adjust import X13Error, model_blocks, run_x13, x13_binary
 
 log = logging.getLogger(__name__)
 
@@ -30,10 +32,9 @@ _X11 = "x11{\n  save = (d12)\n}\n\n"
 _LADDER: tuple[tuple[str, str], ...] = (
     (
         "automdl",
-        "transform{\n  function = auto\n}\n\n"
-        "regression{\n  aictest = (td easter)\n}\n\n"
-        "outlier{\n\n}\n\n"
-        "automdl{\n\n}\n\n" + _X11 + "estimate{\n\n}\n",
+        model_blocks(None)
+        + "regression{\n  aictest = (td easter)\n}\n\n"
+        "outlier{\n\n}\n\n" + _X11 + "estimate{\n\n}\n",
     ),
     (
         "airline",
@@ -49,16 +50,23 @@ _LADDER: tuple[tuple[str, str], ...] = (
 )
 
 
-def henderson(sa: pd.Series) -> pd.Series:
+def trend_spec(model: dict[str, str] | None) -> str:
+    """Spec of the trend step with a frozen model: the same regressors and outlier
+    settings as the automatic rung, the model fixed."""
+    return model_blocks(model) + "regression{\n  aictest = (td easter)\n}\n\noutlier{\n\n}\n\n" + _X11 + "estimate{\n\n}\n"
+
+
+def henderson(sa: pd.Series, model: dict[str, str] | None = None) -> pd.Series:
     """X-11 final trend-cycle (D12) of a monthly series, with the R fallback ladder."""
     x13_binary()   # raises FileNotFoundError before any per-series fallback can hide it
-    for name, spec in _LADDER:
+    rungs = ((("frozen", trend_spec(model)),) if model is not None else ()) + _LADDER
+    for name, spec in rungs:
         try:
             trend = run_x13(sa, spec, ("d12",))["d12"]
         except X13Error as err:
-            log.warning("henderson: rung %s failed for %s: %s", name, sa.name, err)
+            log.warning("henderson: rung %s failed for %s: %s", name, sa.name, str(err)[:160])
             continue
-        if name != "automdl":
+        if name != ("frozen" if model is not None else "automdl"):
             log.warning("henderson: %s used rung %s", sa.name, name)
         return trend
     log.warning("henderson: X-13 failed on every rung for %s, using a 12-month centered moving average", sa.name)

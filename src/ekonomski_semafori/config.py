@@ -9,6 +9,7 @@ checkout, so CONFIG_DIR resolves relative to this file.
 
 from __future__ import annotations
 
+import re
 from dataclasses import asdict, dataclass
 from datetime import date
 from pathlib import Path
@@ -272,7 +273,7 @@ MOMENTUM = frozenset({"cycle_change", "d12_growth"})
 ZSCORE_SCALES = frozenset({"sd", "mad"})
 _SETTINGS_REQUIRED = frozenset({
     "hp_lambda", "min_observations", "min_seasonal_obs", "output_start",
-    "trend_method", "momentum", "zscore_window", "zscore_scale", "zscore_min_obs", "zscore_end", "axis_clip", "x13",
+    "trend_method", "momentum", "zscore_window", "zscore_scale", "zscore_min_obs", "zscore_end", "axis_clip", "x13", "x13_models",
 })
 _X13_KEYS = frozenset({"outlier_types", "outlier_critical", "aictest"})
 
@@ -293,6 +294,7 @@ class Settings:
     zscore_end: date | None
     axis_clip: float
     x13: dict[str, Any]
+    x13_models: str | None
 
 
 def load_settings(path: Path = CONFIG_DIR / "settings.yaml") -> Settings:
@@ -328,6 +330,8 @@ def load_settings(path: Path = CONFIG_DIR / "settings.yaml") -> Settings:
     x13 = raw["x13"]
     if not isinstance(x13, dict) or set(x13) != _X13_KEYS:
         raise ValueError(f"{path}: x13 must have exactly the keys {sorted(_X13_KEYS)}")
+    if raw["x13_models"] is not None and not isinstance(raw["x13_models"], str):
+        raise ValueError(f"{path}: x13_models must be null or a path relative to the repository root")
     return Settings(
         hp_lambda=float(raw["hp_lambda"]),
         min_observations=raw["min_observations"],
@@ -341,4 +345,31 @@ def load_settings(path: Path = CONFIG_DIR / "settings.yaml") -> Settings:
         zscore_end=raw["zscore_end"],
         axis_clip=float(raw["axis_clip"]),
         x13=dict(x13),
+        x13_models=raw["x13_models"],
     )
+
+
+X13_STEPS = frozenset({"sa", "trend"})
+_ARIMA = re.compile(r"^\(\d \d \d\)(\(\d \d \d\))?$")   # (p d q) with an optional seasonal (P D Q)
+
+
+def load_x13_models(path: Path | None) -> dict[tuple[str, str, str], dict[str, str]]:
+    """Read the frozen X-13 model registry: {country: {indicator: {step: {transform, arima}}}}
+    keyed here as (country, indicator, step). None or a missing file gives an empty
+    registry, which means automatic selection everywhere."""
+    if path is None or not Path(path).exists():
+        return {}
+    raw = _read_yaml(Path(path))
+    entries = raw.get("models") if isinstance(raw, dict) else None
+    if not isinstance(entries, dict):
+        raise ValueError(f"{path}: 'models' must be a mapping country -> indicator -> step")
+    out: dict[tuple[str, str, str], dict[str, str]] = {}
+    for country, per_indicator in entries.items():
+        for indicator, per_step in per_indicator.items():
+            for step, model in per_step.items():
+                if step not in X13_STEPS or not isinstance(model, dict) or set(model) != {"transform", "arima"}:
+                    raise ValueError(f"{path}: {country} {indicator} {step}: expected step sa or trend with keys transform and arima")
+                if model["transform"] not in ("log", "none") or not _ARIMA.match(str(model["arima"])):
+                    raise ValueError(f"{path}: {country} {indicator} {step}: transform must be log or none, arima like (0 1 1)(0 1 1)")
+                out[(str(country), str(indicator), step)] = {"transform": model["transform"], "arima": str(model["arima"])}
+    return out
