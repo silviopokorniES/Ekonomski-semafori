@@ -1,0 +1,295 @@
+# Indicator registry. One entry per series; adding an indicator is a config change only.
+#
+# Fields: id, name_en, name_hr, category (one of or a list of leading | supply | demand |
+# external | lagging), source (eurostat | ecb | local), frequency (M | Q), already_sa,
+# transform (ratio | difference), counter_cyclical, countries (all | list of codes),
+# skip_henderson (optional, default false: use the fetched series itself as the short-run trend).
+# Per source: eurostat needs dataset + filters; ecb needs series_key (may contain {ecb_code});
+# local needs path + column.
+#
+# Eurostat filters are copied verbatim from the get_eurostat calls in skripte/*.R. `geo` is added
+# by fetch_eurostat from the country code. The R time filter sinceTimePeriod = 2015-01 is
+# deliberately not encoded: the full history is fetched and filters run on it. R calls that
+# fetched two series in one request (nace_r2 G46/G47, indic_bt REG/BKRT, BOP item x flow) are
+# split into one entry per series.
+indicators:
+  # Eurostat, quarterly, disaggregated to monthly
+  - id: building_permits
+    name_en: Building permits
+    name_hr: Građevinske dozvole
+    category: leading
+    source: eurostat
+    dataset: sts_cobp_q
+    filters: {indic_bt: BPRM_DW, s_adj: SCA, cpa2_1: CPA_F41001_X_410014, freq: Q, unit: I21}
+    frequency: Q
+    already_sa: true
+    transform: ratio
+    counter_cyclical: false
+    countries: all
+
+  - id: investment
+    name_en: Investment
+    name_hr: Investicije
+    category: demand
+    source: eurostat
+    dataset: namq_10_an6
+    filters: {asset10: N11G, s_adj: SCA, freq: Q, unit: CLV_I20}
+    frequency: Q
+    already_sa: true
+    transform: ratio
+    counter_cyclical: false
+    countries: all
+
+  - id: gdp
+    name_en: GDP
+    name_hr: BDP
+    category: [supply, demand]   # R lists GDP under supply only; TASKS 0.5 puts it in both
+    source: eurostat
+    dataset: namq_10_gdp
+    filters: {na_item: B1GQ, s_adj: SCA, unit: CLV_I20, freq: Q}
+    frequency: Q
+    already_sa: true
+    transform: ratio
+    counter_cyclical: false
+    countries: all
+
+  - id: household_consumption
+    name_en: Household consumption
+    name_hr: Potrošnja kućanstava
+    category: demand
+    source: eurostat
+    dataset: namq_10_fcs
+    filters: {na_item: P31_S14, s_adj: SCA, freq: Q, unit: CLV_I20}
+    frequency: Q
+    already_sa: true
+    transform: ratio
+    counter_cyclical: false
+    countries: all
+
+  # Eurostat, monthly, already seasonally and calendar adjusted (SCA)
+  - id: wholesale
+    name_en: Wholesale trade
+    name_hr: Veleprodaja
+    category: demand
+    source: eurostat
+    dataset: sts_trtu_m
+    filters: {indic_bt: VOL_SLS, s_adj: SCA, nace_r2: G46, freq: M, unit: I21}
+    frequency: M
+    already_sa: true
+    transform: ratio
+    counter_cyclical: false
+    countries: all
+
+  - id: retail
+    name_en: Retail trade
+    name_hr: Trgovina na malo
+    category: demand
+    source: eurostat
+    dataset: sts_trtu_m
+    filters: {indic_bt: VOL_SLS, s_adj: SCA, nace_r2: G47, freq: M, unit: I21}
+    frequency: M
+    already_sa: true
+    transform: ratio
+    counter_cyclical: false
+    countries: all
+
+  - id: construction
+    name_en: Construction
+    name_hr: Građevinarstvo
+    category: supply
+    source: eurostat
+    dataset: sts_copr_m
+    filters: {indic_bt: PRD, s_adj: SCA, nace_r2: F, freq: M, unit: I21}
+    frequency: M
+    already_sa: true
+    transform: ratio
+    counter_cyclical: false
+    countries: all
+
+  - id: industrial_production
+    name_en: Industrial production
+    name_hr: Industrijska proizvodnja
+    category: supply
+    source: eurostat
+    dataset: sts_inpr_m
+    filters: {indic_bt: PRD, s_adj: SCA, nace_r2: B-D, freq: M, unit: I21}
+    frequency: M
+    already_sa: true
+    transform: ratio
+    counter_cyclical: false
+    countries: all
+
+  - id: registrations
+    name_en: Business registrations
+    name_hr: Registracija novih poduzeća
+    category: leading
+    source: eurostat
+    dataset: sts_rb_m
+    filters: {indic_bt: REG, s_adj: SCA, nace_r2: B-S_X_O_S94, freq: M, unit: I21}
+    frequency: M
+    already_sa: true
+    transform: ratio
+    counter_cyclical: false
+    countries: all
+
+  - id: bankruptcies
+    name_en: Bankruptcy declarations
+    name_hr: Stečajne prijave
+    category: lagging
+    source: eurostat
+    dataset: sts_rb_m
+    filters: {indic_bt: BKRT, s_adj: SCA, nace_r2: B-S_X_O_S94, freq: M, unit: I21}
+    frequency: M
+    already_sa: true
+    transform: ratio
+    counter_cyclical: true
+    countries: all
+
+  - id: total_production
+    name_en: Total production
+    name_hr: Ukupna proizvodnja
+    category: supply
+    source: eurostat
+    dataset: sts_tot_prod_m
+    filters: {indic_bt: PRD, s_adj: SCA, nace_r2: B-N_X_K, freq: M, unit: I21}
+    frequency: M
+    already_sa: true
+    transform: ratio
+    counter_cyclical: false
+    countries: all
+
+  # Eurostat, monthly, not adjusted at source (X-13 in adjust.py)
+  - id: overnight_stays
+    name_en: Overnight stays
+    name_hr: Broj noćenja
+    category: supply
+    source: eurostat
+    dataset: tour_occ_nim
+    filters: {c_resid: TOTAL, nace_r2: I551-I553, freq: M, unit: NR}
+    frequency: M
+    already_sa: false
+    transform: ratio
+    counter_cyclical: false
+    countries: all
+
+  - id: exports_goods
+    name_en: Exports of goods
+    name_hr: Izvoz dobara
+    category: external
+    source: eurostat
+    dataset: bop_c6_m
+    filters: {bop_item: G, stk_flow: CRE, sectpart: S1, currency: MIO_EUR, partner: WRL_REST, sector10: S1, freq: M}
+    frequency: M
+    already_sa: false
+    transform: ratio
+    counter_cyclical: false
+    countries: all
+
+  - id: exports_services
+    name_en: Exports of services
+    name_hr: Izvoz usluga
+    category: external
+    source: eurostat
+    dataset: bop_c6_m
+    filters: {bop_item: S, stk_flow: CRE, sectpart: S1, currency: MIO_EUR, partner: WRL_REST, sector10: S1, freq: M}
+    frequency: M
+    already_sa: false
+    transform: ratio
+    counter_cyclical: false
+    countries: all
+
+  - id: imports_goods
+    name_en: Imports of goods
+    name_hr: Uvoz dobara
+    category: external
+    source: eurostat
+    dataset: bop_c6_m
+    filters: {bop_item: G, stk_flow: DEB, sectpart: S1, currency: MIO_EUR, partner: WRL_REST, sector10: S1, freq: M}
+    frequency: M
+    already_sa: false
+    transform: ratio
+    counter_cyclical: false
+    countries: all
+
+  - id: imports_services
+    name_en: Imports of services
+    name_hr: Uvoz usluga
+    category: external
+    source: eurostat
+    dataset: bop_c6_m
+    filters: {bop_item: S, stk_flow: DEB, sectpart: S1, currency: MIO_EUR, partner: WRL_REST, sector10: S1, freq: M}
+    frequency: M
+    already_sa: false
+    transform: ratio
+    counter_cyclical: false
+    countries: all
+
+  # Unemployment reproduces the R reference for the Phase 2 parity check: the Eurostat
+  # trend-cycle (TC) series is used directly as the short-run trend, no Henderson step.
+  # Task 3.2 changes this to s_adj SA and skip_henderson false.
+  - id: unemployment
+    name_en: Unemployment
+    name_hr: Nezaposlenost
+    category: lagging
+    source: eurostat
+    dataset: une_rt_m
+    filters: {age: TOTAL, s_adj: TC, sex: "T", freq: M, unit: THS_PER}
+    frequency: M
+    already_sa: true
+    skip_henderson: true
+    transform: ratio
+    counter_cyclical: true
+    countries: all
+
+  # ECB Data Portal; {ecb_code} is replaced from countries.yaml (EL -> GR)
+  - id: npl
+    name_en: Non-performing loans (ECB)
+    name_hr: Neprihodonosni krediti (ECB)
+    category: lagging
+    source: ecb
+    series_key: "CBD2.Q.{ecb_code}.W0.11._Z._Z.A.F.I3632._Z._Z._Z._Z._Z._Z.PC"
+    frequency: Q
+    already_sa: false
+    transform: ratio
+    counter_cyclical: true
+    countries: all
+
+  # Local Excel inputs, Croatia only; see data/README.md
+  - id: cars_registered
+    name_en: New passenger car registrations (DZS)
+    name_hr: Novo registrirana osobna vozila (DZS)
+    category: leading
+    source: local
+    path: data/prvi_put_reg.xlsx
+    column: Prvi put registrirana osobna vozila
+    frequency: M
+    already_sa: false
+    transform: ratio
+    counter_cyclical: false
+    countries: [HR]
+
+  - id: trucks_registered
+    name_en: New freight vehicle registrations (DZS)
+    name_hr: Novo registrirana teretna vozila (DZS)
+    category: leading
+    source: local
+    path: data/prvi_put_reg.xlsx
+    column: Prvi put registrirana teretna vozila
+    frequency: M
+    already_sa: false
+    transform: ratio
+    counter_cyclical: false
+    countries: [HR]
+
+  - id: insured_persons
+    name_en: Insured persons (HZMO)
+    name_hr: Broj osiguranika (HZMO)
+    category: supply
+    source: local
+    path: data/broj_osiguranika.xlsx
+    column: Broj osiguranika
+    frequency: M
+    already_sa: false
+    transform: ratio
+    counter_cyclical: false
+    countries: [HR]
