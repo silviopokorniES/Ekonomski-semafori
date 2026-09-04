@@ -151,9 +151,11 @@ def run_all(
     settings: Settings,
     history_start: date | None = None,
     as_of: date | None = None,
+    skips: list[tuple[str, str, str]] | None = None,
 ) -> pd.DataFrame:
     """Run every configured (country, indicator) pair. Data problems are logged with
-    the reason and skipped; infrastructure problems abort the run (see module
+    the reason and skipped (and appended to `skips` as (country, indicator, reason)
+    when a list is given); infrastructure problems abort the run (see module
     docstring). Config and the X-13 binary are checked once before any fetch."""
     check_overrides(countries, indicators)
     if settings.trend_method != "hp_on_d12" and settings.trend_method not in LONG_RUN_TRENDS:
@@ -168,6 +170,8 @@ def run_all(
                 frame = run_indicator(country, indicator, settings, history_start, as_of=as_of)
             except (SkippedIndicator, *SKIPPABLE) as err:
                 log.warning("skipped %s %s: %s: %s", country.code, indicator.id, type(err).__name__, err)
+                if skips is not None:
+                    skips.append((country.code, indicator.id, f"{type(err).__name__}: {err}"))
                 continue
             frame.insert(0, "indicator_id", indicator.id)
             frame.insert(0, "country", country.code)

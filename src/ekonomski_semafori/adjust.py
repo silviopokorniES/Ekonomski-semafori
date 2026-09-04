@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import logging
 import os
+import re
 import shutil
 import subprocess
 import tempfile
@@ -72,22 +73,30 @@ def run_x13(series: pd.Series, spec: str, tables: tuple[str, ...]) -> dict[str, 
         (folder / "iofile.spc").write_text(header + spec, encoding="ascii")
         proc = subprocess.run([str(binary), "iofile"], cwd=folder, capture_output=True, text=True)
         error_files = [f for f in (folder / "iofile.err", folder / "iofile_err.html") if f.exists()]
-        errors = "\n".join(f.read_text(errors="replace") for f in error_files)
+        errors = _plain_text("\n".join(f.read_text(errors="replace") for f in error_files))
         # The HTML build exits 0 even on a spec error, so the text is the only reliable signal.
         if proc.returncode != 0 or "ERROR" in errors or "ERROR:" in proc.stdout:
-            raise X13Error(f"x13 failed (exit {proc.returncode}): {errors.strip()[-800:] or proc.stdout[-800:]}")
+            raise X13Error(f"x13 failed (exit {proc.returncode}): {errors[-600:] or proc.stdout[-600:]}")
         for line in errors.splitlines():
             if "WARNING" in line:
-                log.warning("x13 %s: %s", series.name, line.strip())
+                log.info("x13 %s: %s", series.name, line.strip())
         out: dict[str, pd.Series] = {}
         for table in tables:
             path = folder / f"iofile.{table}"
             if not path.exists():
-                raise X13Error(f"x13 did not write table {table}: {errors.strip()[-800:]}")
+                raise X13Error(f"x13 did not write table {table}: {errors[-600:]}")
             frame = pd.read_csv(path, sep="\t", skiprows=2, header=None, names=["date", "value"])
             index = pd.to_datetime(frame["date"].astype(str), format="%Y%m")
-            out[table] = pd.Series(frame["value"].to_numpy(dtype=float), index=index).reindex(series.index)
+            out[table] = pd.Series(frame["value"].to_numpy(dtype=float), index=index, name=series.name).reindex(series.index)
         return out
+
+
+def _plain_text(html: str) -> str:
+    """Strip tags and entities from the X-13 HTML error file; drop the CSS header."""
+    body = html.split("<body>", 1)[1] if "<body>" in html else html
+    text = re.sub(r"<[^>]+>", " ", body).replace("&nbsp;", " ")
+    lines = [" ".join(line.split()) for line in text.splitlines()]
+    return "\n".join(line for line in lines if line)
 
 
 def seasonal_adjust(
