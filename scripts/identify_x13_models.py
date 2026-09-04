@@ -2,7 +2,7 @@
 (country, indicator) that uses X-13 and freeze the result in config/x13_models.yaml.
 
 Usage (inside the semafori environment, from the repository root):
-    python scripts/identify_x13_models.py [--countries HR,AT] [--output config/x13_models.yaml]
+    python scripts/identify_x13_models.py [--countries HR,AT] [--indicators gdp,esi]
 
 For each pair the script fetches and prepares the series exactly as the monthly run
 does, then records the transform (log or none) and the ARIMA orders that X-13's
@@ -25,6 +25,7 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
+REGISTRY = ROOT / "config" / "x13_models.yaml"
 sys.path.insert(0, str(ROOT / "src"))
 
 from ekonomski_semafori import trend  # noqa: E402
@@ -54,7 +55,6 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--countries", default=None, help="comma-separated codes; default all")
     parser.add_argument("--indicators", default=None, help="comma-separated indicator ids; default all. With a subset, existing registry entries for other indicators are kept")
-    parser.add_argument("--output", type=Path, default=ROOT / "config" / "x13_models.yaml")
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
     countries, indicators, settings = load_countries(), load_indicators(), load_settings()
@@ -64,8 +64,8 @@ def main() -> None:
         indicators = [i for i in indicators if i.id in only]
     x13 = settings.x13
     models: dict[str, dict[str, dict[str, dict[str, str]]]] = {}
-    if (only or args.countries) and args.output.exists():
-        models = yaml.safe_load(args.output.read_text(encoding="utf-8")).get("models", {})   # keep the entries not selected
+    if (only or args.countries) and REGISTRY.exists():
+        models = yaml.safe_load(REGISTRY.read_text(encoding="utf-8")).get("models", {})   # keep the entries not selected
     for code in codes:
         country = countries[code]
         for base in indicators:
@@ -97,8 +97,8 @@ def main() -> None:
         "# ar, ma: the estimated coefficients, used as starting values so monthly re-estimation stays in the same optimum.\n"
         "# Re-identify at the annual review and diff before committing.\n"
     )
-    args.output.write_text(header + yaml.safe_dump({"models": models}, allow_unicode=True, sort_keys=True), encoding="utf-8")
-    log.info("wrote %s with %d countries", args.output, len(models))
+    REGISTRY.write_text(header + yaml.safe_dump({"models": models}, allow_unicode=True, sort_keys=True), encoding="utf-8")
+    log.info("wrote %s with %d countries", REGISTRY, len(models))
 
 
 if __name__ == "__main__":

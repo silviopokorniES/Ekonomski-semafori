@@ -23,7 +23,6 @@ import pandas as pd
 
 TRANSFORMS = ("ratio", "difference")
 SCALES = ("sd", "mad")
-COVID_START, COVID_END = pd.Timestamp("2020-03-01"), pd.Timestamp("2021-06-01")
 
 
 def level(short: pd.Series, transform: str) -> pd.Series:
@@ -79,12 +78,10 @@ def invert(frame: pd.DataFrame, counter_cyclical: bool) -> pd.DataFrame:
 
 
 def window_mask(index: pd.DatetimeIndex, window: str | date, end: date | None = None) -> pd.Series:
-    """Boolean mask of the standardisation window: full, ex_covid (drops 2020-03 to
-    2021-06), or a start date; `end` freezes the window at a date."""
+    """Boolean mask of the standardisation window: full or a start date; `end`
+    freezes the window at a date."""
     mask = pd.Series(True, index=index)
-    if window == "ex_covid":
-        mask &= ~((index >= COVID_START) & (index <= COVID_END))
-    elif window != "full":
+    if window != "full":
         mask &= index >= pd.Timestamp(window)
     if end is not None:
         mask &= index <= pd.Timestamp(end)

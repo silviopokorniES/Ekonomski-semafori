@@ -45,7 +45,6 @@ from ekonomski_semafori.fetch import EmptyResponseError, fetch_ecb, fetch_eurost
 
 log = logging.getLogger(__name__)
 
-LONG_RUN_TRENDS = {"hp": trend.hp}
 MAX_GAP = 3
 SKIPPABLE = (EmptyResponseError, X13Error)
 
@@ -181,7 +180,7 @@ def run_indicator(
         raise SkippedIndicator(f"non-positive values after adjustment (min SA {sa.min():.4g}, min trend {short.min():.4g}); the ratio transform needs a positive series")
     level_sa = cyc.level(sa, indicator.transform)
     if indicator.long_run == "hp":
-        long = LONG_RUN_TRENDS[settings.trend_method](level_sa, lam=settings.hp_lambda)
+        long = trend.hp(level_sa, lam=settings.hp_lambda)
     elif indicator.long_run == "mean":
         long = pd.Series(level_sa[cyc.window_mask(level_sa.index, settings.zscore_window, settings.zscore_end)].mean(), index=short.index)
     else:

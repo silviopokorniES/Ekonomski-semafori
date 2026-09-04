@@ -49,8 +49,6 @@ def test_invert_flips_both_columns_only_when_counter_cyclical() -> None:
 def test_window_mask_variants() -> None:
     index = pd.date_range("2019-01-01", periods=48, freq="MS")
     assert window_mask(index, "full").all()
-    ex = window_mask(index, "ex_covid")
-    assert not ex[pd.Timestamp("2020-06-01")] and ex[pd.Timestamp("2021-07-01")] and (~ex).sum() == 16
     start = window_mask(index, date(2021, 1, 1), end=date(2021, 12, 1))
     assert start.sum() == 12
 

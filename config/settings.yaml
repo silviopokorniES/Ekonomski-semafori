@@ -5,7 +5,7 @@ min_observations: 24       # skip an indicator with fewer observations after tre
 min_seasonal_obs: 36       # below this many observations X-13 is skipped and the raw series is used
 output_start: 2015-02-01   # first month written to output
 trend_method: hp           # long-run trend for indicators with long_run hp; hp_on_d12 reproduces the R reference with its legacy formulas (parity test only)
-zscore_window: 2010-01-01  # full | ex_covid | a start date shared by every indicator and country; parameters come from the window, all observations are standardised
+zscore_window: 2010-01-01  # full | a start date shared by every indicator and country; parameters come from the window, all observations are standardised
 zscore_scale: mad          # sd: mean and sample standard deviation; mad: median and 1.4826 times the median absolute deviation
 zscore_min_obs: 84         # an indicator with fewer observations in the window is skipped (about one full cycle)
 zscore_end: null           # null: window runs to the latest observation; a date freezes the parameters (set at the annual review)

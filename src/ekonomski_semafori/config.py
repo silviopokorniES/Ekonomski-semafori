@@ -276,7 +276,6 @@ def check_overrides(countries: dict[str, Country], indicators: list[Indicator]) 
 
 
 TREND_METHODS = frozenset({"hp", "hp_on_d12"})   # hp_on_d12 reproduces the R reference (parity regression test)
-ZSCORE_WINDOWS = frozenset({"full", "ex_covid"})   # or a start date
 ZSCORE_SCALES = frozenset({"sd", "mad"})
 _SETTINGS_REQUIRED = frozenset({
     "hp_lambda", "min_observations", "min_seasonal_obs", "output_start",
@@ -321,8 +320,8 @@ def load_settings(path: Path = CONFIG_DIR / "settings.yaml") -> Settings:
         raise ValueError(f"{path}: output_start must be a date (YYYY-MM-DD)")
     if raw["trend_method"] not in TREND_METHODS:
         raise ValueError(f"{path}: trend_method must be one of {sorted(TREND_METHODS)}")
-    if raw["zscore_window"] not in ZSCORE_WINDOWS and not isinstance(raw["zscore_window"], date):
-        raise ValueError(f"{path}: zscore_window must be one of {sorted(ZSCORE_WINDOWS)} or a start date")
+    if raw["zscore_window"] != "full" and not isinstance(raw["zscore_window"], date):
+        raise ValueError(f"{path}: zscore_window must be 'full' or a start date")
     if raw["zscore_scale"] not in ZSCORE_SCALES:
         raise ValueError(f"{path}: zscore_scale must be one of {sorted(ZSCORE_SCALES)}")
     if not isinstance(raw["zscore_min_obs"], int) or isinstance(raw["zscore_min_obs"], bool) or raw["zscore_min_obs"] <= 0:
