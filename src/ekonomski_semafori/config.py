@@ -251,7 +251,7 @@ def check_overrides(countries: dict[str, Country], indicators: list[Indicator]) 
             merge_override(by_id[ind_id], override)
 
 
-TREND_METHODS = frozenset({"hp"})
+TREND_METHODS = frozenset({"hp", "hp_on_d12"})   # hp_on_d12 is temporary, for the task 2.3 parity check
 ZSCORE_WINDOWS = frozenset({"full", "ex_covid"})
 _SETTINGS_REQUIRED = frozenset({
     "hp_lambda", "min_observations", "min_seasonal_obs", "output_start",
