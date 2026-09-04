@@ -10,6 +10,7 @@ checkout, so CONFIG_DIR resolves relative to this file.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -197,3 +198,59 @@ def load_indicators(path: Path = CONFIG_DIR / "indicators.yaml") -> list[Indicat
     if duplicates:
         raise ValueError(f"{path}: duplicate indicator ids {duplicates}")
     return indicators
+
+
+TREND_METHODS = frozenset({"hp"})
+ZSCORE_WINDOWS = frozenset({"full", "ex_covid"})
+_SETTINGS_REQUIRED = frozenset({
+    "hp_lambda", "min_observations", "min_seasonal_obs", "output_start",
+    "trend_method", "zscore_window", "x13",
+})
+_X13_KEYS = frozenset({"outlier_types", "outlier_critical", "aictest"})
+
+
+@dataclass(frozen=True)
+class Settings:
+    """Pipeline-wide settings from settings.yaml."""
+
+    hp_lambda: float
+    min_observations: int
+    min_seasonal_obs: int
+    output_start: date
+    trend_method: str
+    zscore_window: str
+    x13: dict[str, Any]
+
+
+def load_settings(path: Path = CONFIG_DIR / "settings.yaml") -> Settings:
+    """Read settings.yaml, checking key set, types, and enum values."""
+    raw = _read_yaml(path)
+    if not isinstance(raw, dict):
+        raise ValueError(f"{path}: settings must be a mapping")
+    missing = _SETTINGS_REQUIRED - set(raw)
+    unknown = set(raw) - _SETTINGS_REQUIRED
+    if missing or unknown:
+        raise ValueError(f"{path}: missing keys {sorted(missing)}, unknown keys {sorted(unknown)}")
+    if not isinstance(raw["hp_lambda"], (int, float)) or raw["hp_lambda"] <= 0:
+        raise ValueError(f"{path}: hp_lambda must be a positive number")
+    for key in ("min_observations", "min_seasonal_obs"):
+        if not isinstance(raw[key], int) or isinstance(raw[key], bool) or raw[key] <= 0:
+            raise ValueError(f"{path}: {key} must be a positive integer")
+    if not isinstance(raw["output_start"], date):
+        raise ValueError(f"{path}: output_start must be a date (YYYY-MM-DD)")
+    if raw["trend_method"] not in TREND_METHODS:
+        raise ValueError(f"{path}: trend_method must be one of {sorted(TREND_METHODS)}")
+    if raw["zscore_window"] not in ZSCORE_WINDOWS:
+        raise ValueError(f"{path}: zscore_window must be one of {sorted(ZSCORE_WINDOWS)}")
+    x13 = raw["x13"]
+    if not isinstance(x13, dict) or set(x13) != _X13_KEYS:
+        raise ValueError(f"{path}: x13 must have exactly the keys {sorted(_X13_KEYS)}")
+    return Settings(
+        hp_lambda=float(raw["hp_lambda"]),
+        min_observations=raw["min_observations"],
+        min_seasonal_obs=raw["min_seasonal_obs"],
+        output_start=raw["output_start"],
+        trend_method=raw["trend_method"],
+        zscore_window=raw["zscore_window"],
+        x13=dict(x13),
+    )

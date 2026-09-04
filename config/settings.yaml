@@ -1,0 +1,12 @@
+# Pipeline-wide settings. Indicator-specific settings live in indicators.yaml, country
+# overrides in countries.yaml.
+hp_lambda: 129600          # Ravn-Uhlig monthly: 1600 * (12/4)^4 = 1600 * 81. (The R comment "1600 * 12^4" is wrong.)
+min_observations: 24       # skip an indicator with fewer monthly observations
+min_seasonal_obs: 36       # below this many observations X-13 is skipped and the raw series is used
+output_start: 2015-02-01   # first month written to output; filters always run on the full history
+trend_method: hp           # long-run trend function in trend.py; hp_on_d12 is added temporarily in task 2.3
+zscore_window: full        # full | ex_covid (task 3.7)
+x13:                       # same settings as adjust_series_x13 in the R scripts
+  outlier_types: AO
+  outlier_critical: 4.0
+  aictest: null            # regression.aictest = NULL in R (no automatic trading-day or Easter test)
