@@ -1,0 +1,48 @@
+# Country registry. Key = Eurostat geo code (EL for Greece).
+# ecb_code defaults to the key; set it only where the ECB uses a different code.
+# overrides: per-indicator partial settings for this country, keyed by indicator id from
+# indicators.yaml. Top-level keys replace the indicator's value; `filters` merges key by key.
+# The merge is applied in pipeline.py (task 2.2). Semantics of `start` and `impute` are
+# implemented there; the loader only checks that the indicator id exists.
+# English names follow the R reference (ostale_zemlje.R country_names) plus Croatia.
+countries:
+  HR: {name_en: Croatia, name_hr: Hrvatska}
+  AT: {name_en: Austria, name_hr: Austrija}
+  BE: {name_en: Belgium, name_hr: Belgija}
+  BG:
+    name_en: Bulgaria
+    name_hr: Bugarska
+    overrides:
+      npl:
+        impute: true          # planned, not in R reference: NPL series has gaps
+  CY: {name_en: Cyprus, name_hr: Cipar}
+  EE: {name_en: Estonia, name_hr: Estonija}
+  FI: {name_en: Finland, name_hr: Finska}
+  FR: {name_en: France, name_hr: Francuska}
+  DE: {name_en: Germany, name_hr: Njemačka}
+  EL:
+    name_en: Greece
+    name_hr: Grčka
+    ecb_code: GR              # in R reference (ostale_zemlje.R ecb_country_codes)
+  IE: {name_en: Ireland, name_hr: Irska}
+  IT:
+    name_en: Italy
+    name_hr: Italija
+    overrides:
+      unemployment:           # planned, not in R reference: Eurostat has no TC series for IT
+        filters: {s_adj: SA}
+        skip_henderson: false
+  LV: {name_en: Latvia, name_hr: Latvija}
+  LT: {name_en: Lithuania, name_hr: Litva}
+  LU: {name_en: Luxembourg, name_hr: Luksemburg}
+  MT: {name_en: Malta, name_hr: Malta}
+  NL: {name_en: Netherlands, name_hr: Nizozemska}
+  PT: {name_en: Portugal, name_hr: Portugal}
+  SK:
+    name_en: Slovakia
+    name_hr: Slovačka
+    overrides:
+      npl:
+        start: 2018-01-01     # planned, not in R reference: series break, use 2018-Q1 onward
+  SI: {name_en: Slovenia, name_hr: Slovenija}
+  ES: {name_en: Spain, name_hr: Španjolska}
