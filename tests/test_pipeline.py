@@ -66,6 +66,21 @@ def test_run_indicator_default_method(r_fixtures, registry) -> None:
         run_indicator(countries["HR"], indicators["industrial_production"], tiny_window, raw=series, as_of=VINTAGE)
 
 
+def test_fetch_series_combines_two_ecb_keys_and_averages_days(registry, monkeypatch) -> None:
+    countries, indicators, _ = registry
+    days = pd.date_range("2024-01-01", "2024-02-29", freq="B")
+
+    def fake_ecb(key):
+        value = 3.0 if key.endswith("SR_10Y") else 1.0
+        return pd.DataFrame({"time": days, "value": value + np.arange(len(days)) * 0.0})
+
+    monkeypatch.setattr(pipeline, "fetch_ecb", fake_ecb)
+    series = pipeline.fetch_series(countries["HR"], indicators["term_spread"])
+    assert list(series.index) == [pd.Timestamp("2024-01-01"), pd.Timestamp("2024-02-01")]
+    assert series.tolist() == [2.0, 2.0]
+    assert series.name == "term_spread"
+
+
 def test_run_indicator_skips_short_series(registry) -> None:
     countries, indicators, settings = registry
     short = pd.Series(np.linspace(100, 110, 12), index=pd.date_range("2024-01-01", periods=12, freq="MS"))

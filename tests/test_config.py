@@ -59,15 +59,21 @@ def test_every_indicator_valid() -> None:
         if ind.source == "eurostat":
             assert ind.dataset and ind.filters
         elif ind.source == "ecb":
-            assert ind.series_key and "{ecb_code}" in ind.series_key
+            assert ind.series_key
+            assert "{ecb_code}" in ind.series_key or ind.id == "term_spread"   # the spread is one euro area series for all
         else:
             assert ind.path and ind.path.startswith("data/") and ind.column
 
 
+def by_id_long_run(indicators) -> dict[str, str]:
+    return {i.id: i.long_run for i in indicators if i.long_run != "hp"}
+
+
 def test_indicator_counts() -> None:
     indicators = load_indicators()
-    assert sum(i.applies_to("HR") for i in indicators) == 21
-    assert sum(i.applies_to("AT") for i in indicators) == 18
+    assert sum(i.applies_to("HR") for i in indicators) == 25
+    assert sum(i.applies_to("AT") for i in indicators) == 22
+    assert by_id_long_run(indicators) == {"esi": "mean", "consumer_confidence": "mean", "order_books": "mean", "term_spread": "none"}
     by_id = {i.id: i for i in indicators}
     assert by_id["gdp"].category == ("supply", "demand")
     assert "ovi" not in by_id

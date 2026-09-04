@@ -8,7 +8,7 @@ Each indicator is a dot on a two-axis chart, one frame per month. The vertical a
 
 The four quadrants are read in the growth-cycle sense of Mintz (1969): expansion (above trend and rising), slowdown (above trend and falling), contraction (below trend and falling), recovery (below trend and rising). Contraction therefore means below trend and slowing, not necessarily falling output. A dot moves clockwise through the quadrants over a typical cycle.
 
-Croatia has 21 indicators, the other 20 countries have up to 18, depending on what Eurostat publishes for each. The countries are the 19 euro area members other than Croatia plus Bulgaria.
+Croatia has 25 indicators, the other 20 countries have up to 22, depending on what Eurostat publishes for each. The countries are the 19 euro area members other than Croatia plus Bulgaria.
 
 ## 2. Data
 
@@ -17,6 +17,10 @@ All series are taken at the longest history the source publishes. Eurostat serie
 | Category | Indicator (Croatian label) | Source and code | Frequency | Adjusted at source |
 |---|---|---|---|---|
 | Leading | Building permits (Građevinske dozvole) | Eurostat sts_cobp_q | quarterly | yes |
+| Leading | Economic sentiment indicator (ESI) (Indeks ekonomskog raspoloženja) | Eurostat ei_bssi_m_r2 | monthly | yes |
+| Leading | Consumer confidence (Pouzdanje potrošača) | Eurostat ei_bsco_m | monthly | yes |
+| Leading | Industry order books (Knjige narudžbi u industriji) | Eurostat ei_bsin_m_r2 | monthly | yes |
+| Leading | Euro area term spread (10Y minus 3M) (Kamatni raspon europodručja), same for all countries | ECB YC, monthly average of daily rates | monthly | not seasonal |
 | Leading | Business registrations (Registracija novih poduzeća) | Eurostat sts_rb_m | monthly | yes |
 | Leading | New passenger car registrations (DZS) (Novo registrirana osobna vozila), Croatia only | DZS, Excel input | monthly | no |
 | Leading | New freight vehicle registrations (DZS) (Novo registrirana teretna vozila), Croatia only | DZS, Excel input | monthly | no |
@@ -54,7 +58,7 @@ Seasonal adjustment. Series that Eurostat does not publish adjusted (overnight s
 
 Short-run trend. The X-11 Henderson trend-cycle (table D12) of the adjusted series. It removes the irregular component and keeps movements of a year or longer.
 
-Long-run trend. For growth series (the ratio transform), the Hodrick-Prescott filter with lambda 129,600 applied to 100 times the natural logarithm of the adjusted series. The value follows Ravn and Uhlig (2002), who scale the quarterly 1,600 by the fourth power of the frequency ratio. At this lambda the trend absorbs movements of roughly ten years and longer. For spreads and survey balances (the difference transform) the long-run trend is the mean over the reference window or, for spreads, nothing.
+Long-run trend. For growth series (the ratio transform), the Hodrick-Prescott filter with lambda 129,600 applied to 100 times the natural logarithm of the adjusted series. The value follows Ravn and Uhlig (2002), who scale the quarterly 1,600 by the fourth power of the frequency ratio. At this lambda the trend absorbs movements of roughly ten years and longer. The survey indicators (economic sentiment, consumer confidence, order books) are stationary by construction, so their long-run trend is their mean over the reference window; the term spread is used as it is, because its level, not its deviation from a trend, carries the signal. These four use the difference transform. The term spread is the same euro area series for every country and skips the Henderson step.
 
 Cycle. For growth series, 100 (ln D12 minus HP trend), the percentage gap between the trend-cycle and the long-run trend. For difference series, D12 minus the long-run trend in the series' own units.
 
@@ -84,7 +88,7 @@ The pipeline is Python 3.12 (environment.yml). The R scripts that produced the e
 
 ## 6. Planned changes
 
-Frozen X-13 models per series; survey indicators (economic sentiment, consumer confidence, order books, capacity utilisation) and the euro area term spread as level series; a separate panel for lagging and financial-cycle series; a comparison of trend filters (one-sided HP, Christiano-Fitzgerald, Hamilton) on revision size and turning-point dating.
+Frozen X-13 models per series; capacity utilisation, real gross value added, house prices, loans and inflation as further indicators; a separate panel for lagging and financial-cycle series; a comparison of trend filters (one-sided HP, Christiano-Fitzgerald, Hamilton) on revision size and turning-point dating.
 
 ## References
 

@@ -297,3 +297,67 @@ indicators:
     transform: ratio
     counter_cyclical: false
     countries: [HR]
+
+  # Survey indicators and the term spread (added 2026-09-04). Codes verified against the
+  # Eurostat dimension lists and the ECB Data Portal on that date. All are stationary by
+  # construction, so the long-run trend is the window mean (or nothing for the spread) and
+  # the transform is the level difference.
+  - id: esi
+    name_en: Economic sentiment indicator (ESI)
+    name_hr: Indeks ekonomskog raspoloženja (ESI)
+    category: leading
+    source: eurostat
+    dataset: ei_bssi_m_r2
+    filters: {indic: BS-ESI-I, s_adj: SA, freq: M}
+    frequency: M
+    already_sa: true
+    transform: difference
+    long_run: mean
+    counter_cyclical: false
+    countries: all
+
+  - id: consumer_confidence
+    name_en: Consumer confidence
+    name_hr: Pouzdanje potrošača
+    category: leading
+    source: eurostat
+    dataset: ei_bsco_m
+    filters: {indic: BS-CSMCI, s_adj: SA, unit: BAL, freq: M}
+    frequency: M
+    already_sa: true
+    transform: difference
+    long_run: mean
+    counter_cyclical: false
+    countries: all
+
+  - id: order_books
+    name_en: Industry order books
+    name_hr: Knjige narudžbi u industriji
+    category: leading
+    source: eurostat
+    dataset: ei_bsin_m_r2
+    filters: {indic: BS-IOB, s_adj: SA, unit: BAL, freq: M}
+    frequency: M
+    already_sa: true
+    transform: difference
+    long_run: mean
+    counter_cyclical: false
+    countries: all
+
+  # Same series for every country: euro area AAA government curve, 10-year minus 3-month spot
+  # rate, monthly average of daily observations. Not seasonal, so no Henderson step; the level
+  # itself is the cycle measure.
+  - id: term_spread
+    name_en: Euro area term spread (10Y minus 3M)
+    name_hr: Kamatni raspon europodručja (10 g. minus 3 mj.)
+    category: leading
+    source: ecb
+    series_key: "YC.B.U2.EUR.4F.G_N_A.SV_C_YM.SR_10Y - YC.B.U2.EUR.4F.G_N_A.SV_C_YM.SR_3M"
+    aggregate: mean
+    frequency: M
+    already_sa: true
+    skip_henderson: true
+    transform: difference
+    long_run: none
+    counter_cyclical: false
+    countries: all

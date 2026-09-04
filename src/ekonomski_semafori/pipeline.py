@@ -51,14 +51,24 @@ class SkippedIndicator(RuntimeError):
 
 def fetch_series(country: Country, indicator: Indicator) -> pd.Series:
     """Fetch the raw series for the pair as a Series indexed by time. Local paths
-    are relative to the repository root, not to the working directory."""
+    are relative to the repository root, not to the working directory. An ECB
+    entry with two keys is the difference of the two series (first minus second);
+    daily sources are averaged to months when the indicator says aggregate: mean."""
     if indicator.source == "eurostat":
-        frame = fetch_eurostat(indicator.dataset, indicator.filters, country.code)
+        series = _as_series(fetch_eurostat(indicator.dataset, indicator.filters, country.code))
     elif indicator.source == "ecb":
-        frame = fetch_ecb(indicator.series_key.format(ecb_code=country.ecb_code))
+        keys = [k.format(ecb_code=country.ecb_code) for k in indicator.series_key.split(" - ")]
+        parts = [_as_series(fetch_ecb(k)) for k in keys]
+        series = parts[0] if len(parts) == 1 else (parts[0] - parts[1]).dropna()
     else:
-        frame = fetch_local(CONFIG_DIR.parent / indicator.path, indicator.column)
-    return pd.Series(frame["value"].to_numpy(), index=pd.DatetimeIndex(frame["time"]), name=indicator.id)
+        series = _as_series(fetch_local(CONFIG_DIR.parent / indicator.path, indicator.column))
+    if indicator.aggregate == "mean":
+        series = series.resample("MS").mean().dropna()
+    return series.rename(indicator.id)
+
+
+def _as_series(frame: pd.DataFrame) -> pd.Series:
+    return pd.Series(frame["value"].to_numpy(), index=pd.DatetimeIndex(frame["time"]))
 
 
 def _contiguous(series: pd.Series, indicator: Indicator) -> pd.Series:

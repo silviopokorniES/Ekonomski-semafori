@@ -27,6 +27,7 @@ from ecbdata import ecbdata
 
 _MONTH = re.compile(r"^\d{4}-\d{2}$")
 _QUARTER = re.compile(r"^\d{4}-Q[1-4]$")
+_DAY = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
 class EmptyResponseError(RuntimeError):
@@ -34,14 +35,17 @@ class EmptyResponseError(RuntimeError):
 
 
 def _periods_to_timestamps(labels: pd.Index) -> pd.DatetimeIndex:
-    """Convert period labels (2026-07 or 2026-Q1, all of one kind) to period-start Timestamps."""
+    """Convert period labels (2026-07, 2026-Q1 or 2026-07-15, all of one kind) to
+    period-start Timestamps; daily labels stay daily and are aggregated by the caller."""
     text = labels.astype(str)
     if all(_MONTH.match(t) for t in text):
         freq = "M"
     elif all(_QUARTER.match(t) for t in text):
         freq = "Q"
+    elif all(_DAY.match(t) for t in text):
+        return pd.DatetimeIndex(pd.to_datetime(text))
     else:
-        raise ValueError(f"period labels are not all YYYY-MM or YYYY-Qn: {list(text[:3])}")
+        raise ValueError(f"period labels are not all YYYY-MM, YYYY-Qn or YYYY-MM-DD: {list(text[:3])}")
     return pd.PeriodIndex(text, freq=freq).to_timestamp(how="start")
 
 

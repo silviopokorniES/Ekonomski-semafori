@@ -46,9 +46,12 @@ CONSISTENT_SKIPS = {
 }
 
 
+NOT_IN_R = {"esi", "consumer_confidence", "order_books", "term_spread"}   # added after the R scripts were retired
+
+
 def _pairs() -> list[tuple[str, str]]:
     indicators = load_indicators()
-    return [(code, ind.id) for code in COUNTRIES for ind in indicators if ind.applies_to(code)]
+    return [(code, ind.id) for code in COUNTRIES for ind in indicators if ind.applies_to(code) and ind.id not in NOT_IN_R]
 
 
 @pytest.fixture(scope="module")

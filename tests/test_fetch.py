@@ -37,10 +37,12 @@ def test_eurostat_all_missing_raises() -> None:
 
 
 def test_unexpected_period_labels_rejected() -> None:
-    with pytest.raises(ValueError):
-        eurostat_wide_to_long(_wide(["2020-01-15", "2020-02-15"], [1.0, 2.0]), "x")
+    daily = eurostat_wide_to_long(_wide(["2020-01-15", "2020-02-15"], [1.0, 2.0]), "x")
+    assert list(daily["time"]) == [pd.Timestamp("2020-01-15"), pd.Timestamp("2020-02-15")]   # kept daily, aggregated by the caller
     with pytest.raises(ValueError):
         eurostat_wide_to_long(_wide(["2020", "2021"], [1.0, 2.0]), "x")
+    with pytest.raises(ValueError):
+        eurostat_wide_to_long(_wide(["2020-01", "2020-Q2"], [1.0, 2.0]), "x")
 
 
 def test_eurostat_two_series_rejected() -> None:

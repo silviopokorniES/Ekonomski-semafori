@@ -86,7 +86,8 @@ _SOURCE_FIELDS: dict[str, frozenset[str]] = {
     "local": frozenset({"path", "column"}),
 }
 _ALL_SOURCE_FIELDS = frozenset().union(*_SOURCE_FIELDS.values())
-_INDICATOR_OPTIONAL = frozenset({"skip_henderson", "start", "impute", "long_run"})
+_INDICATOR_OPTIONAL = frozenset({"skip_henderson", "start", "impute", "long_run", "aggregate"})
+AGGREGATES = frozenset({"mean"})
 LONG_RUN = frozenset({"hp", "mean", "none"})
 
 
@@ -95,8 +96,9 @@ class Indicator:
     """One entry of indicators.yaml, possibly with a country override merged in.
     countries is None when the entry applies to every country. Source-specific
     fields are None for the other sources. start truncates the fetched series to
-    dates on or after it; impute fills internal gaps (both implemented in
-    pipeline.py, task 2.2)."""
+    dates on or after it; impute fills internal gaps; aggregate mean averages a
+    daily source to months; an ECB series_key of the form "A - B" is the
+    difference of two series (all applied in pipeline.fetch_series)."""
 
     id: str
     name_en: str
@@ -112,6 +114,7 @@ class Indicator:
     start: date | None = None
     impute: bool = False
     long_run: str = "hp"
+    aggregate: str | None = None
     dataset: str | None = None
     filters: dict[str, str] | None = None
     series_key: str | None = None
@@ -160,6 +163,9 @@ def _parse_indicator(entry: dict[str, Any]) -> Indicator:
         raise ValueError(f"indicator {ind_id}: long_run must be one of {sorted(LONG_RUN)}")
     if long_run == "none" and entry["transform"] != "difference":
         raise ValueError(f"indicator {ind_id}: long_run none is only meaningful with the difference transform")
+    aggregate = entry.get("aggregate")
+    if aggregate is not None and aggregate not in AGGREGATES:
+        raise ValueError(f"indicator {ind_id}: aggregate must be one of {sorted(AGGREGATES)}")
     if skip_henderson and not entry["already_sa"]:
         raise ValueError(f"indicator {ind_id}: skip_henderson requires already_sa")
 
@@ -206,6 +212,7 @@ def _parse_indicator(entry: dict[str, Any]) -> Indicator:
         start=start,
         impute=impute,
         long_run=long_run,
+        aggregate=aggregate,
         dataset=entry.get("dataset"),
         filters=filters,
         series_key=entry.get("series_key"),

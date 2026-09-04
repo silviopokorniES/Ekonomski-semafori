@@ -66,11 +66,11 @@ The parity test replays the R scripts' configuration on the stored fixtures and 
 
 ## Countries
 
-Croatia, plus Austria, Belgium, Bulgaria, Cyprus, Estonia, Finland, France, Germany, Greece, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Portugal, Slovakia, Slovenia and Spain. Croatia has 21 indicators; the others have up to 18, depending on Eurostat coverage.
+Croatia, plus Austria, Belgium, Bulgaria, Cyprus, Estonia, Finland, France, Germany, Greece, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Portugal, Slovakia, Slovenia and Spain. Croatia has 25 indicators; the others have up to 22, depending on Eurostat coverage.
 
 ## Data sources
 
-Eurostat (short-term business statistics, national accounts, balance of payments, unemployment, tourism), the ECB Data Portal (non-performing loans), Državni zavod za statistiku (DZS, vehicle registrations) and Hrvatski zavod za mirovinsko osiguranje (HZMO, insured persons).
+Eurostat (short-term business statistics, national accounts, balance of payments, unemployment, tourism, business and consumer surveys), the ECB Data Portal (non-performing loans, the AAA yield curve), Državni zavod za statistiku (DZS, vehicle registrations) and Hrvatski zavod za mirovinsko osiguranje (HZMO, insured persons).
 
 ## License and contact
 
