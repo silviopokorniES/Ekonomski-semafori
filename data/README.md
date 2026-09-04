@@ -6,7 +6,7 @@ Manual monthly inputs for Croatia. The `*.xlsx` files in this folder are ignored
 
 | File | Sheet | Columns (exact header strings) | Source | Coverage (as of 2026-09-04) | Indicator ids |
 |---|---|---|---|---|---|
-| `prvi_put_reg.xlsx` | `Sheet1` | `time`, `Prvi put registrirana osobna vozila`, `Prvi put registrirana teretna vozila` | Državni zavod za statistiku (DZS), first-time registered road vehicles, total (new and used, all owners): columns are DZS "osobna vozila" and "kamioni" | 2015-01 to 2025-09, 129 rows | `cars_registered`, `trucks_registered` |
+| `prvi_put_reg.xlsx` | `Sheet1` | `time`, `Prvi put registrirana osobna vozila`, `Prvi put registrirana teretna vozila` | Državni zavod za statistiku (DZS), first-time registered road vehicles, total (new and used, all owners): columns are DZS "osobna vozila" and "kamioni" | 2015-01 to 2025-12, 132 rows | `cars_registered`, `trucks_registered` |
 | `broj_osiguranika.xlsx` | `Sheet1` | `time`, `Broj osiguranika` | Hrvatski zavod za mirovinsko osiguranje (HZMO), total insured persons at month end | 2015-01 to 2026-07, 139 rows | `insured_persons` |
 
 Column types: `time` is an Excel date equal to the first day of the month; value columns are integer counts (not seasonally adjusted; the pipeline runs X-13 on them).
@@ -21,6 +21,7 @@ Sources (verified 2026-09-04):
 - Who: Silvio Pokorni.
 - When: after the DZS and HZMO monthly releases, before running `scripts/run_monthly.py`.
 - How: read the HZMO figure from the news item and the DZS figures from the Excel above; append one row per new month at the bottom of the sheet. Keep the header strings byte-identical to the table above (the config references them by name). Keep `time` as the first day of the month. Do not insert blank rows or notes below the data.
+- DZS publishes provisional monthly figures and revises them in the annual table ("Statistika u nizu"); on 2026-09-04 six months of 2025 changed by 1 to 3 vehicles. Take values from the annual table whenever it covers the month.
 - Keep a private backup of this folder outside git; after untracking, these are the only copies.
 
 ## Removed
