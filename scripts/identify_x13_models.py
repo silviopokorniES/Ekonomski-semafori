@@ -10,7 +10,8 @@ automatic selection picked for the seasonal adjustment step (unadjusted sources)
 and for the trend step (every series with a Henderson trend). The monthly run then
 re-estimates the parameters with these models fixed, so month-to-month changes
 come from data, not from model re-selection. Re-run at the annual review and
-compare the two registries before committing.
+compare the two registries before committing. With --countries or --indicators
+the entries not selected are kept from the existing registry.
 """
 
 from __future__ import annotations
@@ -30,7 +31,7 @@ from ekonomski_semafori import trend  # noqa: E402
 from ekonomski_semafori.adjust import X13Error, run_x13, sa_spec  # noqa: E402
 from ekonomski_semafori.config import load_countries, load_indicators, load_settings, merge_override  # noqa: E402
 from ekonomski_semafori.fetch import EmptyResponseError  # noqa: E402
-from ekonomski_semafori.pipeline import SkippedIndicator, _prepare, fetch_series, x13_transform  # noqa: E402
+from ekonomski_semafori.pipeline import SkippedIndicator, _prepare, fetch_series, prepare_input, x13_transform  # noqa: E402
 
 log = logging.getLogger("identify_x13_models")
 
@@ -63,8 +64,8 @@ def main() -> None:
         indicators = [i for i in indicators if i.id in only]
     x13 = settings.x13
     models: dict[str, dict[str, dict[str, dict[str, str]]]] = {}
-    if only and args.output.exists():
-        models = yaml.safe_load(args.output.read_text(encoding="utf-8")).get("models", {})   # keep the other indicators
+    if (only or args.countries) and args.output.exists():
+        models = yaml.safe_load(args.output.read_text(encoding="utf-8")).get("models", {})   # keep the entries not selected
     for code in codes:
         country = countries[code]
         for base in indicators:
@@ -77,7 +78,7 @@ def main() -> None:
                 raw = fetch_series(country, indicator).astype(float)
                 steps: dict[str, dict[str, str]] = {}
                 if not indicator.already_sa:
-                    pre = _prepare_input(raw, indicator, settings)   # what the adjustment step receives
+                    pre = prepare_input(raw, indicator, settings, None, date.today())   # what the adjustment step receives
                     result = run_x13(pre, sa_spec(x13["outlier_types"], x13["outlier_critical"], x13["aictest"], None, pre, x13_transform(indicator, settings)), ("s11",), diagnostics=True)
                     steps["sa"] = selected(result["udg"])
                 sa = _prepare(raw, indicator, settings, None, date.today(), model=None)
@@ -98,16 +99,6 @@ def main() -> None:
     )
     args.output.write_text(header + yaml.safe_dump({"models": models}, allow_unicode=True, sort_keys=True), encoding="utf-8")
     log.info("wrote %s with %d countries", args.output, len(models))
-
-
-def _prepare_input(raw, indicator, settings):
-    """The series the adjustment step receives: contiguous, disaggregated, not yet adjusted."""
-    from ekonomski_semafori.adjust import disaggregate
-    from ekonomski_semafori.pipeline import _contiguous
-    series = _contiguous(raw.dropna(), indicator)
-    if indicator.start is not None:
-        series = series[series.index >= str(indicator.start)]
-    return disaggregate(series) if indicator.frequency == "Q" else series
 
 
 if __name__ == "__main__":

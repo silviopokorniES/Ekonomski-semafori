@@ -8,11 +8,10 @@ last transformation.
 Transforms: ratio (cycle = 100 (ln D12 - long-run trend of ln SA), the
 percentage gap to first order) or difference (cycle = D12 - long-run trend, for
 spreads and survey balances). Momentum is the month-on-month change in the
-cycle (cycle_change) or, in the legacy parity mode, the percent change of D12
-(d12_growth), which R used.
+cycle; mom (the percent change of D12, which R used) survives for the parity mode.
 Assumptions: NaN propagates. zscore uses the sample standard deviation (n minus 1)
-or the MAD scaled by 1.4826; a constant series gives NaN, not an error; a window
-with fewer than min_obs observations raises ValueError.
+or the MAD scaled by 1.4826; a window with fewer than min_obs observations or
+with zero scale raises ValueError.
 """
 
 from __future__ import annotations
@@ -23,7 +22,6 @@ import numpy as np
 import pandas as pd
 
 TRANSFORMS = ("ratio", "difference")
-MOMENTUM = ("cycle_change", "d12_growth")
 SCALES = ("sd", "mad")
 COVID_START, COVID_END = pd.Timestamp("2020-03-01"), pd.Timestamp("2021-06-01")
 
@@ -108,5 +106,5 @@ def zscore(series: pd.Series, window: str | date = "full", scale: str = "sd", mi
         centre = ref.median()
         spread = 1.4826 * (ref - centre).abs().median()
     if not np.isfinite(spread) or spread == 0:
-        return pd.Series(np.nan, index=series.index, name=series.name)
+        raise ValueError("zero scale in the standardisation window (constant series)")
     return (series - centre) / spread

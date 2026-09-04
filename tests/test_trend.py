@@ -23,7 +23,7 @@ def test_henderson_matches_r(r_fixtures) -> None:
     assert not bad, f"relative gap above 1e-3: {bad}"
 
 
-def test_frozen_model_spec_and_fallback(r_fixtures, tmp_path) -> None:
+def test_frozen_model_spec_and_registry(r_fixtures, tmp_path) -> None:
     from ekonomski_semafori.adjust import model_blocks
     from ekonomski_semafori.config import load_x13_models
 
@@ -47,7 +47,9 @@ def test_frozen_model_spec_and_fallback(r_fixtures, tmp_path) -> None:
     registry.write_text("models:\n  HR:\n    gdp:\n      trend: {transform: sqrt, arima: (0 1 1)(0 1 1)}\n", encoding="utf-8")
     with pytest.raises(ValueError):
         load_x13_models(registry)
-    assert load_x13_models(tmp_path / "absent.yaml") == {}
+    assert load_x13_models(None) == {}
+    with pytest.raises(FileNotFoundError):
+        load_x13_models(tmp_path / "absent.yaml")
 
 
 def test_hp_matches_r(r_fixtures) -> None:

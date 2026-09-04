@@ -16,6 +16,7 @@ dependencies:
   - openpyxl
   - eurostat
   - ecbdata
+  - requests        # imported directly in fetch.py
   # X-13ARIMA-SEATS is NOT taken from conda-forge: its Windows build (x13as 1.1.61) exits with a
   # stack overflow on series of realistic length. Set X13PATH instead; see README.
   - pytest

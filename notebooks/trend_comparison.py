@@ -65,9 +65,7 @@ def setup_font() -> str:
 
 
 def cycle_for(level_short: pd.Series, level_sa: pd.Series, method: str) -> pd.Series:
-    long = METHODS[method](level_sa)
-    if method == "hp_onesided":
-        long = METHODS[method](level_sa, min_obs=36)
+    long = METHODS[method](level_sa, min_obs=36) if method == "hp_onesided" else METHODS[method](level_sa)
     return (level_short - long).dropna()
 
 
@@ -99,7 +97,7 @@ def main() -> None:
     font = setup_font()
     countries, settings = load_countries(), load_settings()
     by_id = {i.id: i for i in load_indicators()}
-    models = load_x13_models(CONFIG_DIR / settings.x13_models) if settings.x13_models else {}
+    models = load_x13_models(CONFIG_DIR.parent / settings.x13_models) if settings.x13_models else {}
     # the euro area aggregate is not a configured country; borrow the Eurostat filters through a temporary Country
     from ekonomski_semafori.config import Country
     countries = dict(countries, EA20=Country("EA20", "Euro area", "Europodručje", "U2", {}))

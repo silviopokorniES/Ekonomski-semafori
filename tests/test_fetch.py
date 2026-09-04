@@ -80,7 +80,30 @@ def test_live_ecb_greece_resolves_with_gr() -> None:
 
 @pytest.mark.live
 def test_live_eurostat_italy_trend_cycle_unemployment_is_stale() -> None:
-    # Eurostat publishes an Italian TC series only up to 2003-12. It is not empty, so the
-    # countries.yaml override to SA (and the stale-series guard in task 2.2) are both needed.
+    # Eurostat publishes an Italian TC series only up to 2003-12. It is not empty, so using
+    # the SA series (indicators.yaml) and the stale-series guard in the pipeline are both needed.
     out = fetch_eurostat("une_rt_m", {"age": "TOTAL", "s_adj": "TC", "sex": "T", "freq": "M", "unit": "THS_PER"}, "IT")
     assert out["time"].max() < pd.Timestamp("2015-01-01")
+
+
+def test_fetch_ecb_parses_frame_and_maps_404_to_empty(monkeypatch) -> None:
+    from ekonomski_semafori import fetch as fetch_module
+
+    frame = pd.DataFrame({"TIME_PERIOD": ["2024-Q1", "2024-Q2"], "OBS_VALUE": [1.5, 2.5]})
+    monkeypatch.setattr(fetch_module.ecbdata, "get_series", lambda key: frame)
+    out = fetch_ecb("CBD2.Q.HR")
+    assert list(out["time"]) == [pd.Timestamp("2024-01-01"), pd.Timestamp("2024-04-01")] and out["value"].tolist() == [1.5, 2.5]
+
+    def missing(key):
+        raise Exception("REQUEST ERROR 404: No results found. There are no results matching the query.")
+
+    monkeypatch.setattr(fetch_module.ecbdata, "get_series", missing)
+    with pytest.raises(EmptyResponseError):
+        fetch_ecb("CBD2.Q.XX")
+
+    def outage(key):
+        raise Exception("REQUEST ERROR 503: Service unavailable")
+
+    monkeypatch.setattr(fetch_module.ecbdata, "get_series", outage)
+    with pytest.raises(Exception, match="503"):
+        fetch_ecb("CBD2.Q.HR")

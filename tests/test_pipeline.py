@@ -11,15 +11,16 @@ import pandas as pd
 import pytest
 
 from ekonomski_semafori import pipeline
-from ekonomski_semafori.config import load_countries, load_indicators, load_settings
+from ekonomski_semafori.config import Country, Indicator, Settings, load_countries, load_indicators, load_settings
+from ekonomski_semafori.cycle import zscore
 from ekonomski_semafori.fetch import EmptyResponseError
-from ekonomski_semafori.pipeline import SkippedIndicator, _contiguous, run_all, run_indicator
+from ekonomski_semafori.pipeline import SkippedIndicator, _contiguous, prepare_input, run_all, run_indicator
 from ekonomski_semafori.trend import moving_average
 from parity import VINTAGE, r_output
 
 
 @pytest.fixture
-def registry():
+def registry() -> tuple[dict[str, Country], dict[str, Indicator], Settings]:
     countries, indicators, settings = load_countries(), load_indicators(), load_settings()
     return countries, {i.id: i for i in indicators}, settings
 
@@ -145,3 +146,55 @@ def test_run_all_skips_data_problems_but_aborts_on_infrastructure(registry, monk
     monkeypatch.setattr(pipeline, "fetch_series", outage)
     with pytest.raises(ConnectionError):
         run_all(hr, [ip], settings, as_of=VINTAGE)
+
+
+def test_prepare_input_drops_the_as_of_month(registry) -> None:
+    """A partial current month (daily averaging) or the tail of a disaggregated quarter
+    that has not ended is never published."""
+    _, indicators, settings = registry
+    months = pd.Series(np.linspace(1.0, 2.0, 30), index=pd.date_range("2024-04-01", periods=30, freq="MS"))   # ends 2026-09
+    out = prepare_input(months, indicators["term_spread"], settings, None, date(2026, 9, 4))
+    assert out.index[-1] == pd.Timestamp("2026-08-01")
+    quarters = pd.Series(np.linspace(80.0, 85.0, 20), index=pd.date_range("2021-10-01", periods=20, freq="QS"))   # ends 2026-Q3
+    out = prepare_input(quarters, indicators["capacity_utilisation"], settings, None, date(2026, 9, 4))
+    assert out.index[0] == pd.Timestamp("2021-10-01") and out.index[-1] == pd.Timestamp("2026-08-01")
+
+
+def test_run_indicator_difference_transform_uses_levels(registry) -> None:
+    """Survey balances and spreads: cycle = level minus the window mean (or the level
+    itself under long_run none), momentum = change in the level; no log, no HP."""
+    countries, indicators, settings = registry
+    index = pd.date_range("2005-01-01", periods=250, freq="MS")
+    balance = pd.Series(np.random.default_rng(3).normal(0, 5, 250), index=index)
+    args = (settings.zscore_window, settings.zscore_scale, settings.zscore_min_obs)
+    esi = replace(indicators["esi"], skip_henderson=True)
+    out = run_indicator(countries["HR"], esi, settings, raw=balance, as_of=VINTAGE)
+    expected_cycle = balance - balance[balance.index >= pd.Timestamp(settings.zscore_window)].mean()
+    np.testing.assert_allclose(out["cycle_z"].to_numpy(), zscore(expected_cycle.iloc[1:], *args).to_numpy())
+    np.testing.assert_allclose(out["mom_z"].to_numpy(), zscore(balance.diff().iloc[1:], *args).to_numpy())
+    spread = run_indicator(countries["HR"], indicators["term_spread"], settings, raw=balance, as_of=VINTAGE)
+    np.testing.assert_allclose(spread["cycle_z"].to_numpy(), zscore(balance.iloc[1:], *args).to_numpy())
+
+
+def test_contiguous_quarterly(registry) -> None:
+    _, indicators, _ = registry
+    series = pd.Series([1.0, 2.0, 4.0], index=pd.DatetimeIndex(["2020-01-01", "2020-04-01", "2020-10-01"]))
+    out = _contiguous(series, indicators["gdp"])
+    assert list(out.index) == list(pd.date_range("2020-01-01", periods=4, freq="QS"))
+    assert out.tolist() == [1.0, 2.0, 3.0, 4.0]
+
+
+def test_run_all_aborts_when_an_indicator_is_empty_for_every_country(registry, monkeypatch) -> None:
+    countries, indicators, settings = registry
+    two = {"HR": countries["HR"], "AT": countries["AT"]}
+    ip, con = indicators["industrial_production"], indicators["construction"]
+    good = pd.Series(100 + np.cumsum(np.random.default_rng(1).normal(0, 1, 120)), index=pd.date_range("2016-01-01", periods=120, freq="MS"))
+
+    def fetch(country, indicator):
+        if indicator.id == "construction":
+            raise EmptyResponseError("no data")
+        return good
+
+    monkeypatch.setattr(pipeline, "fetch_series", fetch)
+    with pytest.raises(RuntimeError, match="construction"):
+        run_all(two, [ip, con], settings, as_of=VINTAGE)

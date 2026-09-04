@@ -61,7 +61,9 @@ def _tidy(values: pd.Series, label: str) -> pd.DataFrame:
 def eurostat_wide_to_long(wide: pd.DataFrame | None, label: str) -> pd.DataFrame:
     """Turn the one-row wide frame from eurostat.get_data_df into [time, value].
     The wide frame has one column per dimension, then geo\\TIME_PERIOD, then one
-    column per period. None means the library got a non-OK HTTP response."""
+    column per period. None comes from the library when the response carries no
+    data table (an SDMX fault or a table without rows); it is treated as a request
+    failure, not as an empty series, so an outage is never recorded as no data."""
     if wide is None:
         raise requests.RequestException(f"{label}: Eurostat returned no data (HTTP error inside the eurostat package)")
     if wide.empty:
@@ -87,8 +89,16 @@ def fetch_eurostat(dataset: str, filters: dict[str, str], country: str) -> pd.Da
 
 
 def fetch_ecb(series_key: str) -> pd.DataFrame:
-    """Fetch one ECB Data Portal series by its full key (country code already substituted)."""
-    frame = ecbdata.get_series(series_key)
+    """Fetch one ECB Data Portal series by its full key (country code already
+    substituted). ecbdata raises a plain Exception on every non-200 status; 404
+    means the key does not exist and becomes EmptyResponseError, anything else
+    propagates."""
+    try:
+        frame = ecbdata.get_series(series_key)
+    except Exception as err:
+        if str(err).startswith("REQUEST ERROR 404"):
+            raise EmptyResponseError(f"ecb {series_key}: no such series (HTTP 404)") from err
+        raise
     if frame is None or frame.empty or "OBS_VALUE" not in frame.columns:
         raise EmptyResponseError(f"ecb {series_key}: empty response")
     values = pd.Series(frame["OBS_VALUE"].to_numpy(), index=pd.Index(frame["TIME_PERIOD"].astype(str)))

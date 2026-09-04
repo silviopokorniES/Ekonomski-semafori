@@ -277,11 +277,10 @@ def check_overrides(countries: dict[str, Country], indicators: list[Indicator]) 
 
 TREND_METHODS = frozenset({"hp", "hp_on_d12"})   # hp_on_d12 reproduces the R reference (parity regression test)
 ZSCORE_WINDOWS = frozenset({"full", "ex_covid"})   # or a start date
-MOMENTUM = frozenset({"cycle_change", "d12_growth"})
 ZSCORE_SCALES = frozenset({"sd", "mad"})
 _SETTINGS_REQUIRED = frozenset({
     "hp_lambda", "min_observations", "min_seasonal_obs", "output_start",
-    "trend_method", "momentum", "zscore_window", "zscore_scale", "zscore_min_obs", "zscore_end", "axis_clip", "x13", "x13_models",
+    "trend_method", "zscore_window", "zscore_scale", "zscore_min_obs", "zscore_end", "axis_clip", "x13", "x13_models",
 })
 _X13_KEYS = frozenset({"outlier_types", "outlier_critical", "aictest"})
 
@@ -295,7 +294,6 @@ class Settings:
     min_seasonal_obs: int
     output_start: date
     trend_method: str
-    momentum: str
     zscore_window: str | date
     zscore_scale: str
     zscore_min_obs: int
@@ -325,8 +323,6 @@ def load_settings(path: Path = CONFIG_DIR / "settings.yaml") -> Settings:
         raise ValueError(f"{path}: trend_method must be one of {sorted(TREND_METHODS)}")
     if raw["zscore_window"] not in ZSCORE_WINDOWS and not isinstance(raw["zscore_window"], date):
         raise ValueError(f"{path}: zscore_window must be one of {sorted(ZSCORE_WINDOWS)} or a start date")
-    if raw["momentum"] not in MOMENTUM:
-        raise ValueError(f"{path}: momentum must be one of {sorted(MOMENTUM)}")
     if raw["zscore_scale"] not in ZSCORE_SCALES:
         raise ValueError(f"{path}: zscore_scale must be one of {sorted(ZSCORE_SCALES)}")
     if not isinstance(raw["zscore_min_obs"], int) or isinstance(raw["zscore_min_obs"], bool) or raw["zscore_min_obs"] <= 0:
@@ -346,7 +342,6 @@ def load_settings(path: Path = CONFIG_DIR / "settings.yaml") -> Settings:
         min_seasonal_obs=raw["min_seasonal_obs"],
         output_start=raw["output_start"],
         trend_method=raw["trend_method"],
-        momentum=raw["momentum"],
         zscore_window=raw["zscore_window"],
         zscore_scale=raw["zscore_scale"],
         zscore_min_obs=raw["zscore_min_obs"],
@@ -365,10 +360,13 @@ _CALENDAR = re.compile(r"^(td|td1coef|tdnolpyear|td1nolpyear|lpyear|lom|loq|east
 
 def load_x13_models(path: Path | None) -> dict[tuple[str, str, str], dict[str, object]]:
     """Read the frozen X-13 model registry: {country: {indicator: {step: {transform, arima, constant}}}}
-    keyed here as (country, indicator, step). None or a missing file gives an empty
-    registry, which means automatic selection everywhere."""
-    if path is None or not Path(path).exists():
+    keyed here as (country, indicator, step). None gives an empty registry, which
+    means automatic selection everywhere; a configured path that does not exist
+    raises, so a wrong path cannot silently undo the frozen models."""
+    if path is None:
         return {}
+    if not Path(path).exists():
+        raise FileNotFoundError(f"{path}: X-13 model registry not found; set x13_models to null for automatic selection")
     raw = _read_yaml(Path(path))
     entries = raw.get("models") if isinstance(raw, dict) else None
     if not isinstance(entries, dict):

@@ -1,6 +1,6 @@
 # Long-run trend methods compared
 
-Date: 2026-09-04. Script: notebooks/trend_comparison.py; results: notebooks/trend_comparison_results.csv; charts: notebooks/figures/. Series: GDP and industrial production for Croatia, Germany and the euro area (EA20), full available history, seasonally adjusted and Henderson-smoothed exactly as in the monthly run. Cycle = 100 ln D12 minus the long-run trend of 100 ln SA.
+Date: 2026-09-04 (regenerated the same day with the frozen X-13 models after a registry-path bug in the script was fixed; every figure in the table was unchanged at the reported precision). Script: notebooks/trend_comparison.py; results: notebooks/trend_comparison_results.csv; charts: notebooks/figures/. Series: GDP and industrial production for Croatia, Germany and the euro area (EA20), full available history, seasonally adjusted and Henderson-smoothed exactly as in the monthly run. Cycle = 100 ln D12 minus the long-run trend of 100 ln SA.
 
 ## Methods
 

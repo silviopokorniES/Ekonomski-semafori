@@ -27,7 +27,7 @@ from statsmodels.tsa.filters.bk_filter import bkfilter
 from statsmodels.tsa.filters.cf_filter import cffilter
 from statsmodels.tsa.filters.hp_filter import hpfilter
 
-from ekonomski_semafori.adjust import ESTIMATE, X13Error, model_blocks, outlier_block, run_x13, x13_binary
+from ekonomski_semafori.adjust import ESTIMATE, FALLBACKS, X13Error, model_blocks, outlier_block, run_x13, x13_binary
 
 log = logging.getLogger(__name__)
 
@@ -50,8 +50,8 @@ _LADDER: tuple[tuple[str, str], ...] = (
 def trend_spec(model: dict[str, object] | None, series: pd.Series, transform: str = "auto") -> str:
     """Spec of the trend step: automatic model with td and easter tests and full
     outlier detection when model is None (with the given transform), otherwise the
-    same regressor tests with the model, constant and outliers fixed and detection
-    over the last 12 months."""
+    frozen model with its constant, calendar regressors and outliers fixed (no
+    regressor tests) and detection over the last 12 months."""
     return model_blocks(model, "td easter", transform) + outlier_block(None, None, series, model) + _X11 + ESTIMATE
 
 
@@ -67,8 +67,10 @@ def henderson(sa: pd.Series, model: dict[str, object] | None = None, transform: 
             continue
         if name != ("frozen" if model is not None else "automdl"):
             log.warning("henderson: %s used rung %s", sa.name, name)
+            FALLBACKS.append(f"trend: rung {name}")
         return trend
     log.warning("henderson: X-13 failed on every rung for %s, using a 12-month centered moving average", sa.name)
+    FALLBACKS.append("trend: 12-month moving average, X-13 failed on every rung")
     return moving_average(sa)
 
 

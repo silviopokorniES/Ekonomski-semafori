@@ -63,7 +63,8 @@ def test_zscore_sd_matches_r_scale_and_mad_is_robust() -> None:
     robust = zscore(with_outlier, scale="mad")
     assert robust.iloc[2] == pytest.approx(0.0)              # median is 3
     assert robust.iloc[4] > 20                                # the outlier does not inflate the scale
-    assert zscore(pd.Series([3.0, 3.0, 3.0], index=IDX[:3])).isna().all()
+    with pytest.raises(ValueError, match="zero scale"):
+        zscore(pd.Series([3.0, 3.0, 3.0], index=IDX[:3]))
     with pytest.raises(ValueError):
         zscore(series, window=date(2020, 4, 1), min_obs=3)
 

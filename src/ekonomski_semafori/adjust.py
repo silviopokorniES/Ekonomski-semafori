@@ -4,15 +4,18 @@ Inputs: a pd.Series with a monthly (seasonal_adjust) or quarterly (disaggregate)
 DatetimeIndex at period start.
 Outputs: a monthly pd.Series aligned to the input index (seasonal_adjust) or to
 the months spanned by the quarters (disaggregate).
-Assumptions: the X-13 spec written here reproduces what R's seasonal package
-generated for adjust_series_x13 in the reference scripts (SEATS, automdl,
-transform auto, outlier types and critical value from settings.yaml, no
-automatic regressor tests). run_x13 is shared with trend.henderson. The binary
-is located by x13_binary (X13PATH, then PATH); the conda-forge Windows build
-crashes with a stack overflow on real series, see README. Adjustment runs on
-levels, never on an index. Disaggregation is Denton-Cholette, proportional,
-average conversion, as tempdisagg::td(q ~ 1) in R, implemented directly (the
-tsdisagg package crashed under pandas 3).
+Assumptions: the X-13 spec written here follows what R's seasonal package
+generated for adjust_series_x13 in the reference scripts (SEATS, outlier types
+and critical value from settings.yaml, no automatic regressor tests), with the
+transformation set by series type and the ARIMA model taken from the frozen
+registry when one exists (automdl otherwise). run_x13 is shared with
+trend.henderson. The binary is located by x13_binary (X13PATH, then PATH); the
+conda-forge Windows build crashes with a stack overflow on real series, see
+README. Adjustment runs on levels, never on an index. Disaggregation is
+Denton-Cholette, proportional, average conversion, as tempdisagg::td(q ~ 1) in
+R, implemented directly as one linear system. FALLBACKS records, per pair, the
+steps that did not use the frozen model or the Henderson trend (appended here
+and in trend.henderson, cleared by pipeline.run_indicator).
 """
 
 from __future__ import annotations
@@ -29,6 +32,8 @@ import numpy as np
 import pandas as pd
 
 log = logging.getLogger(__name__)
+
+FALLBACKS: list[str] = []
 
 
 class X13Error(RuntimeError):
@@ -117,6 +122,8 @@ def run_x13(series: pd.Series, spec: str, tables: tuple[str, ...], diagnostics: 
         for line in errors.splitlines():
             if "WARNING" in line:
                 log.info("x13 %s: %s", series.name, line.strip())
+        regressors: list[str] = []
+        coefficients: dict[str, list[float]] = {}
         if diagnostics and (folder / "iofile.mdl").exists():
             mdl = (folder / "iofile.mdl").read_text(errors="replace")
             match = re.search(r"variables=\((.*?)\)", mdl, re.S)
@@ -176,6 +183,7 @@ def seasonal_adjust(
             return run_x13(sa_input, sa_spec(outlier_types, outlier_critical, aictest, model, sa_input), ("s11",))["s11"]
         except X13Error as err:
             log.warning("seasonal_adjust %s: frozen model %s failed (%s), falling back to automatic selection", sa_input.name, model, str(err)[:120])
+            FALLBACKS.append("sa: automatic selection, frozen model failed")
     return run_x13(sa_input, sa_spec(outlier_types, outlier_critical, aictest, None, sa_input, transform), ("s11",))["s11"]
 
 

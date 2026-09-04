@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from ekonomski_semafori.config import (
+    Indicator,
     _parse_indicator,
     check_overrides,
     load_countries,
@@ -65,7 +66,7 @@ def test_every_indicator_valid() -> None:
             assert ind.path and ind.path.startswith("data/") and ind.column
 
 
-def by_id_long_run(indicators) -> dict[str, str]:
+def by_id_long_run(indicators: list[Indicator]) -> dict[str, str]:
     return {i.id: i.long_run for i in indicators if i.long_run != "hp"}
 
 
@@ -109,14 +110,14 @@ def test_settings(tmp_path: Path) -> None:
     settings = load_settings()
     assert settings.hp_lambda == 129600
     assert settings.output_start == date(2015, 2, 1)
-    assert settings.momentum == "cycle_change" and settings.zscore_scale == "mad"
+    assert settings.zscore_scale == "mad"
     assert settings.zscore_window == date(2010, 1, 1) and settings.zscore_min_obs == 84 and settings.zscore_end is None
     assert settings.x13 == {"outlier_types": "AO", "outlier_critical": 4.0, "aictest": None}
     bad = tmp_path / "settings.yaml"
     bad.write_text(
         "hp_lambda: 129600\nmin_observations: 24\nmin_seasonal_obs: 36\n"
         "output_start: 2015-02-01\ntrend_method: bandpass\nzscore_window: full\n"
-        "momentum: cycle_change\nzscore_scale: mad\nzscore_min_obs: 84\nzscore_end: null\naxis_clip: 3\nx13_models: null\n"
+        "zscore_scale: mad\nzscore_min_obs: 84\nzscore_end: null\naxis_clip: 3\nx13_models: null\n"
         "x13: {outlier_types: AO, outlier_critical: 4.0, aictest: null}\n",
         encoding="utf-8",
     )
