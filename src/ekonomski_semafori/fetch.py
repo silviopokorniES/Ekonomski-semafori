@@ -6,18 +6,27 @@ Outputs: a DataFrame with columns [time, value]: time is a Timestamp at the
 first day of the month or quarter, value is float, sorted, no missing values,
 full available history. No transformations.
 Assumptions: every config entry selects exactly one series. A response with no
-non-missing observation is an error (EmptyResponseError), never a silent None.
+non-missing observation, or a 400 from Eurostat (the dimension combination does
+not exist for that country, which R received as NULL), is EmptyResponseError:
+a data absence the caller may skip. Any other transport or HTTP failure
+propagates as a requests exception, and a missing local file as
+FileNotFoundError, so that outages are never recorded as "no data".
 Greece is EL at Eurostat and GR at the ECB; the caller substitutes the ECB code
 into the series key before calling fetch_ecb.
 """
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 import eurostat
 import pandas as pd
+import requests
 from ecbdata import ecbdata
+
+_MONTH = re.compile(r"^\d{4}-\d{2}$")
+_QUARTER = re.compile(r"^\d{4}-Q[1-4]$")
 
 
 class EmptyResponseError(RuntimeError):
@@ -25,9 +34,15 @@ class EmptyResponseError(RuntimeError):
 
 
 def _periods_to_timestamps(labels: pd.Index) -> pd.DatetimeIndex:
-    """Convert Eurostat or ECB period labels (2026-07, 2026-Q1) to period-start Timestamps."""
-    freq = "Q" if any("Q" in str(label) for label in labels[:1]) else "M"
-    return pd.PeriodIndex(labels.astype(str), freq=freq).to_timestamp(how="start")
+    """Convert period labels (2026-07 or 2026-Q1, all of one kind) to period-start Timestamps."""
+    text = labels.astype(str)
+    if all(_MONTH.match(t) for t in text):
+        freq = "M"
+    elif all(_QUARTER.match(t) for t in text):
+        freq = "Q"
+    else:
+        raise ValueError(f"period labels are not all YYYY-MM or YYYY-Qn: {list(text[:3])}")
+    return pd.PeriodIndex(text, freq=freq).to_timestamp(how="start")
 
 
 def _tidy(values: pd.Series, label: str) -> pd.DataFrame:
@@ -42,8 +57,10 @@ def _tidy(values: pd.Series, label: str) -> pd.DataFrame:
 def eurostat_wide_to_long(wide: pd.DataFrame | None, label: str) -> pd.DataFrame:
     """Turn the one-row wide frame from eurostat.get_data_df into [time, value].
     The wide frame has one column per dimension, then geo\\TIME_PERIOD, then one
-    column per period."""
-    if wide is None or wide.empty:
+    column per period. None means the library got a non-OK HTTP response."""
+    if wide is None:
+        raise requests.RequestException(f"{label}: Eurostat returned no data (HTTP error inside the eurostat package)")
+    if wide.empty:
         raise EmptyResponseError(f"{label}: empty response")
     if len(wide) != 1:
         raise ValueError(f"{label}: filters select {len(wide)} series, expected exactly one")
@@ -56,7 +73,12 @@ def eurostat_wide_to_long(wide: pd.DataFrame | None, label: str) -> pd.DataFrame
 def fetch_eurostat(dataset: str, filters: dict[str, str], country: str) -> pd.DataFrame:
     """Fetch one Eurostat series for a country with the given dimension filters."""
     label = f"eurostat {dataset} {country} {filters}"
-    wide = eurostat.get_data_df(dataset, filter_pars={**filters, "geo": country})
+    try:
+        wide = eurostat.get_data_df(dataset, filter_pars={**filters, "geo": country})
+    except requests.HTTPError as err:
+        if err.response is not None and err.response.status_code == 400:
+            raise EmptyResponseError(f"{label}: no such series (HTTP 400)") from err
+        raise
     return eurostat_wide_to_long(wide, label)
 
 

@@ -36,6 +36,13 @@ def test_eurostat_all_missing_raises() -> None:
         eurostat_wide_to_long(pd.DataFrame(), "x")
 
 
+def test_unexpected_period_labels_rejected() -> None:
+    with pytest.raises(ValueError):
+        eurostat_wide_to_long(_wide(["2020-01-15", "2020-02-15"], [1.0, 2.0]), "x")
+    with pytest.raises(ValueError):
+        eurostat_wide_to_long(_wide(["2020", "2021"], [1.0, 2.0]), "x")
+
+
 def test_eurostat_two_series_rejected() -> None:
     wide = pd.concat([_wide(["2020-01"], [1.0]), _wide(["2020-01"], [2.0])])
     with pytest.raises(ValueError):

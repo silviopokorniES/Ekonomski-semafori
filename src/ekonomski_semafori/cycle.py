@@ -47,7 +47,8 @@ def mom(short: pd.Series, transform: str = "ratio") -> pd.Series:
 def invert(frame: pd.DataFrame, counter_cyclical: bool) -> pd.DataFrame:
     """Flip the sign of the cycle and mom columns for counter-cyclical indicators
     (unemployment, bankruptcies, non-performing loans), so that higher always
-    means better. Applied before z-scoring."""
+    means better. Commutes with the z-score; the pipeline applies it after the
+    z-score to mirror R until task 3.5 moves it before."""
     if not counter_cyclical:
         return frame
     out = frame.copy()

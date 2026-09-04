@@ -17,3 +17,4 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 markers = ["live: calls Eurostat or the ECB over the network"]
+addopts = "-m \"not live\""

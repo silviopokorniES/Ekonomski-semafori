@@ -51,3 +51,11 @@ def test_written_files_round_trip(tmp_path: Path) -> None:
     sheet = workbook.parse("6_svi_indikatori")
     assert list(sheet.columns) == ["time", "Mjesečna promjena (%)", "Odstupanje od trenda (%)", "Varijabla"]
     assert sheet["time"].iloc[0] == "February 2015"
+    assert not sheet.duplicated(["time", "Varijabla"]).any()          # GDP once per month, even though it is in two categories
+    assert (sheet["Varijabla"] == "BDP").sum() == 3
+    assert (workbook.parse("2_podudarni_proizvodnja")["Varijabla"] == "BDP").sum() == 3
+    combined_hr = pd.read_excel(legacy / "combined_standardized_MoM_and_Cycle_Croatia.xlsx")
+    assert not combined_hr.duplicated(["time", "Varijabla"]).any()
+    per_indicator = bounds[bounds["scope_type"] == "indicator"].set_index("scope")
+    gdp = long[long["indicator_id"] == "gdp"]
+    assert per_indicator.loc["gdp", "cycle_max"] == round(gdp["cycle_z"].max(), 3)

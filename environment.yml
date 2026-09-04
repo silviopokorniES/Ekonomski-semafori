@@ -7,8 +7,10 @@ channels:
 dependencies:
   - python=3.12
   - blas=*=openblas   # the MKL variant made every numpy.linalg call crash (DLL delay-load fault) on Windows
-  - pandas
-  - statsmodels
+  - pandas=3.0.*
+  - numpy=2.*
+  - scipy
+  - statsmodels=0.15.*
   - pyyaml
   - openpyxl
   - eurostat

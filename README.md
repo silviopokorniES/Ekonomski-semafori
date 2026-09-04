@@ -95,7 +95,7 @@ The pipeline is being ported from R to Python (see `UPDATE_PLAN.md` and `TASKS.m
 conda env create -f environment.yml
 conda activate semafori          # or prefix commands with: conda run -n semafori
 python -m pip install -e .
-python -m pytest
+python -m pytest            # offline tests; add -m live for the three network checks against Eurostat and the ECB
 ```
 
 ### X-13ARIMA-SEATS binary
@@ -116,7 +116,7 @@ conda env config vars set X13PATH=<folder> -n semafori
 Verify:
 
 ```bash
-python -c "from ekonomski_semafori.adjust import _x13_binary; print(_x13_binary())"
+python -c "from ekonomski_semafori.adjust import x13_binary; print(x13_binary())"
 ```
 
 ### Local inputs

@@ -16,8 +16,9 @@ Outputs, under an output directory:
   and the combined file; Euro_Area_Business_Cycles_All_Countries.xlsx;
   Axis_Boundaries_Croatia.xlsx and Axis_Boundaries_Summary.xlsx.
 Assumptions: CSV files are UTF-8 with BOM so Excel on Windows shows diacritics.
-An indicator in two categories (GDP) appears once per category, in the master
-file and in the legacy sheets alike. Legacy time labels use English month names
+An indicator in two categories (GDP) appears once per category in the master
+file and in the per-category legacy sheets, but once per month in the combined
+legacy sheets, which Flourish keys on (time, Varijabla). Legacy time labels use English month names
 (the R scripts were locale dependent; the fixtures were produced under LC_TIME C).
 """
 
@@ -110,7 +111,8 @@ def write_legacy_excel(long: pd.DataFrame, countries: dict[str, Country], out_di
     for code, frame in long.groupby("country", sort=True):
         name = countries[code].name_en
         sheets = {sheet: _legacy_frame(frame[frame["category"] == cat]) for cat, sheet in CATEGORY_SHEETS.items() if (frame["category"] == cat).any()}
-        combined = _legacy_frame(frame)
+        # Flourish keys a series on (time, Varijabla): an indicator in two categories must appear once here.
+        combined = _legacy_frame(frame.drop_duplicates(["time", "indicator_id"]))
         if code == "HR":
             for sheet, table in sheets.items():
                 table.to_excel(out_dir / f"{sheet}.xlsx", index=False)

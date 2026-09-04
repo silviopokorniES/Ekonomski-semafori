@@ -8,12 +8,15 @@ inputs are read from data/ (the same files the R run used)."""
 
 from __future__ import annotations
 
+from datetime import date
 from pathlib import Path
 
 import pandas as pd
 
 from ekonomski_semafori.config import Country, Indicator
-from ekonomski_semafori.fetch import fetch_local
+from ekonomski_semafori.fetch import EmptyResponseError, fetch_local
+
+VINTAGE = date(2026, 9, 4)   # reference month for the stale-series guard when replaying fixtures
 
 R_MONTHS = {m: i for i, m in enumerate(
     ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], 1)}
@@ -26,6 +29,8 @@ def raw_series(folder: Path, index: pd.DataFrame, country: Country, indicator: I
         tag_prefix = f"{indicator.dataset}_"
         match = rows[(rows["fun"] == "get_eurostat") & rows["tag"].str.startswith(tag_prefix)]
         frame = pd.read_csv(_file(folder, country.code, int(match["seq"].iloc[0])))
+        if "values" not in frame.columns:
+            raise EmptyResponseError(f"{country.code} {indicator.id}: R received NULL from Eurostat")
         for key, value in indicator.filters.items():
             if key in frame.columns:
                 frame = frame[frame[key].astype(str) == value]

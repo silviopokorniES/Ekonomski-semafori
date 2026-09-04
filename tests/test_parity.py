@@ -20,8 +20,9 @@ import pytest
 
 from conftest import fixture_vintages
 from ekonomski_semafori.config import load_countries, load_indicators, load_settings
+from ekonomski_semafori.fetch import EmptyResponseError
 from ekonomski_semafori.pipeline import run_indicator
-from parity import r_output, raw_series
+from parity import VINTAGE, r_output, raw_series
 
 COUNTRIES = ("HR", "AT", "EL")
 
@@ -70,10 +71,11 @@ def test_pair_matches_r(setup, code: str, indicator_id: str) -> None:
     expected = expected[expected["name_hr"] == indicator.name_hr].set_index("time")
     if (code, indicator_id) in CONSISTENT_SKIPS:
         assert expected.empty, "R produced output after all; remove the pair from CONSISTENT_SKIPS"
-        with pytest.raises(Exception):
-            run_indicator(country, indicator, settings, history_start=date(2015, 1, 1), raw=raw_series(folder, index, country, indicator))
+        with pytest.raises(EmptyResponseError):
+            raw_series(folder, index, country, indicator)
         return
-    out = run_indicator(country, indicator, settings, history_start=date(2015, 1, 1), raw=raw_series(folder, index, country, indicator)).set_index("time")
+    raw = raw_series(folder, index, country, indicator)
+    out = run_indicator(country, indicator, settings, history_start=date(2015, 1, 1), raw=raw, as_of=VINTAGE).set_index("time")
     assert not expected.empty, "R has no output for this pair"
     if (code, indicator_id) in KNOWN_DEVIATIONS:
         joined = out.join(expected[["cycle_z"]], lsuffix="_py", rsuffix="_r", how="inner")

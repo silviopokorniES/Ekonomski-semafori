@@ -10,7 +10,9 @@ method produced the trend.
 Assumptions: henderson reproduces extract_d12_trend in the R scripts: three X-13
 specs tried in order (automdl with td and easter tests; fixed airline model;
 fixed random walk without outliers), then a 12-month centered moving average
-as the last resort. The rung used is logged.
+as the last resort. The rung used is logged. A missing X-13 binary is not a
+per-series failure and propagates (FileNotFoundError) instead of degrading
+every series to the moving average.
 """
 
 from __future__ import annotations
@@ -20,7 +22,7 @@ import logging
 import pandas as pd
 from statsmodels.tsa.filters.hp_filter import hpfilter
 
-from ekonomski_semafori.adjust import X13Error, run_x13
+from ekonomski_semafori.adjust import X13Error, run_x13, x13_binary
 
 log = logging.getLogger(__name__)
 
@@ -49,6 +51,7 @@ _LADDER: tuple[tuple[str, str], ...] = (
 
 def henderson(sa: pd.Series) -> pd.Series:
     """X-11 final trend-cycle (D12) of a monthly series, with the R fallback ladder."""
+    x13_binary()   # raises FileNotFoundError before any per-series fallback can hide it
     for name, spec in _LADDER:
         try:
             trend = run_x13(sa, spec, ("d12",))["d12"]
@@ -59,7 +62,13 @@ def henderson(sa: pd.Series) -> pd.Series:
             log.warning("henderson: %s used rung %s", sa.name, name)
         return trend
     log.warning("henderson: X-13 failed on every rung for %s, using a 12-month centered moving average", sa.name)
-    # zoo::rollapply(width = 12, align = "center") labels the window one position earlier than pandas
+    return moving_average(sa)
+
+
+def moving_average(sa: pd.Series) -> pd.Series:
+    """12-month centered moving average with the alignment of
+    zoo::rollapply(width = 12, align = "center"), which labels the window one
+    position earlier than pandas."""
     return sa.rolling(12, center=True).mean().shift(-1)
 
 

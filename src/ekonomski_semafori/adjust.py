@@ -8,7 +8,7 @@ Assumptions: the X-13 spec written here reproduces what R's seasonal package
 generated for adjust_series_x13 in the reference scripts (SEATS, automdl,
 transform auto, outlier types and critical value from settings.yaml, no
 automatic regressor tests). run_x13 is shared with trend.henderson. The binary
-is located by _x13_binary (X13PATH, PATH, conda env); the conda-forge Windows build
+is located by x13_binary (X13PATH, then PATH); the conda-forge Windows build
 crashes with a stack overflow on real series, see README. Adjustment runs on
 levels, never on an index. Disaggregation is Denton-Cholette, proportional,
 average conversion, as tempdisagg::td(q ~ 1) in R, implemented directly (the
@@ -17,25 +17,29 @@ tsdisagg package crashed under pandas 3).
 
 from __future__ import annotations
 
+import logging
 import os
 import shutil
 import subprocess
-import sys
 import tempfile
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
+log = logging.getLogger(__name__)
+
 
 class X13Error(RuntimeError):
     """X-13 could not be found, failed, or did not write a requested table."""
 
 
-def _x13_binary() -> Path:
+def x13_binary() -> Path:
     """Locate the X-13 executable: the X13PATH folder first (an explicit choice wins),
-    then PATH, then the conda environment of the running interpreter. Both the ASCII
-    and the HTML build are accepted; the HTML build is what R's x13binary ships."""
+    then PATH. Both the ASCII and the HTML build are accepted; the HTML build is what
+    R's x13binary ships. The conda environment is deliberately not searched: the
+    conda-forge Windows build crashes on real series. A missing binary is an
+    infrastructure error (FileNotFoundError), never a per-series X13Error."""
     names = ("x13as_ascii.exe", "x13as.exe", "x13ashtml.exe", "x13as_html.exe", "x13as_ascii", "x13as", "x13ashtml")
     folders: list[Path] = []
     if os.environ.get("X13PATH"):
@@ -44,33 +48,37 @@ def _x13_binary() -> Path:
         found = shutil.which(name)
         if found:
             folders.append(Path(found).parent)
-    folders += [Path(sys.prefix) / "Library" / "bin", Path(sys.prefix) / "bin"]
     for folder in folders:
         for name in names:
             candidate = folder / name
             if candidate.is_file():
                 return candidate
-    raise X13Error("X-13 binary not found: set X13PATH to the folder holding x13as_ascii or x13ashtml (see README)")
+    raise FileNotFoundError("X-13 binary not found: set X13PATH to the folder holding x13as_ascii or x13ashtml (see README)")
 
 
 def run_x13(series: pd.Series, spec: str, tables: tuple[str, ...]) -> dict[str, pd.Series]:
     """Run X-13 on a monthly series. `spec` holds every block after the series block;
     `tables` names the saved output tables to read back (for example s11, d12).
     Returns each table as a Series aligned to series.index."""
-    if not isinstance(series.index, pd.DatetimeIndex) or series.isna().any():
-        raise ValueError("run_x13 needs a DatetimeIndex and no missing values")
-    binary = _x13_binary()
+    values = series.to_numpy(dtype=float)
+    if not isinstance(series.index, pd.DatetimeIndex) or not np.isfinite(values).all():
+        raise ValueError("run_x13 needs a DatetimeIndex and finite values only")
+    binary = x13_binary()
     with tempfile.TemporaryDirectory() as tmp:
         folder = Path(tmp)
-        data_lines = [f"{t.year} {t.month} {float(v)!r}" for t, v in zip(series.index, series.to_numpy(dtype=float))]
+        data_lines = [f"{t.year} {t.month} {float(v)!r}" for t, v in zip(series.index, values)]
         (folder / "iofile.dta").write_text("\n".join(data_lines) + "\n", encoding="ascii")
         header = 'series{\n  title = "iofile"\n  file = "iofile.dta"\n  format = "datevalue"\n  period = 12\n}\n\n'
         (folder / "iofile.spc").write_text(header + spec, encoding="ascii")
         proc = subprocess.run([str(binary), "iofile"], cwd=folder, capture_output=True, text=True)
         error_files = [f for f in (folder / "iofile.err", folder / "iofile_err.html") if f.exists()]
         errors = "\n".join(f.read_text(errors="replace") for f in error_files)
-        if proc.returncode != 0 or "ERROR" in errors:
+        # The HTML build exits 0 even on a spec error, so the text is the only reliable signal.
+        if proc.returncode != 0 or "ERROR" in errors or "ERROR:" in proc.stdout:
             raise X13Error(f"x13 failed (exit {proc.returncode}): {errors.strip()[-800:] or proc.stdout[-800:]}")
+        for line in errors.splitlines():
+            if "WARNING" in line:
+                log.warning("x13 %s: %s", series.name, line.strip())
         out: dict[str, pd.Series] = {}
         for table in tables:
             path = folder / f"iofile.{table}"
