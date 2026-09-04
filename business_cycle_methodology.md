@@ -16,18 +16,16 @@ This methodology describes a sophisticated econometric framework for decomposing
 The analysis relies primarily on **Eurostat databases** as the authoritative source for harmonized macroeconomic statistics across European countries. Eurostat provides comprehensive, standardized economic indicators that enable cross-country comparisons while maintaining methodological consistency. For Croatia specifically, additional data sources include:
 
 - **European Central Bank (ECB) Statistical Data Warehouse**: Non-performing loan ratios
-- **Economic Institute Zagreb (EIZ)**: OVI business confidence composite index
 - **Croatian Bureau of Statistics (DZS)**: Vehicle registration data
 - **Croatian Pension Insurance Institute (HZMO)**: Insured persons data
 
 ### 1.2 Indicator Selection
 
-The methodology incorporates **22 distinct macroeconomic indicators** for Croatia and **13-18 indicators** for other Euro Area countries (depending on data availability). These indicators are organized into five analytical categories:
+The methodology incorporates **21 distinct macroeconomic indicators** for Croatia and **13-18 indicators** for other Euro Area countries (depending on data availability). These indicators are organized into five analytical categories:
 
 **Leading Indicators** (anticipate future economic activity):
 - Building permits for residential dwellings
 - New business registrations
-- OVI business confidence index (Croatia only)
 - First-time passenger vehicle registrations (Croatia only)
 - First-time freight vehicle registrations (Croatia only)
 

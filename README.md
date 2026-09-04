@@ -18,7 +18,7 @@ The methodology transforms diverse macroeconomic indicators into a two-dimension
 
 ## 🎯 Key Features
 
-- **22 indicators for Croatia** including unique local data sources (EIZ OVI index, vehicle registrations, insured persons)
+- **21 indicators for Croatia** including unique local data sources (vehicle registrations, insured persons)
 - **13-15 indicators for 19 other Euro Area countries** (Austria, Belgium, Cyprus, Estonia, Finland, France, Germany, Greece, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Portugal, Slovakia, Slovenia, Spain)
 - **Automated data retrieval** from Eurostat and ECB Statistical Data Warehouse
 - **Robust error handling** with hierarchical fallback strategies
@@ -148,7 +148,6 @@ source("ostatak_zemalja.R")
 Anticipate future economic activity:
 - Building permits for residential dwellings
 - New business registrations
-- **OVI business confidence index** (Croatia only)
 - **First-time vehicle registrations** - passenger & freight (Croatia only)
 
 ### Supply/Production Indicators (Coincident)
@@ -505,7 +504,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - **Eurostat** for providing comprehensive harmonized macroeconomic statistics
 - **European Central Bank** for financial sector data
-- **Economic Institute Zagreb (EIZ)** for OVI business confidence index
 - **R Core Team** and package maintainers for statistical computing tools
 - **Ravn & Uhlig (2002)** for lambda scaling methodology
 - **Denton & Cholette** for temporal disaggregation framework

@@ -20,9 +20,9 @@ Source URLs: to be filled in by the maintainer (DZS first-registration release p
 - How: append one row per new month at the bottom of the sheet. Keep the header strings byte-identical to the table above (the config references them by name). Keep `time` as the first day of the month. Do not insert blank rows or notes below the data.
 - Keep a private backup of this folder outside git; after untracking, these are the only copies.
 
-## Retired
+## Removed
 
-`ovi.xlsx` (sheet `OVI`, columns `time` and `OVI ` with a trailing space): the EIZ business confidence index, no longer updated. Not read by the Python pipeline. Kept locally only so the R reference scripts can run once for the task 1.2 parity fixtures.
+`ovi.xlsx` (EIZ business confidence index OVI) was removed on 2026-09-04 because the index is no longer published. It is not read by the Python pipeline. The R reference script `skripte/samo_hrvatska.R` still tries to read it and skips the indicator with a warning when the file is absent. The last tracked copy is in git history at commit 771c499 as `datasets/ovi.xlsx`.
 
 ## Note for the R fixture run (task 1.2)
 
