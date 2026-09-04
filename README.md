@@ -7,7 +7,7 @@ Developed at the Faculty of Economics and Business, University of Zagreb (EFZG).
 ## Layout
 
 ```
-config/          countries.yaml, indicators.yaml, settings.yaml: everything an indicator needs is here, not in code
+config/          countries.yaml, indicators.yaml, settings.yaml, x13_models.yaml: everything an indicator needs is here, not in code
 src/ekonomski_semafori/
   fetch.py       Eurostat, ECB and local Excel readers; raise on empty responses
   adjust.py      X-13ARIMA-SEATS seasonal adjustment, Denton-Cholette disaggregation
@@ -15,11 +15,11 @@ src/ekonomski_semafori/
   cycle.py       cycle, momentum, sign inversion, standardisation
   pipeline.py    one (country, indicator) pair, or all of them
   output.py      CSV master and per-indicator files, axis bounds, legacy Excel workbooks
-scripts/run_monthly.py   the monthly run
+scripts/         run_monthly.py (the monthly run), identify_x13_models.py (annual re-identification of the X-13 models)
 data/            Croatian Excel inputs (not tracked; see data/README.md)
 tests/           unit tests, parity fixtures from the R reference (tests/fixtures/)
 legacy/          the R scripts that produced releases up to 2026; kept as the reference, not run
-docs/            changelog, reviews, trend-method comparison, release notes
+docs/            changelog, review, trend-method comparison, release notes, the September 2026 plan and task list
 notebooks/       comparison scripts and their results (not part of the monthly run)
 ```
 
@@ -51,7 +51,7 @@ python scripts/run_monthly.py
 
 The run takes about 25 minutes for 21 countries. It writes to `output/`: `all_countries_long.csv` (one row per indicator, category, country and month from February 2015), `by_indicator/<id>.csv`, `axis_bounds.csv`, `legacy/` (the Excel layout the current Flourish charts use), `logs/<date>.log`, `Processing_Summary.csv` (what ran and what was skipped, with reasons), and `vintages/<date>.csv` (the unclipped panel, archived for revision analysis). Data problems (a series Eurostat does not publish for a country, a stale series) are skipped and listed; a network failure or a missing binary stops the run, so an outage is never published as missing data.
 
-Master file columns: `time` (ISO date), `label` (Croatian month and year), `country`, `country_name`, `category`, `indicator_id`, `panel` (main, confirmation or financial), `indicator_name_hr`, `indicator_name_en`, `mom_z`, `cycle_z`, `clipped`. Files are UTF-8 with a byte order mark so Excel shows diacritics.
+Master file columns: `time` (ISO date), `label` (Croatian month and year), `country`, `country_name`, `category`, `panel` (main, confirmation or financial), `indicator_id`, `indicator_name_hr`, `indicator_name_en`, `mom_z`, `cycle_z`, `clipped`. Files are UTF-8 with a byte order mark so Excel shows diacritics.
 
 ## Adding an indicator
 

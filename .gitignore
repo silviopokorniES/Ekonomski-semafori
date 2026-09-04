@@ -17,7 +17,7 @@ output/
 .DS_Store
 Thumbs.db
 
-# R legacy (the R scripts are the reference until task 6.3 moves them to legacy/)
+# R (only if the legacy scripts are ever run from a scratch copy)
 .Rhistory
 .RData
 .Rproj.user/
