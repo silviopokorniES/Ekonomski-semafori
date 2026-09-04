@@ -12,6 +12,7 @@ dependencies:
   - scipy
   - statsmodels=0.15.*
   - pyyaml
+  - matplotlib      # charts in the comparison scripts (notebooks/), not in the pipeline
   - openpyxl
   - eurostat
   - ecbdata

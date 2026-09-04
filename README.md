@@ -19,7 +19,8 @@ scripts/run_monthly.py   the monthly run
 data/            Croatian Excel inputs (not tracked; see data/README.md)
 tests/           unit tests, parity fixtures from the R reference (tests/fixtures/)
 legacy/          the R scripts that produced releases up to 2026; kept as the reference, not run
-docs/            changelog, reviews
+docs/            changelog, reviews, trend-method comparison, note for the co-authors
+notebooks/       comparison scripts and their results (not part of the monthly run)
 ```
 
 ## Setup

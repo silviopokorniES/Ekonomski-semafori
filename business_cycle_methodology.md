@@ -74,7 +74,9 @@ Output. Files start in February 2015 for the animation, although every filter us
 
 ## 4. What the numbers cannot tell you
 
-The last months of every dot are provisional. The Henderson filter uses asymmetric weights for the last six months and the HP trend is effectively one-sided at the sample end, so both coordinates of the newest dot are revised for a year or more as data arrive. Revision statistics will be published once twelve archived releases exist.
+The last months of every dot are provisional. The Henderson filter uses asymmetric weights for the last six months and the HP trend is effectively one-sided at the sample end, so both coordinates of the newest dot are revised for a year or more as data arrive. On GDP and industrial production for Croatia, Germany and the euro area, the cycle of the last two years moves by 0.1 to 0.8 points between its first publication and its full-sample value, against a cycle standard deviation of 2 to 4 points (docs/trend_method_comparison.md). One-sided filters would remove these revisions but place turning points three to six months later, so the two-sided HP is kept. Revision statistics from the archived releases will be published after a year.
+
+A long recession is partly absorbed into the trend. Croatia's decline from 2009 to 2014 lasted long enough for the HP filter to treat much of it as trend, so the cycle axis understates that period; the 2009 trough measures 2 to 3 points for GDP where a one-sided filter shows 8 to 14.
 
 Quarterly-origin dots move smoothly by construction. Their monthly momentum is interpolated and their newest months are extrapolated.
 
@@ -90,7 +92,7 @@ The pipeline is Python 3.12 (environment.yml). The R scripts that produced the e
 
 ## 6. Planned changes
 
-Capacity utilisation, real gross value added, house prices, loans and inflation as further indicators; a separate panel for lagging and financial-cycle series; a comparison of trend filters (one-sided HP, Christiano-Fitzgerald, Hamilton) on revision size and turning-point dating.
+Capacity utilisation, real gross value added, house prices, loans and inflation as further indicators; a separate panel for lagging and financial-cycle series; a comparison with the Eurostat business cycle clock chronology once that chronology is obtained.
 
 ## References
 
