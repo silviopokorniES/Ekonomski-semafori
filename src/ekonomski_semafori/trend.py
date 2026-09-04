@@ -4,9 +4,9 @@ Inputs: the seasonally adjusted monthly series `sa` (DatetimeIndex, no gaps,
 no missing values).
 Outputs: a trend series aligned to sa.index.
 Short-run trend: henderson (X-11 final trend-cycle, table D12). Long-run trend:
-hp by default; alternatives (hp_onesided, baxter_king, christiano_fitzgerald,
-hamilton, bn_ucm) are added in Phase 5. The cycle code must not know which
-method produced the trend.
+hp by default; hp_onesided, baxter_king, christiano_fitzgerald, hamilton and
+bn_ucm are the Phase 5 comparators (notebooks, not the monthly run). The cycle
+code must not know which method produced the trend.
 Assumptions: henderson reproduces extract_d12_trend in the R scripts: three X-13
 specs tried in order (automatic model with td and easter tests; fixed airline
 model; fixed random walk without outliers), then a 12-month centered moving
@@ -21,7 +21,10 @@ from __future__ import annotations
 
 import logging
 
+import numpy as np
 import pandas as pd
+from statsmodels.tsa.filters.bk_filter import bkfilter
+from statsmodels.tsa.filters.cf_filter import cffilter
 from statsmodels.tsa.filters.hp_filter import hpfilter
 
 from ekonomski_semafori.adjust import ESTIMATE, X13Error, model_blocks, outlier_block, run_x13, x13_binary
@@ -80,3 +83,63 @@ def hp(sa: pd.Series, lam: float = 129600.0) -> pd.Series:
     """Two-sided Hodrick-Prescott trend with smoothing parameter lam."""
     _, trend = hpfilter(sa.to_numpy(dtype=float), lamb=lam)
     return pd.Series(trend, index=sa.index, name=sa.name)
+
+
+# Alternative long-run trends for the Phase 5 comparison. Same signature as hp;
+# each returns a Series aligned to sa.index, NaN where the method has no estimate.
+
+
+def hp_onesided(sa: pd.Series, lam: float = 129600.0, min_obs: int = 36) -> pd.Series:
+    """One-sided HP trend: at each month the last value of a two-sided HP fitted to the
+    data up to that month only, so the estimate never revises when later data arrive
+    (the real-time view). NaN for the first min_obs observations."""
+    values = sa.to_numpy(dtype=float)
+    out = np.full(len(values), np.nan)
+    for t in range(min_obs - 1, len(values)):
+        out[t] = hpfilter(values[: t + 1], lamb=lam)[1][-1]
+    return pd.Series(out, index=sa.index, name=sa.name)
+
+
+def baxter_king(sa: pd.Series, high: int = 96, k: int = 36) -> pd.Series:
+    """Low-pass trend: the series minus its Baxter-King band-pass component with periods
+    from 2 up to high months, so only movements longer than high months remain; k leads
+    and lags. The first and last k months are NaN."""
+    values = sa.to_numpy(dtype=float)
+    cyc = bkfilter(values, low=2, high=high, K=k).ravel()
+    trend = np.full(len(values), np.nan)
+    trend[k:len(values) - k] = values[k:len(values) - k] - cyc
+    return pd.Series(trend, index=sa.index, name=sa.name)
+
+
+def christiano_fitzgerald(sa: pd.Series, high: int = 96) -> pd.Series:
+    """Low-pass trend from the asymmetric Christiano-Fitzgerald filter: the series minus
+    its band-pass component with periods from 2 up to high months; defined at every
+    month including the ends."""
+    values = sa.to_numpy(dtype=float)
+    cyc, _ = cffilter(values, low=2, high=high, drift=True)
+    return pd.Series(values - np.asarray(cyc).ravel(), index=sa.index, name=sa.name)
+
+
+def hamilton(sa: pd.Series, h: int = 24, p: int = 12) -> pd.Series:
+    """Hamilton (2018) regression filter: the trend at t is the fitted value of a
+    regression of y_t on a constant and y_{t-h}, ..., y_{t-h-p+1}; the residual is
+    the cycle. NaN for the first h + p - 1 observations. One-sided by construction."""
+    y = sa.to_numpy(dtype=float)
+    n = len(y)
+    rows = list(range(h + p - 1, n))
+    x = np.column_stack([np.ones(len(rows))] + [y[[t - h - j for t in rows]] for j in range(p)])
+    beta, *_ = np.linalg.lstsq(x, y[rows], rcond=None)
+    trend = np.full(n, np.nan)
+    trend[rows] = x @ beta
+    return pd.Series(trend, index=sa.index, name=sa.name)
+
+
+def bn_ucm(sa: pd.Series) -> pd.Series:
+    """Smoothed level of an unobserved components model with a local linear trend and
+    a damped stochastic cycle (Harvey), estimated by maximum likelihood. Slow; for the
+    comparison notebook, not the monthly run."""
+    from statsmodels.tsa.statespace.structural import UnobservedComponents
+
+    model = UnobservedComponents(sa.to_numpy(dtype=float), level="local linear trend", cycle=True, stochastic_cycle=True, damped_cycle=True)
+    result = model.fit(disp=False, maxiter=500)
+    return pd.Series(result.smoothed_state[0], index=sa.index, name=sa.name)
