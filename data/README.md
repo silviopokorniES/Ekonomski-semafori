@@ -26,7 +26,7 @@ Sources (verified 2026-09-04):
 
 ## Removed
 
-`ovi.xlsx` (EIZ business confidence index OVI) was removed on 2026-09-04 because the index is no longer published. It is not read by the Python pipeline. The R reference script `skripte/samo_hrvatska.R` still tries to read it and skips the indicator with a warning when the file is absent. The last tracked copy is in git history at commit 771c499 as `datasets/ovi.xlsx`.
+`ovi.xlsx` (EIZ business confidence index OVI) was removed on 2026-09-04 because the index is no longer published. It is not read by the Python pipeline. The R reference script `legacy/samo_hrvatska.R` still tries to read it and skips the indicator with a warning when the file is absent. The last tracked copy is in git history at commit 771c499 as `datasets/ovi.xlsx`.
 
 ## Note for the R fixture run (task 1.2)
 

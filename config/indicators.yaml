@@ -12,7 +12,7 @@
 # Per source: eurostat needs dataset + filters; ecb needs series_key (may contain {ecb_code});
 # local needs path + column.
 #
-# Eurostat filters are copied verbatim from the get_eurostat calls in skripte/*.R. `geo` is added
+# Eurostat filters are copied verbatim from the get_eurostat calls in legacy/*.R. `geo` is added
 # by fetch_eurostat from the country code. The R time filter sinceTimePeriod = 2015-01 is
 # deliberately not encoded: the full history is fetched and filters run on it. R calls that
 # fetched two series in one request (nace_r2 G46/G47, indic_bt REG/BKRT, BOP item x flow) are

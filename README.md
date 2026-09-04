@@ -18,7 +18,7 @@ src/ekonomski_semafori/
 scripts/run_monthly.py   the monthly run
 data/            Croatian Excel inputs (not tracked; see data/README.md)
 tests/           unit tests, parity fixtures from the R reference (tests/fixtures/)
-skripte/         the R scripts that produced releases up to 2026; kept as the reference, not run
+legacy/          the R scripts that produced releases up to 2026; kept as the reference, not run
 docs/            changelog, reviews
 ```
 
