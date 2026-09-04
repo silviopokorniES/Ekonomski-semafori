@@ -100,13 +100,24 @@ python -m pytest
 
 ### X-13ARIMA-SEATS binary
 
-`environment.yml` installs the Census X-13 binary from conda-forge (package `x13as`, executable `x13as_ascii`; verified on Windows, a linux-64 build exists but is untested here); statsmodels finds it on the environment PATH, so nothing else is needed. The environment must be activated (`conda activate semafori` or `conda run -n semafori`): calling the environment's `python.exe` directly does not put the binary on PATH and statsmodels will report X-13 as missing. Verify:
+The pipeline calls the Census X-13ARIMA-SEATS executable directly (`adjust.run_x13`), so the binary is installed separately and found through the `X13PATH` environment variable (a folder containing `x13as_ascii`, `x13as` or `x13ashtml`).
+
+Do not use the conda-forge `x13as` package on Windows: its build (1.1.61) exits with a stack overflow (exit code 3221225725) on series of realistic length. Two builds that work:
+
+- The official Census build: download from https://www.census.gov/data/software/x13as.html, unzip into a folder without spaces (for example `C:\x13as`), then `setx X13PATH C:\x13as`.
+- The build shipped with the R package `x13binary` (installed here for the parity fixtures): `setx X13PATH "%LOCALAPPDATA%\R\win-library\4.6\x13binary\bin"`.
+
+Make the setting part of the conda environment so it applies whenever the environment is active:
 
 ```bash
-python -c "from statsmodels.tsa.x13 import _find_x12; print(_find_x12())"
+conda env config vars set X13PATH=<folder> -n semafori
 ```
 
-Without conda: download the ASCII build from https://www.census.gov/data/software/x13as.html, unzip it into a folder whose path has no spaces (for example `C:\x13as` on Windows or `~/x13as` on Linux, then `chmod +x x13as` on Linux), and set `X13PATH` to that folder (`setx X13PATH C:\x13as` on Windows, `export X13PATH=~/x13as` on Linux). Re-run the check above.
+Verify:
+
+```bash
+python -c "from ekonomski_semafori.adjust import _x13_binary; print(_x13_binary())"
+```
 
 ### Local inputs
 

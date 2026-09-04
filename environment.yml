@@ -6,12 +6,14 @@ channels:
   - nodefaults
 dependencies:
   - python=3.12
+  - blas=*=openblas   # the MKL variant made every numpy.linalg call crash (DLL delay-load fault) on Windows
   - pandas
   - statsmodels
   - pyyaml
   - openpyxl
   - eurostat
   - ecbdata
-  - x13as        # Census X-13ARIMA-SEATS binary (conda-forge 1.1.61); installs x13as_ascii on the env PATH, which statsmodels finds
+  # X-13ARIMA-SEATS is NOT taken from conda-forge: its Windows build (x13as 1.1.61) exits with a
+  # stack overflow on series of realistic length. Set X13PATH instead; see README.
   - pytest
   - pip
