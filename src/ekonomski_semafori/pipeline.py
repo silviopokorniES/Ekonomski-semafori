@@ -6,8 +6,8 @@ computed sample; run_all returns the long panel [country, indicator_id, time,
 mom_z, cycle_z] for every configured pair that ran, and logs each skipped pair
 with its reason.
 Order per indicator, as in the R process_group: fetch, apply the country
-override, optional start truncation and gap filling, disaggregate quarterly to
-monthly, seasonally adjust unless already adjusted (X-13 needs at least
+override, optional start truncation, gap handling (see _contiguous), disaggregate
+quarterly to monthly, seasonally adjust unless already adjusted (X-13 needs at least
 settings.min_seasonal_obs observations, otherwise the raw series is used, as in
 R), short-run trend (Henderson unless skip_henderson), long-run trend
 (settings.trend_method), cycle and MoM, z-score, sign inversion.
@@ -52,24 +52,37 @@ def fetch_series(country: Country, indicator: Indicator) -> pd.Series:
     return pd.Series(frame["value"].to_numpy(), index=pd.DatetimeIndex(frame["time"]), name=indicator.id)
 
 
-def _fill_gaps(series: pd.Series, freq: str) -> pd.Series:
-    """Linear interpolation of internal missing periods (impute: true)."""
-    full = series.asfreq("MS" if freq == "M" else "QS")
-    return full.interpolate("linear", limit_area="inside")
+MAX_GAP = 3
+
+
+def _contiguous(series: pd.Series, indicator: Indicator) -> pd.Series:
+    """Make the series gap-free: internal gaps of at most MAX_GAP periods (any gap
+    when impute is set) are filled by linear interpolation; if longer gaps remain,
+    only the latest contiguous segment is kept. Both cases are logged. The R
+    scripts built a ts from the first date and ignored gaps, which misaligned
+    every later month; that behaviour is deliberately not reproduced."""
+    full = series.asfreq("MS" if indicator.frequency == "M" else "QS")
+    missing = full.isna()
+    if not missing.any():
+        return full
+    runs = missing.astype(int).groupby((~missing).cumsum()).sum()
+    longest = int(runs.max())
+    if indicator.impute or longest <= MAX_GAP:
+        log.warning("%s: %d missing periods interpolated (longest gap %d)", indicator.id, int(missing.sum()), longest)
+        return full.interpolate("linear", limit_area="inside")
+    last_gap = missing[missing].index[-1]
+    kept = full[full.index > last_gap]
+    log.warning("%s: gap of %d periods at %s, keeping %d observations from %s", indicator.id, longest, last_gap.date(), len(kept), kept.index[0].date())
+    return kept
 
 
 def _prepare(series: pd.Series, indicator: Indicator, settings: Settings, history_start: date | None) -> pd.Series:
     """Truncate, fill gaps, check contiguity, disaggregate, and seasonally adjust."""
-    if history_start is not None:
-        series = series[series.index >= pd.Timestamp(history_start)]
+    if history_start is not None and indicator.source == "eurostat":
+        series = series[series.index >= pd.Timestamp(history_start)]   # R applied sinceTimePeriod to Eurostat only
     if indicator.start is not None:
         series = series[series.index >= pd.Timestamp(indicator.start)]
-    if indicator.impute:
-        series = _fill_gaps(series, indicator.frequency)
-    series = series.dropna()
-    expected = pd.date_range(series.index[0], series.index[-1], freq="MS" if indicator.frequency == "M" else "QS")
-    if len(series) != len(expected):
-        raise SkippedIndicator(f"{len(expected) - len(series)} internal gaps between {series.index[0].date()} and {series.index[-1].date()}")
+    series = _contiguous(series.dropna(), indicator)
     if indicator.frequency == "Q":
         series = disaggregate(series)
     if not indicator.already_sa:
