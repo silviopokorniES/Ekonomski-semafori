@@ -2,8 +2,10 @@
 # ecb_code defaults to the key; set it only where the ECB uses a different code.
 # overrides: per-indicator partial settings for this country, keyed by indicator id from
 # indicators.yaml. Top-level keys replace the indicator's value; `filters` merges key by key.
-# The merge is applied in pipeline.py (task 2.2). Semantics of `start` and `impute` are
-# implemented there; the loader only checks that the indicator id exists.
+# config.merge_override applies the merge and re-validates the result through the indicator
+# schema; config.check_overrides runs that for every override (called from the tests and, in
+# task 2.2, from pipeline.py). `start` truncates the series, `impute` fills internal gaps;
+# both are implemented in pipeline.py.
 # English names follow the R reference (ostale_zemlje.R country_names) plus Croatia.
 countries:
   HR: {name_en: Croatia, name_hr: Hrvatska}

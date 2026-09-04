@@ -100,7 +100,7 @@ python -m pytest
 
 ### X-13ARIMA-SEATS binary
 
-`environment.yml` installs the Census X-13 binary from conda-forge (package `x13as`, executable `x13as_ascii`) on Windows and Linux; statsmodels finds it on the environment PATH, so nothing else is needed. The environment must be activated (`conda activate semafori` or `conda run -n semafori`): calling the environment's `python.exe` directly does not put the binary on PATH and statsmodels will report X-13 as missing. Verify:
+`environment.yml` installs the Census X-13 binary from conda-forge (package `x13as`, executable `x13as_ascii`; verified on Windows, a linux-64 build exists but is untested here); statsmodels finds it on the environment PATH, so nothing else is needed. The environment must be activated (`conda activate semafori` or `conda run -n semafori`): calling the environment's `python.exe` directly does not put the binary on PATH and statsmodels will report X-13 as missing. Verify:
 
 ```bash
 python -c "from statsmodels.tsa.x13 import _find_x12; print(_find_x12())"

@@ -3,7 +3,9 @@
 # Fields: id, name_en, name_hr, category (one of or a list of leading | supply | demand |
 # external | lagging), source (eurostat | ecb | local), frequency (M | Q), already_sa,
 # transform (ratio | difference), counter_cyclical, countries (all | list of codes),
-# skip_henderson (optional, default false: use the fetched series itself as the short-run trend).
+# skip_henderson (optional, default false: use the fetched series itself as the short-run trend),
+# start (optional date: drop observations before it), impute (optional, default false: fill
+# internal gaps). start and impute are normally set per country in countries.yaml overrides.
 # Per source: eurostat needs dataset + filters; ecb needs series_key (may contain {ecb_code});
 # local needs path + column.
 #

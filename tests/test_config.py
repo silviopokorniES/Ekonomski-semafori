@@ -1,12 +1,27 @@
-"""Tests for the config loaders: facts about the registries that a bad edit could break."""
+"""Tests for the config loaders: facts about the registries that a bad edit could break,
+and the loader rejections that protect methodological rules."""
 
 from datetime import date
+from pathlib import Path
 
 import pytest
 
-from ekonomski_semafori.config import load_countries, load_indicators, load_settings
+from ekonomski_semafori.config import (
+    _parse_indicator,
+    check_overrides,
+    load_countries,
+    load_indicators,
+    load_settings,
+    merge_override,
+)
 
 R_COUNTRY_VECTOR = "AT BE BG CY EE FI FR DE EL IE IT LV LT LU MT NL PT SK SI ES".split()
+
+VALID_ENTRY = {
+    "id": "x", "name_en": "X", "name_hr": "X", "category": "supply", "source": "eurostat",
+    "dataset": "sts_inpr_m", "filters": {"indic_bt": "PRD", "freq": "M"}, "frequency": "M",
+    "already_sa": True, "transform": "ratio", "counter_cyclical": False, "countries": "all",
+}
 
 
 def test_countries_count_and_codes() -> None:
@@ -22,14 +37,18 @@ def test_greece_ecb_code() -> None:
     assert all(c.ecb_code == code for code, c in countries.items() if code != "EL")
 
 
-def test_overrides() -> None:
+def test_overrides_validate_and_merge() -> None:
     countries = load_countries()
-    assert countries["SK"].overrides["npl"]["start"] == date(2018, 1, 1)
-    assert countries["BG"].overrides["npl"]["impute"] is True
-    assert countries["IT"].overrides["unemployment"]["filters"]["s_adj"] == "SA"
-    indicator_ids = {i.id for i in load_indicators()}
-    for country in countries.values():
-        assert set(country.overrides) <= indicator_ids, country.code
+    indicators = load_indicators()
+    check_overrides(countries, indicators)
+    by_id = {i.id: i for i in indicators}
+    italy = merge_override(by_id["unemployment"], countries["IT"].overrides["unemployment"])
+    assert italy.filters["s_adj"] == "SA" and italy.filters["age"] == "TOTAL"
+    assert italy.skip_henderson is False
+    assert merge_override(by_id["npl"], countries["SK"].overrides["npl"]).start == date(2018, 1, 1)
+    assert merge_override(by_id["npl"], countries["BG"].overrides["npl"]).impute is True
+    with pytest.raises(ValueError):
+        merge_override(by_id["npl"], {"id": "other"})
 
 
 def test_every_indicator_valid() -> None:
@@ -60,7 +79,22 @@ def test_unemployment_reproduces_r() -> None:
     assert unemployment.skip_henderson is True
 
 
-def test_settings(tmp_path) -> None:
+@pytest.mark.parametrize(
+    "change",
+    [
+        {"filters": {"indic_bt": ["PRD", "VOL"], "freq": "M"}},   # multi-value filter: one entry per series
+        {"filters": {"indic_bt": "PRD", "freq": "Q"}},            # filters.freq disagrees with frequency
+        {"skip_henderson": True, "already_sa": False},             # skipping Henderson needs an adjusted input
+        {"dataset": None},                                         # required source field present but empty
+        {"category": ["supply", "supply"]},                        # duplicate category
+    ],
+)
+def test_parse_indicator_rejects(change: dict) -> None:
+    with pytest.raises(ValueError):
+        _parse_indicator({**VALID_ENTRY, **change})
+
+
+def test_settings(tmp_path: Path) -> None:
     settings = load_settings()
     assert settings.hp_lambda == 129600
     assert settings.output_start == date(2015, 2, 1)
