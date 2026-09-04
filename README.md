@@ -84,6 +84,33 @@ install.packages(c(
 | `openxlsx` | Excel file creation |
 | `readxl` | Excel file reading |
 
+## 🐍 Python port (in progress)
+
+The pipeline is being ported from R to Python (see `UPDATE_PLAN.md` and `TASKS.md`). The R scripts in `skripte/` remain the reference implementation until the parity check passes. Note: the file is `skripte/ostale_zemlje.R`, not `ostatak_zemalja.R` as written below.
+
+### Environment
+
+```bash
+conda env create -f environment.yml
+conda activate semafori          # or prefix commands with: conda run -n semafori
+python -m pip install -e .
+python -m pytest
+```
+
+### X-13ARIMA-SEATS binary
+
+`environment.yml` installs the Census X-13 binary from conda-forge (package `x13as`, executable `x13as_ascii`) on Windows and Linux; statsmodels finds it on the environment PATH, so nothing else is needed. Verify:
+
+```bash
+python -c "from statsmodels.tsa.x13 import _find_x12; print(_find_x12())"
+```
+
+Without conda: download the ASCII build from https://www.census.gov/data/software/x13as.html, unzip it into a folder whose path has no spaces (for example `C:\x13as` on Windows or `~/x13as` on Linux, then `chmod +x x13as` on Linux), and set `X13PATH` to that folder (`setx X13PATH C:\x13as` on Windows, `export X13PATH=~/x13as` on Linux). Re-run the check above.
+
+### Local inputs
+
+Croatian Excel inputs live in `data/` and are not tracked by git. See `data/README.md` for file names, columns, and the monthly update procedure.
+
 ## 🚀 Quick Start
 
 ### Running the Croatia Analysis

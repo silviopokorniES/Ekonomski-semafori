@@ -1,0 +1,17 @@
+# Conda environment for Ekonomski semafori. Create with: conda env create -f environment.yml
+# Then install the package in editable mode: python -m pip install -e .
+name: semafori
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.12
+  - pandas
+  - statsmodels
+  - pyyaml
+  - openpyxl
+  - eurostat
+  - ecbdata
+  - x13as        # Census X-13ARIMA-SEATS binary (conda-forge 1.1.61); installs x13as_ascii on the env PATH, which statsmodels finds
+  - pytest
+  - pip
