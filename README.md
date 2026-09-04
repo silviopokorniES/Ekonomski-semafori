@@ -1,546 +1,77 @@
-# Business Cycle Analysis for Euro Area Countries
+# Ekonomski semafori
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![R Version](https://img.shields.io/badge/R-%3E%3D%204.0.0-blue)](https://www.r-project.org/)
+Monthly business cycle clocks for Croatia and 20 other European countries, published as animated scatter plots in Flourish. For each indicator the pipeline computes where its trend-cycle stands relative to its long-run trend (the cycle) and how fast that position is changing (momentum), standardises both, and writes the files the charts read.
 
-Comprehensive econometric framework for decomposing macroeconomic time series into trend and cyclical components across Euro Area countries. The analysis produces standardized cyclical indicators and momentum measures suitable for animated scatter plot visualization in Flourish Studio.
+Developed at the Faculty of Economics and Business, University of Zagreb (EFZG). Methodology: [business_cycle_methodology.md](business_cycle_methodology.md) (English), [metodologija.md](metodologija.md) (Croatian). Changes that affect the numbers: [docs/CHANGELOG.md](docs/CHANGELOG.md).
 
-## 📊 Overview
-
-This repository contains R scripts that implement a sophisticated multi-stage filtering approach combining:
-- **X-13ARIMA-SEATS** seasonal adjustment
-- **Denton-Cholette** temporal disaggregation (quarterly to monthly)
-- **Henderson filter** (X-11 decomposition) for trend-cycle extraction
-- **Hodrick-Prescott filter** for cyclical decomposition
-- **Z-score standardization** for cross-country comparability
-
-The methodology transforms diverse macroeconomic indicators into a two-dimensional framework (cyclical position × momentum) that characterizes business cycle phases through four quadrants: expansion, peak, contraction, and recovery.
-
-## 🎯 Key Features
-
-- **21 indicators for Croatia** including unique local data sources (vehicle registrations, insured persons)
-- **Up to 18 indicators (typically 13-15 available) for 20 other countries** (Austria, Belgium, Bulgaria, Cyprus, Estonia, Finland, France, Germany, Greece, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Portugal, Slovakia, Slovenia, Spain)
-- **Automated data retrieval** from Eurostat and ECB Statistical Data Warehouse
-- **Robust error handling** with hierarchical fallback strategies
-- **Publication-ready outputs** in Excel format for Flourish Studio visualization
-
-## 📁 Repository Structure
+## Layout
 
 ```
-Ekonomski-semafori/
-├── README.md                        # This file
-├── CLAUDE.md, UPDATE_PLAN.md, TASKS.md   # Port plan and working rules
-├── business_cycle_methodology.md    # Complete methodology (English)
-├── metodologija.md                  # Methodology (Croatian)
-├── skripte/
-│   ├── samo_hrvatska.R              # Croatia-specific analysis (21 indicators), R reference
-│   └── ostale_zemlje.R              # Analysis for 20 other countries, R reference
-├── config/                          # Python port: countries, indicators, settings (YAML)
-├── src/ekonomski_semafori/          # Python port: fetch, adjust, trend, cycle, pipeline, output
-├── scripts/run_monthly.py           # Python port: monthly production run
-├── tests/
-├── data/                            # Croatian Excel inputs (xlsx not tracked, see data/README.md)
-├── docs/CHANGELOG.md
-├── environment.yml, pyproject.toml
-└── output/                          # Generated files (not tracked)
+config/          countries.yaml, indicators.yaml, settings.yaml: everything an indicator needs is here, not in code
+src/ekonomski_semafori/
+  fetch.py       Eurostat, ECB and local Excel readers; raise on empty responses
+  adjust.py      X-13ARIMA-SEATS seasonal adjustment, Denton-Cholette disaggregation
+  trend.py       Henderson trend-cycle, Hodrick-Prescott trend
+  cycle.py       cycle, momentum, sign inversion, standardisation
+  pipeline.py    one (country, indicator) pair, or all of them
+  output.py      CSV master and per-indicator files, axis bounds, legacy Excel workbooks
+scripts/run_monthly.py   the monthly run
+data/            Croatian Excel inputs (not tracked; see data/README.md)
+tests/           unit tests, parity fixtures from the R reference (tests/fixtures/)
+skripte/         the R scripts that produced releases up to 2026; kept as the reference, not run
+docs/            changelog, reviews
 ```
 
-## 🔧 Installation
-
-### Prerequisites
-
-- **R** version ≥ 4.0.0
-- **RStudio** (recommended)
-
-### Required R Packages
-
-```r
-# Install required packages
-install.packages(c(
-  "readxl",
-  "hpfilter",
-  "eurostat",
-  "dplyr",
-  "tidyr",
-  "seasonal",
-  "lubridate",
-  "tempdisagg",
-  "zoo",
-  "openxlsx",
-  "ecb"
-))
-```
-
-### Package Descriptions
-
-| Package | Purpose |
-|---------|---------|
-| `eurostat` | Access to Eurostat database API |
-| `ecb` | Access to ECB Statistical Data Warehouse |
-| `seasonal` | X-13ARIMA-SEATS seasonal adjustment |
-| `tempdisagg` | Temporal disaggregation (Denton-Cholette method) |
-| `hpfilter` | Hodrick-Prescott filter implementation |
-| `dplyr`, `tidyr` | Data manipulation and transformation |
-| `zoo`, `lubridate` | Time series and date handling |
-| `openxlsx` | Excel file creation |
-| `readxl` | Excel file reading |
-
-## 🐍 Python port (in progress)
-
-The pipeline is being ported from R to Python (see `UPDATE_PLAN.md` and `TASKS.md`). The R scripts in `skripte/` remain the reference implementation until the parity check passes.
-
-### Environment
+## Setup
 
 ```bash
 conda env create -f environment.yml
-conda activate semafori          # or prefix commands with: conda run -n semafori
+conda activate semafori
 python -m pip install -e .
-python -m pytest            # offline tests; add -m live for the three network checks against Eurostat and the ECB
 ```
 
-### X-13ARIMA-SEATS binary
-
-The pipeline calls the Census X-13ARIMA-SEATS executable directly (`adjust.run_x13`), so the binary is installed separately and found through the `X13PATH` environment variable (a folder containing `x13as_ascii`, `x13as` or `x13ashtml`).
-
-Do not use the conda-forge `x13as` package on Windows: its build (1.1.61) exits with a stack overflow (exit code 3221225725) on series of realistic length. Two builds that work:
-
-- The official Census build: download from https://www.census.gov/data/software/x13as.html, unzip into a folder without spaces (for example `C:\x13as`), then `setx X13PATH C:\x13as`.
-- The build shipped with the R package `x13binary` (installed here for the parity fixtures): `setx X13PATH "%LOCALAPPDATA%\R\win-library\4.6\x13binary\bin"`.
-
-Make the setting part of the conda environment so it applies whenever the environment is active:
+The pipeline calls the Census X-13ARIMA-SEATS executable directly, so the binary is installed separately and found through the `X13PATH` environment variable (a folder containing `x13as_ascii`, `x13as` or `x13ashtml`). Do not use the conda-forge `x13as` package on Windows: its build exits with a stack overflow on series of realistic length. Two builds that work: the official Census build (https://www.census.gov/data/software/x13as.html, unzip into a folder without spaces, then `setx X13PATH C:\x13as`), or the one shipped with the R package `x13binary` (`setx X13PATH "%LOCALAPPDATA%\R\win-library\4.6\x13binary\bin"`). To make the setting part of the environment:
 
 ```bash
 conda env config vars set X13PATH=<folder> -n semafori
 ```
 
-Verify:
+Check it with `python -c "from ekonomski_semafori.adjust import x13_binary; print(x13_binary())"`.
+
+## Monthly run
+
+1. Update the two Croatian Excel inputs (data/README.md).
+2. Run:
 
 ```bash
-python -c "from ekonomski_semafori.adjust import x13_binary; print(x13_binary())"
+python scripts/run_monthly.py
 ```
 
-### Local inputs
+The run takes about 25 minutes for 21 countries. It writes to `output/`: `all_countries_long.csv` (one row per indicator, category, country and month from February 2015), `by_indicator/<id>.csv`, `axis_bounds.csv`, `legacy/` (the Excel layout the current Flourish charts use), `logs/<date>.log`, `Processing_Summary.csv` (what ran and what was skipped, with reasons), and `vintages/<date>.csv` (the unclipped panel, archived for revision analysis). Data problems (a series Eurostat does not publish for a country, a stale series) are skipped and listed; a network failure or a missing binary stops the run, so an outage is never published as missing data.
 
-Croatian Excel inputs live in `data/` and are not tracked by git. See `data/README.md` for file names, columns, and the monthly update procedure.
+Master file columns: `time` (ISO date), `label` (Croatian month and year), `country`, `country_name`, `category`, `indicator_id`, `indicator_name_hr`, `indicator_name_en`, `mom_z`, `cycle_z`, `clipped`. Files are UTF-8 with a byte order mark so Excel shows diacritics.
 
-## 🚀 Quick Start
+## Adding an indicator
 
-### Running the Croatia Analysis
+Add an entry to `config/indicators.yaml` (source, dataset and filters or series key or local file, frequency, whether adjusted at source, transform, long-run trend, category, names in both languages) and, if it applies to a subset of countries, list them. Country-specific deviations go into `config/countries.yaml` as overrides. No code change should be needed; if one is, the schema is what to fix.
 
-```r
-# Set working directory
-setwd("path/to/business-cycle-analysis")
+## Tests
 
-# Load the script
-source("skripte/samo_hrvatska.R")
-
-# The script will:
-# 1. Download data from Eurostat, ECB, and local sources
-# 2. Apply seasonal adjustment and disaggregation
-# 3. Extract trends and cycles
-# 4. Generate 5 categorized Excel files + 1 combined file
+```bash
+python -m pytest            # unit tests and the parity check against the R fixtures, about a minute
+python -m pytest -m live    # three network checks against Eurostat and the ECB
 ```
 
-### Running the Euro Area Analysis
+The parity test replays the R scripts' configuration on the stored fixtures and must keep passing after methodology changes; it protects the fetch and adjustment layers.
 
-```r
-# Load the script
-source("skripte/ostale_zemlje.R")
+## Countries
 
-# The script will:
-# 1. Process all 20 countries sequentially
-# 2. Generate individual country files with separate sheets
-# 3. Create a master file combining all countries
-# 4. Display processing summary statistics
-```
+Croatia, plus Austria, Belgium, Bulgaria, Cyprus, Estonia, Finland, France, Germany, Greece, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Portugal, Slovakia, Slovenia and Spain. Croatia has 21 indicators; the others have up to 18, depending on Eurostat coverage.
 
-## 📈 Indicator Categories
+## Data sources
 
-### Leading Indicators
-Anticipate future economic activity:
-- Building permits for residential dwellings
-- New business registrations
-- **First-time vehicle registrations** - passenger & freight (Croatia only)
+Eurostat (short-term business statistics, national accounts, balance of payments, unemployment, tourism), the ECB Data Portal (non-performing loans), Državni zavod za statistiku (DZS, vehicle registrations) and Hrvatski zavod za mirovinsko osiguranje (HZMO, insured persons).
 
-### Supply/Production Indicators (Coincident)
-Move simultaneously with current economic activity:
-- GDP at constant prices
-- Industrial production (sectors B-D)
-- Construction production
-- Total production (excluding finance)
-- Tourism overnight stays
-- **Number of insured persons** (Croatia only)
+## License and contact
 
-### Demand/Consumption Indicators (Coincident)
-Reflect current consumption patterns:
-- Retail trade volume
-- Wholesale trade volume
-- Household final consumption expenditure
-- Gross fixed capital formation (investment)
-
-### External Trade Indicators
-Capture international economic linkages:
-- Exports of goods
-- Exports of services
-- Imports of goods
-- Imports of services
-
-### Lagging Indicators
-Confirm economic trends after they occur:
-- Bankruptcy declarations
-- Unemployment (number of unemployed persons)
-- **Non-performing loan ratio** (from ECB)
-
-## 🔬 Methodology
-
-### 1. Temporal Disaggregation (Denton-Cholette)
-
-Converts quarterly data (GDP, consumption, investment, building permits) to monthly frequency:
-
-**Why Denton-Cholette?**
-- Preserves month-to-month movements of related indicator series
-- Maintains accounting consistency over time
-- Distributes adjustments smoothly without artificial breaks
-- Robust to data revisions
-
-**Formula:**
-```
-Minimize: Σ[(mₜ - mₜ₋₁) - (rₜ - rₜ₋₁)]² + penalty × [Σmₜ - Qₜ]²
-```
-Where m = monthly series, r = related indicator, Q = quarterly aggregate
-
-### 2. Seasonal Adjustment (X-13ARIMA-SEATS)
-
-Applied with **conservative outlier detection settings** to preserve genuine cyclical variation:
-
-```r
-seas(series_ts,
-     outlier.types = "AO",          # Only additive outliers
-     outlier.critical = 4.0,         # Higher critical value (default is 3.0)
-     regression.aictest = NULL)      # Disable automatic tests
-```
-
-**Rationale:**
-- `outlier.critical = 4.0`: Prevents removal of genuine business cycle movements
-- Additive outliers only: Avoids treating turning points as level shifts
-- No automatic tests: Eurostat data already calendar-adjusted
-
-### 3. Trend-Cycle Extraction (Henderson Filter / X-11)
-
-Extracts the **D12 component** representing combined trend and cycle:
-- Removes seasonality, irregular fluctuations, calendar effects
-- Preserves turning points without excessive lag
-- Optimal for economic time series
-
-### 4. Cyclical Decomposition (Hodrick-Prescott Filter)
-
-Separates smooth trend from cyclical deviations using **λ = 129,600** for monthly data.
-
-**Ravn-Uhlig (2002) Scaling Rule:**
-```
-λ_monthly = λ_quarterly × (frequency_ratio)⁴
-λ_monthly = 1,600 × 3⁴ = 1,600 × 81 = 129,600
-```
-
-**Why this λ?**
-- Ensures consistent smoothing across data frequencies
-- Focuses on 2-8 year business cycle frequencies
-- International standard for monthly macroeconomic analysis
-
-**Cycle Calculation:**
-```r
-Cycle (%) = [(D12 - Trend) / Trend] × 100
-```
-
-### 5. Standardization (Z-score)
-
-Transforms all indicators to comparable scale:
-
-```r
-Standardized_Cycle = (Cycle - mean(Cycle)) / sd(Cycle)
-```
-
-**Interpretation:**
-- `+1.0` = One standard deviation above average (strong expansion)
-- `0.0` = Typical cyclical position (neutral)
-- `-1.0` = One standard deviation below average (significant contraction)
-- `±2.0` = Extreme values (beyond 95% of historical observations)
-
-### 6. Counter-Cyclical Indicator Inversion
-
-For consistent interpretation, counter-cyclical indicators are inverted:
-
-```r
-# Inverted indicators
-- Bankruptcy declarations
-- Unemployment
-- Non-performing loan ratio
-
-# Transformation
-Inverted_Indicator = -1 × Original_Indicator
-```
-
-After inversion: positive values always indicate economic strength.
-
-### 7. Month-over-Month Growth Rates
-
-Measures economic momentum:
-
-```r
-MoM_Growth (%) = [(D12ₜ - D12ₜ₋₁) / |D12ₜ₋₁|] × 100
-Standardized_MoM = (MoM - mean(MoM)) / sd(MoM)
-```
-
-### Four-Quadrant Framework
-
-| Quadrant | Cycle | Momentum | Phase | Example |
-|----------|-------|----------|-------|---------|
-| **I** | Positive | Positive | Strong expansion | GDP growing and accelerating |
-| **II** | Negative | Positive | Recovery | Below trend but improving |
-| **III** | Negative | Negative | Deep recession | Below trend and deteriorating |
-| **IV** | Positive | Negative | Late expansion | Above trend but slowing |
-
-Movement through quadrants typically follows clockwise pattern: I → IV → III → II → I
-
-## 📊 Output Files
-
-### Individual Category Files (Croatia)
-- `1_vodeci_indikatori.xlsx` - Leading indicators
-- `2_podudarni_proizvodnja.xlsx` - Supply/production indicators
-- `3_podudarni_potrosnja_trgovina.xlsx` - Demand/consumption indicators
-- `4_vanjska_trgovina.xlsx` - External trade indicators
-- `5_kasni_indikatori_stecaj.xlsx` - Lagging indicators
-
-### Combined Files
-- `combined_standardized_MoM_and_Cycle_Croatia.xlsx` - All Croatian indicators
-- `Euro_Area_Business_Cycles_All_Countries.xlsx` - All countries combined
-- `Business_Cycle_[Country].xlsx` - Individual country files (20 countries)
-
-### Data Structure
-
-Each file contains long-format data ready for Flourish Studio:
-
-| Column | Description | Format |
-|--------|-------------|--------|
-| `time` | Month-year | "January 2015", "February 2015", ... |
-| `Varijabla` | Indicator name | "BDP", "Industrijska proizvodnja", ... |
-| `Odstupanje od trenda (%)` | Standardized cycle | Z-score (-3 to +3) |
-| `Mjesečna promjena (%)` | Standardized MoM | Z-score (-3 to +3) |
-
-## 🎨 Visualization in Flourish Studio
-
-### Setup
-
-1. Import the combined Excel file to Flourish
-2. Create **Scatter plot** visualization
-3. Configure axes:
-   - **X-axis:** `Odstupanje od trenda (%)` (Cyclical position)
-   - **Y-axis:** `Mjesečna promjena (%)` (Momentum)
-4. Set **Time slider:** `time` column
-5. Configure **Points:** `Varijabla` (each indicator as separate series)
-
-### Interpretation
-
-**Quadrant positioning:**
-- **Quadrant I (top-right):** Expansion phase - above trend and accelerating
-- **Quadrant II (top-left):** Recovery phase - below trend but improving  
-- **Quadrant III (bottom-left):** Contraction phase - below trend and deteriorating
-- **Quadrant IV (bottom-right):** Peak phase - above trend but slowing
-
-**Point clustering:** When multiple indicators cluster in the same quadrant, the business cycle phase is well-defined and broad-based.
-
-**Indicator movement:** Leading indicators move first, followed by coincident indicators 2-4 months later, and lagging indicators confirm the turn.
-
-## 🔍 Example Usage
-
-### Identifying Recession
-
-A recession is identified when:
-
-1. **Breadth:** Multiple indicators across sectors show negative standardized cycles
-2. **Depth:** Key indicators (GDP, industrial production) below -1.5 standard deviations
-3. **Duration:** Persistent negative cycles for 3+ consecutive months
-4. **Momentum:** Movement from Quadrant I → IV → III indicates approaching/entering recession
-
-### Detecting Turning Points
-
-**Peak detection:**
-- Leading indicators shift from Quadrant I to Quadrant IV
-- Coincident indicators still in Quadrant I
-- Lagging indicators at maximum positive values
-
-**Trough detection:**
-- Leading indicators shift from Quadrant III to Quadrant II
-- Coincident indicators still in Quadrant III
-- Lagging indicators remain elevated
-
-## ⚙️ Configuration
-
-### Time Period
-
-Default: January 2015 onwards
-
-To modify:
-```r
-# In both scripts, locate:
-time_filter <- list(sinceTimePeriod = "2015-01")
-
-# Change to desired start date:
-time_filter <- list(sinceTimePeriod = "2020-01")  # Start from 2020
-```
-
-### Lambda Parameter
-
-Default: λ = 129,600 (Ravn-Uhlig standard for monthly data)
-
-To modify:
-```r
-# Locate HP filter section:
-ytrend_group <- hp2(y_group, lambda = 129600)
-
-# Alternative values:
-ytrend_group <- hp2(y_group, lambda = 14400)    # More variable cycle
-ytrend_group <- hp2(y_group, lambda = 1296000)  # Smoother cycle
-```
-
-**Note:** Changing λ sacrifices comparability with international research.
-
-### Seasonal Adjustment Settings
-
-To modify outlier detection:
-```r
-# Locate seasonal adjustment:
-model <- seas(series_ts,
-              outlier.types = "AO",
-              outlier.critical = 4.0,      # Change this value
-              regression.aictest = NULL)
-
-# More aggressive: 3.0 (detects more outliers)
-# More conservative: 5.0 (detects fewer outliers)
-```
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**1. Package Installation Errors**
-
-```r
-# If eurostat fails, try:
-install.packages("eurostat", dependencies = TRUE)
-
-# If seasonal (X-13) fails on Windows, install Rtools first:
-# Download from: https://cran.r-project.org/bin/windows/Rtools/
-```
-
-**2. Data Download Failures**
-
-```r
-# Check internet connection
-# Eurostat servers occasionally timeout - simply re-run the script
-
-# For persistent issues, check Eurostat API status:
-# https://ec.europa.eu/eurostat/web/main/data/database
-```
-
-**3. Insufficient Data Error**
-
-```
-Error: Insufficient data for group: [name] - need at least 24 months
-```
-
-**Solution:** Some countries or indicators may have shorter data series. The script automatically skips these and continues processing other indicators.
-
-**4. X-11 Decomposition Failures**
-
-The script includes hierarchical fallback:
-1. Standard X-11 → 2. Simplified ARIMA → 3. Random walk → 4. Moving average
-
-Check console output for warnings about which series used fallback methods.
-
-## 📚 References
-
-### Key Publications
-
-**Temporal Disaggregation:**
-- Denton, F. T. (1971). Adjustment of monthly or quarterly series to annual totals. *Journal of the American Statistical Association*, 66(333), 99-102.
-- Cholette, P. A. (1979). Adjusting sub-annual series to yearly benchmarks. *Statistics Canada*.
-
-**Hodrick-Prescott Filter:**
-- Hodrick, R. J., & Prescott, E. C. (1997). Postwar U.S. business cycles: an empirical investigation. *Journal of Money, Credit, and Banking*, 29(1), 1-16.
-- Ravn, M. O., & Uhlig, H. (2002). On adjusting the Hodrick-Prescott filter for the frequency of observations. *Review of Economics and Statistics*, 84(2), 371-376.
-
-**Seasonal Adjustment:**
-- U.S. Census Bureau (2017). *X-13ARIMA-SEATS reference manual, version 1.1*. Washington, DC.
-- Eurostat (2015). *ESS guidelines on seasonal adjustment*. Publications Office of the EU.
-
-**Business Cycle Theory:**
-- Burns, A. F., & Mitchell, W. C. (1946). *Measuring business cycles*. NBER.
-- Kydland, F. E., & Prescott, E. C. (1990). Business cycles: real facts and a monetary myth. *Federal Reserve Bank of Minneapolis Quarterly Review*, 14(2), 3-18.
-
-### Methodological Documentation
-
-For complete methodological details, see:
-- `methodology/business_cycle_methodology.md` (English)
-- `methodology/metodologija_poslovni_ciklus_HR.md` (Croatian)
-
-## 🤝 Contributing
-
-Contributions are welcome! Please:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/NewIndicator`)
-3. Commit your changes (`git commit -m 'Add new indicator'`)
-4. Push to the branch (`git push origin feature/NewIndicator`)
-5. Open a Pull Request
-
-### Potential Contributions
-
-- Additional country-specific indicators
-- Real-time data update automation
-- Short-term forecasting models
-- Alternative filtering methods comparison
-- Visualization templates for different tools
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 👤 Author
-
-**SilvioPokorni**
-- GitHub: [@silviopokorniES](https://github.com/silviopokorniES)
-- LinkedIn: [Silvio Pokorni](https://www.linkedin.com/in/silvio-pokorni-08076a254/)
-
-## 🙏 Acknowledgments
-
-- **Eurostat** for providing comprehensive harmonized macroeconomic statistics
-- **European Central Bank** for financial sector data
-- **R Core Team** and package maintainers for statistical computing tools
-- **Ravn & Uhlig (2002)** for lambda scaling methodology
-- **Denton & Cholette** for temporal disaggregation framework
-
-## 📞 Support
-
-For questions or issues:
-- Open an [Issue](https://github.com/silviopokorniES/Ekonomski-semafori/issues)
-
-## 🔄 Version History
-
-### Unreleased (2026-09-04)
-- OVI index removed (no longer published); 21 indicators for Croatia
-- Bulgaria added to the country list (20 countries; the scripts always processed it)
-- Python port started; see `docs/CHANGELOG.md`
-
-### v1.0.0 (2025-01-21)
-- Initial release
-- 22 indicators for Croatia
-- 13-15 indicators for 19 Euro Area countries
-- Complete methodology documentation
-- Flourish Studio-ready outputs
-
----
-
-**Built with ❤️ using R, Eurostat data, and advanced econometric methods**
-
-**Keywords:** business cycle, macroeconomic analysis, time series decomposition, Hodrick-Prescott filter, seasonal adjustment, Euro Area, Croatia, econometrics, R programming, data visualization
+MIT License. Silvio Pokorni, [@silviopokorniES](https://github.com/silviopokorniES). Co-authors: Valentin Mabić, Zina Nicole Šimić. Issues: https://github.com/silviopokorniES/Ekonomski-semafori/issues
