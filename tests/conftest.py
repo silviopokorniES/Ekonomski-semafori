@@ -9,6 +9,8 @@ FIXTURES = Path(__file__).parent / "fixtures"
 
 
 def fixture_vintages() -> list[Path]:
+    if not FIXTURES.exists():   # the fixtures are not distributed; the parity tests skip without them
+        return []
     return sorted(p for p in FIXTURES.iterdir() if p.is_dir() and (p / "index.csv").exists())
 
 

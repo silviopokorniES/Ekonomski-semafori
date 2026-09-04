@@ -1,6 +1,6 @@
 # data/
 
-Manual monthly inputs for Croatia. The `*.xlsx` files in this folder are ignored by git; only this README is tracked, so a fresh clone contains no data files. Never overwrite, move, or delete a file here without being asked (see CLAUDE.md).
+Manual monthly inputs for Croatia. The `*.xlsx` files in this folder are ignored by git; only this README is tracked, so a fresh clone contains no data files. Never overwrite, move, or delete a file here without being asked.
 
 ## Files
 

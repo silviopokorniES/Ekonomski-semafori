@@ -17,9 +17,9 @@ src/ekonomski_semafori/
   output.py      CSV master and per-indicator files, axis bounds, legacy Excel workbooks
 scripts/         run_monthly.py (the monthly run), identify_x13_models.py (annual re-identification of the X-13 models)
 data/            Croatian Excel inputs (not tracked; see data/README.md)
-tests/           unit tests, parity fixtures from the R reference (tests/fixtures/)
+tests/           unit tests (the parity tests against the R reference need fixtures the maintainer keeps locally; they skip without them)
 legacy/          the R scripts that produced releases up to 2026; kept as the reference, not run
-docs/            changelog, review, trend-method comparison, release notes, the September 2026 plan and task list
+docs/            changelog and the trend-method comparison
 notebooks/       comparison scripts and their results (not part of the monthly run)
 ```
 
@@ -64,7 +64,7 @@ python -m pytest            # unit tests and the parity check against the R fixt
 python -m pytest -m live    # three network checks against Eurostat and the ECB
 ```
 
-The parity test replays the R scripts' configuration on the stored fixtures and must keep passing after methodology changes; it protects the fetch and adjustment layers.
+The parity test replays the R scripts' configuration on stored fixtures (raw Eurostat data and the R outputs of 4 September 2026, not distributed) and must keep passing after methodology changes; it protects the fetch and adjustment layers. On a fresh clone those tests are skipped.
 
 ## Countries
 

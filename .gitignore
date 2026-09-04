@@ -11,6 +11,12 @@ dist/
 data/*.xlsx
 output/
 
+# Local only, kept on disk but not published: the maintainer's notes and plan, the Claude Code rules,
+# and the R parity fixtures (5 MB of raw Eurostat data and R output archives). The parity tests skip without them.
+notes/
+/CLAUDE.md
+tests/fixtures/
+
 # Editors and OS
 .vscode/
 .idea/

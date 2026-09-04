@@ -4,7 +4,7 @@ Changes that affect the published numbers or the indicator set. Newest first.
 
 ## 2026-09-04
 
-- Python pipeline replaces the R scripts. The R output is reproduced by the parity test (tag parity-r) and the scripts stay in legacy/ as the reference. Plan and task list: docs/UPDATE_PLAN.md, docs/TASKS.md.
+- Python pipeline replaces the R scripts. The R output is reproduced by the parity test (tag parity-r) and the scripts stay in legacy/ as the reference.
 - Filters run on the full available history instead of from 2015. This changes every cycle; for Croatian industrial production the 2020 trough moves from -5.2 to -11.7 percent of trend.
 - Long-run trend estimated from the seasonally adjusted series (in logs for growth series) rather than from the Henderson trend; effect under half a percentage point.
 - Momentum is the month-on-month change in the cycle, no longer the growth rate of the Henderson trend centred on the sample mean.

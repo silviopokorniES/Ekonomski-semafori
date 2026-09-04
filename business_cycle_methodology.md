@@ -94,7 +94,7 @@ Cycles are measured relative to each series' own history since 2010, so a dot at
 
 ## 5. Reproducibility
 
-The pipeline is Python 3.12 (environment.yml). The R scripts that produced the earlier releases are kept in legacy/ and their output on 4 September 2026 is stored under tests/fixtures/; the Python code reproduces it to the rounding of the published files when run in the legacy configuration (git tag parity-r). Every published number can be regenerated from the configuration files and the archived data vintage.
+The pipeline is Python 3.12 (environment.yml). The R scripts that produced the earlier releases are kept in legacy/ and their output on 4 September 2026 is archived by the maintainer; the Python code reproduces it to the rounding of the published files when run in the legacy configuration (git tag parity-r). Every published number can be regenerated from the configuration files and the archived data vintage.
 
 ## 6. Planned changes
 
