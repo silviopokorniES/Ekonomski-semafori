@@ -41,6 +41,31 @@ def test_run_indicator_reproduces_r_for_industrial_production(r_fixtures, regist
         assert gap < 1e-4, f"{col}: max abs gap {gap:.2e}"
 
 
+def test_run_indicator_default_method(r_fixtures, registry) -> None:
+    """Revised method on the industrial production fixture: log-level cycle against the
+    HP trend of the SA series, momentum as the change in the cycle, robust z-score on
+    the common window; mechanics checked, numbers are not pinned."""
+    folder, _ = r_fixtures
+    countries, indicators, settings = registry
+    raw = pd.read_csv(next((folder / "HR").glob("*get_eurostat_sts_inpr_m_M-HR-*.csv")))
+    series = pd.Series(raw["values"].to_numpy(float), index=pd.DatetimeIndex(pd.to_datetime(raw["time"])))
+    out = run_indicator(countries["HR"], indicators["industrial_production"], settings, raw=series, as_of=VINTAGE)
+    assert list(out.columns) == ["time", "mom_z", "cycle_z"]
+    assert out["time"].iloc[0] == series.index[1] and out["time"].iloc[-1] == series.index[-1]
+    assert out[["mom_z", "cycle_z"]].notna().all().all()
+    window = out[out["time"] >= pd.Timestamp(settings.zscore_window)]
+    assert abs(window["cycle_z"].median()) < 1e-9          # MAD standardisation centres the window on its median
+    # momentum is the change in the cycle: after standardisation the two z-scores keep that relation up to scale
+    cyc_raw = out["cycle_z"]
+    assert np.corrcoef(cyc_raw.diff().dropna(), out["mom_z"].iloc[1:])[0, 1] > 0.999
+    bankruptcies = replace(indicators["bankruptcies"], counter_cyclical=True)
+    flipped = run_indicator(countries["HR"], bankruptcies, settings, raw=series, as_of=VINTAGE)
+    assert np.corrcoef(flipped["cycle_z"], out["cycle_z"])[0, 1] < -0.999      # inversion flips the cycle
+    tiny_window = replace(settings, zscore_window=date(2026, 1, 1))
+    with pytest.raises(SkippedIndicator, match="standardisation window"):
+        run_indicator(countries["HR"], indicators["industrial_production"], tiny_window, raw=series, as_of=VINTAGE)
+
+
 def test_run_indicator_skips_short_series(registry) -> None:
     countries, indicators, settings = registry
     short = pd.Series(np.linspace(100, 110, 12), index=pd.date_range("2024-01-01", periods=12, freq="MS"))

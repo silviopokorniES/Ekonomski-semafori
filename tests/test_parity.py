@@ -22,7 +22,7 @@ from conftest import fixture_vintages
 from ekonomski_semafori.config import load_countries, load_indicators, load_settings
 from ekonomski_semafori.fetch import EmptyResponseError
 from ekonomski_semafori.pipeline import run_indicator
-from parity import VINTAGE, r_output, raw_series
+from parity import VINTAGE, as_r, r_output, raw_series
 
 COUNTRIES = ("HR", "AT", "EL")
 
@@ -66,7 +66,7 @@ def setup():
 @pytest.mark.parametrize("code,indicator_id", _pairs())
 def test_pair_matches_r(setup, code: str, indicator_id: str) -> None:
     folder, index, countries, indicators, settings, outputs = setup
-    country, indicator = countries[code], indicators[indicator_id]
+    country, indicator = countries[code], as_r(indicators[indicator_id])
     expected = outputs[code]
     expected = expected[expected["name_hr"] == indicator.name_hr].set_index("time")
     if (code, indicator_id) in CONSISTENT_SKIPS:

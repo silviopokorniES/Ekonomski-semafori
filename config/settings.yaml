@@ -1,11 +1,16 @@
 # Pipeline-wide settings. Indicator-specific settings live in indicators.yaml, country
-# overrides in countries.yaml.
+# overrides in countries.yaml. Filters always run on the full available history.
 hp_lambda: 129600          # Ravn-Uhlig monthly: 1600 * (12/4)^4 = 1600 * 81. (The R comment "1600 * 12^4" is wrong.)
-min_observations: 24       # skip an indicator with fewer monthly observations
+min_observations: 24       # skip an indicator with fewer observations after trend extraction, or whose last observation is older than this many months
 min_seasonal_obs: 36       # below this many observations X-13 is skipped and the raw series is used
-output_start: 2015-02-01   # first month written to output; filters always run on the full history
-trend_method: hp           # long-run trend function in trend.py; hp_on_d12 is added temporarily in task 2.3
-zscore_window: full        # full | ex_covid (task 3.7)
+output_start: 2015-02-01   # first month written to output
+trend_method: hp           # long-run trend for indicators with long_run hp; hp_on_d12 reproduces the R reference with its legacy formulas (parity test only)
+momentum: cycle_change     # cycle_change: month-on-month change in the cycle; d12_growth: percent change of the Henderson trend (legacy)
+zscore_window: 2010-01-01  # full | ex_covid | a start date shared by every indicator and country; parameters come from the window, all observations are standardised
+zscore_scale: mad          # sd: mean and sample standard deviation; mad: median and 1.4826 times the median absolute deviation
+zscore_min_obs: 84         # an indicator with fewer observations in the window is skipped (about one full cycle)
+zscore_end: null           # null: window runs to the latest observation; a date freezes the parameters (set at the annual review)
+axis_clip: 3               # z-scores beyond this are clipped in the published files and flagged; the vintage archive keeps the raw values
 x13:                       # same settings as adjust_series_x13 in the R scripts
   outlier_types: AO
   outlier_critical: 4.0

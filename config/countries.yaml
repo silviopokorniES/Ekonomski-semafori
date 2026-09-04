@@ -27,13 +27,7 @@ countries:
     name_hr: Grčka
     ecb_code: GR              # in R reference (ostale_zemlje.R ecb_country_codes)
   IE: {name_en: Ireland, name_hr: Irska}
-  IT:
-    name_en: Italy
-    name_hr: Italija
-    overrides:
-      unemployment:           # planned, not in R reference: Eurostat has no TC series for IT
-        filters: {s_adj: SA}
-        skip_henderson: false
+  IT: {name_en: Italy, name_hr: Italija}
   LV: {name_en: Latvia, name_hr: Latvija}
   LT: {name_en: Lithuania, name_hr: Litva}
   LU: {name_en: Luxembourg, name_hr: Luksemburg}

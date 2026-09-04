@@ -86,7 +86,8 @@ _SOURCE_FIELDS: dict[str, frozenset[str]] = {
     "local": frozenset({"path", "column"}),
 }
 _ALL_SOURCE_FIELDS = frozenset().union(*_SOURCE_FIELDS.values())
-_INDICATOR_OPTIONAL = frozenset({"skip_henderson", "start", "impute"})
+_INDICATOR_OPTIONAL = frozenset({"skip_henderson", "start", "impute", "long_run"})
+LONG_RUN = frozenset({"hp", "mean", "none"})
 
 
 @dataclass(frozen=True)
@@ -110,6 +111,7 @@ class Indicator:
     skip_henderson: bool = False
     start: date | None = None
     impute: bool = False
+    long_run: str = "hp"
     dataset: str | None = None
     filters: dict[str, str] | None = None
     series_key: str | None = None
@@ -153,6 +155,11 @@ def _parse_indicator(entry: dict[str, Any]) -> Indicator:
     start = entry.get("start")
     if start is not None and not isinstance(start, date):
         raise ValueError(f"indicator {ind_id}: start must be a date (YYYY-MM-DD)")
+    long_run = entry.get("long_run", "hp")
+    if long_run not in LONG_RUN:
+        raise ValueError(f"indicator {ind_id}: long_run must be one of {sorted(LONG_RUN)}")
+    if long_run == "none" and entry["transform"] != "difference":
+        raise ValueError(f"indicator {ind_id}: long_run none is only meaningful with the difference transform")
     if skip_henderson and not entry["already_sa"]:
         raise ValueError(f"indicator {ind_id}: skip_henderson requires already_sa")
 
@@ -198,6 +205,7 @@ def _parse_indicator(entry: dict[str, Any]) -> Indicator:
         skip_henderson=skip_henderson,
         start=start,
         impute=impute,
+        long_run=long_run,
         dataset=entry.get("dataset"),
         filters=filters,
         series_key=entry.get("series_key"),
@@ -251,11 +259,13 @@ def check_overrides(countries: dict[str, Country], indicators: list[Indicator]) 
             merge_override(by_id[ind_id], override)
 
 
-TREND_METHODS = frozenset({"hp", "hp_on_d12"})   # hp_on_d12 is temporary, for the task 2.3 parity check
-ZSCORE_WINDOWS = frozenset({"full", "ex_covid"})
+TREND_METHODS = frozenset({"hp", "hp_on_d12"})   # hp_on_d12 reproduces the R reference (parity regression test)
+ZSCORE_WINDOWS = frozenset({"full", "ex_covid"})   # or a start date
+MOMENTUM = frozenset({"cycle_change", "d12_growth"})
+ZSCORE_SCALES = frozenset({"sd", "mad"})
 _SETTINGS_REQUIRED = frozenset({
     "hp_lambda", "min_observations", "min_seasonal_obs", "output_start",
-    "trend_method", "zscore_window", "x13",
+    "trend_method", "momentum", "zscore_window", "zscore_scale", "zscore_min_obs", "zscore_end", "axis_clip", "x13",
 })
 _X13_KEYS = frozenset({"outlier_types", "outlier_critical", "aictest"})
 
@@ -269,7 +279,12 @@ class Settings:
     min_seasonal_obs: int
     output_start: date
     trend_method: str
-    zscore_window: str
+    momentum: str
+    zscore_window: str | date
+    zscore_scale: str
+    zscore_min_obs: int
+    zscore_end: date | None
+    axis_clip: float
     x13: dict[str, Any]
 
 
@@ -291,8 +306,18 @@ def load_settings(path: Path = CONFIG_DIR / "settings.yaml") -> Settings:
         raise ValueError(f"{path}: output_start must be a date (YYYY-MM-DD)")
     if raw["trend_method"] not in TREND_METHODS:
         raise ValueError(f"{path}: trend_method must be one of {sorted(TREND_METHODS)}")
-    if raw["zscore_window"] not in ZSCORE_WINDOWS:
-        raise ValueError(f"{path}: zscore_window must be one of {sorted(ZSCORE_WINDOWS)}")
+    if raw["zscore_window"] not in ZSCORE_WINDOWS and not isinstance(raw["zscore_window"], date):
+        raise ValueError(f"{path}: zscore_window must be one of {sorted(ZSCORE_WINDOWS)} or a start date")
+    if raw["momentum"] not in MOMENTUM:
+        raise ValueError(f"{path}: momentum must be one of {sorted(MOMENTUM)}")
+    if raw["zscore_scale"] not in ZSCORE_SCALES:
+        raise ValueError(f"{path}: zscore_scale must be one of {sorted(ZSCORE_SCALES)}")
+    if not isinstance(raw["zscore_min_obs"], int) or isinstance(raw["zscore_min_obs"], bool) or raw["zscore_min_obs"] <= 0:
+        raise ValueError(f"{path}: zscore_min_obs must be a positive integer")
+    if raw["zscore_end"] is not None and not isinstance(raw["zscore_end"], date):
+        raise ValueError(f"{path}: zscore_end must be null or a date")
+    if not isinstance(raw["axis_clip"], (int, float)) or isinstance(raw["axis_clip"], bool) or raw["axis_clip"] <= 0:
+        raise ValueError(f"{path}: axis_clip must be a positive number")
     x13 = raw["x13"]
     if not isinstance(x13, dict) or set(x13) != _X13_KEYS:
         raise ValueError(f"{path}: x13 must have exactly the keys {sorted(_X13_KEYS)}")
@@ -302,6 +327,11 @@ def load_settings(path: Path = CONFIG_DIR / "settings.yaml") -> Settings:
         min_seasonal_obs=raw["min_seasonal_obs"],
         output_start=raw["output_start"],
         trend_method=raw["trend_method"],
+        momentum=raw["momentum"],
         zscore_window=raw["zscore_window"],
+        zscore_scale=raw["zscore_scale"],
+        zscore_min_obs=raw["zscore_min_obs"],
+        zscore_end=raw["zscore_end"],
+        axis_clip=float(raw["axis_clip"]),
         x13=dict(x13),
     )

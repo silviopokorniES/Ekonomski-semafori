@@ -6,7 +6,8 @@ Outputs, under an output directory:
 - all_countries_long.csv: one row per (indicator, category, country, month) from
   settings.output_start, columns time (ISO, first of month), label (Croatian
   month name and year), country, country_name, category, indicator_id,
-  indicator_name_hr, indicator_name_en, mom_z, cycle_z.
+  indicator_name_hr, indicator_name_en, mom_z, cycle_z (clipped at
+  settings.axis_clip), clipped (true where a value was clipped).
 - by_indicator/<indicator_id>.csv: filtered views of the master file.
 - axis_bounds.csv: min and max of mom_z and cycle_z per (scope, category) where
   scope is a country code or ALL, plus per indicator across countries.
@@ -41,7 +42,7 @@ HR_MONTHS = ["siječanj", "veljača", "ožujak", "travanj", "svibanj", "lipanj",
              "srpanj", "kolovoz", "rujan", "listopad", "studeni", "prosinac"]
 LEGACY_COLUMNS = {"mom_z": "Mjesečna promjena (%)", "cycle_z": "Odstupanje od trenda (%)", "indicator_name_hr": "Varijabla"}
 MASTER_COLUMNS = ["time", "label", "country", "country_name", "category", "indicator_id",
-                  "indicator_name_hr", "indicator_name_en", "mom_z", "cycle_z"]
+                  "indicator_name_hr", "indicator_name_en", "mom_z", "cycle_z", "clipped"]
 
 
 def build_long(panel: pd.DataFrame, countries: dict[str, Country], indicators: list[Indicator], settings: Settings) -> pd.DataFrame:
@@ -55,6 +56,9 @@ def build_long(panel: pd.DataFrame, countries: dict[str, Country], indicators: l
     rows["indicator_name_hr"] = rows["indicator_id"].map(lambda i: by_id[i].name_hr)
     rows["indicator_name_en"] = rows["indicator_id"].map(lambda i: by_id[i].name_en)
     rows["label"] = [f"{HR_MONTHS[t.month - 1]} {t.year}" for t in rows["time"]]
+    clip = settings.axis_clip
+    rows["clipped"] = (rows["mom_z"].abs() > clip) | (rows["cycle_z"].abs() > clip)
+    rows[["mom_z", "cycle_z"]] = rows[["mom_z", "cycle_z"]].clip(-clip, clip)
     order = {c: n for n, c in enumerate(CATEGORY_SHEETS)}
     rows["_cat"] = rows["category"].map(order)
     rows = rows.sort_values(["country", "_cat", "indicator_id", "time"], ignore_index=True).drop(columns="_cat")
@@ -133,7 +137,8 @@ def write_legacy_excel(long: pd.DataFrame, countries: dict[str, Country], out_di
 
 
 def write_all(panel: pd.DataFrame, countries: dict[str, Country], indicators: list[Indicator], settings: Settings, out_dir: Path) -> pd.DataFrame:
-    """Build the long panel and write every output; returns the long panel."""
+    """Build the long panel and write every output; returns the long panel (clipped
+    values). The unclipped panel is what run_monthly.py archives as a vintage."""
     long = build_long(panel, countries, indicators, settings)
     write_csv_outputs(long, out_dir)
     write_legacy_excel(long, countries, out_dir / "legacy")

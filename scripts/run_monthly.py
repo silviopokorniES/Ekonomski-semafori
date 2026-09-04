@@ -6,8 +6,8 @@ Usage (inside the semafori conda environment, from the repository root):
 Outputs under DIR (default output/): all_countries_long.csv, by_indicator/,
 axis_bounds.csv, legacy/ (see output.py), logs/<date>.log,
 Processing_Summary.csv (country, indicators processed, indicators skipped,
-first and last month), and vintages/<date>.csv, an archive of the long panel
-for revision analysis. Any infrastructure failure raises and the process exits
+first and last month), and vintages/<date>.csv, an archive of the unclipped
+panel for revision analysis. Any infrastructure failure raises and the process exits
 non-zero; data skips are listed in the log and in the summary.
 """
 
@@ -41,9 +41,9 @@ def main() -> None:
     countries, indicators, settings = load_countries(), load_indicators(), load_settings()
     skips: list[tuple[str, str, str]] = []
     panel = run_all(countries, indicators, settings, skips=skips)
-    long = write_all(panel, countries, indicators, settings, args.output)
+    write_all(panel, countries, indicators, settings, args.output)
     (args.output / "vintages").mkdir(exist_ok=True)
-    long.to_csv(args.output / "vintages" / f"{today}.csv", index=False, encoding="utf-8-sig", date_format="%Y-%m-%d")
+    panel.to_csv(args.output / "vintages" / f"{today}.csv", index=False, encoding="utf-8-sig", date_format="%Y-%m-%d")
     summary = (
         panel.groupby("country")
         .agg(indicators_processed=("indicator_id", "nunique"), first_month=("time", "min"), last_month=("time", "max"))

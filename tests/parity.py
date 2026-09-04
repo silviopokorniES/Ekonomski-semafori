@@ -13,10 +13,16 @@ from pathlib import Path
 
 import pandas as pd
 
-from ekonomski_semafori.config import Country, Indicator
+from ekonomski_semafori.config import Country, Indicator, merge_override
 from ekonomski_semafori.fetch import EmptyResponseError, fetch_local
 
 VINTAGE = date(2026, 9, 4)   # reference month for the stale-series guard when replaying fixtures
+R_CONFIG = {"unemployment": {"filters": {"s_adj": "TC"}, "skip_henderson": True}}   # what the R scripts did
+
+
+def as_r(indicator: Indicator) -> Indicator:
+    """The indicator as the R reference configured it."""
+    return merge_override(indicator, R_CONFIG.get(indicator.id, {}))
 
 R_MONTHS = {m: i for i, m in enumerate(
     ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], 1)}

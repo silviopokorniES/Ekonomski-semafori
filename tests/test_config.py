@@ -42,9 +42,9 @@ def test_overrides_validate_and_merge() -> None:
     indicators = load_indicators()
     check_overrides(countries, indicators)
     by_id = {i.id: i for i in indicators}
-    italy = merge_override(by_id["unemployment"], countries["IT"].overrides["unemployment"])
-    assert italy.filters["s_adj"] == "SA" and italy.filters["age"] == "TOTAL"
-    assert italy.skip_henderson is False
+    assert not countries["IT"].overrides
+    legacy = merge_override(by_id["unemployment"], {"filters": {"s_adj": "TC"}, "skip_henderson": True})
+    assert legacy.filters["s_adj"] == "TC" and legacy.filters["age"] == "TOTAL" and legacy.skip_henderson
     assert merge_override(by_id["npl"], countries["SK"].overrides["npl"]).start == date(2018, 1, 1)
     assert merge_override(by_id["npl"], countries["BG"].overrides["npl"]).impute is True
     with pytest.raises(ValueError):
@@ -73,10 +73,11 @@ def test_indicator_counts() -> None:
     assert "ovi" not in by_id
 
 
-def test_unemployment_reproduces_r() -> None:
+def test_unemployment_uses_sa_and_henderson() -> None:
     unemployment = {i.id: i for i in load_indicators()}["unemployment"]
-    assert unemployment.filters["s_adj"] == "TC"
-    assert unemployment.skip_henderson is True
+    assert unemployment.filters["s_adj"] == "SA"
+    assert unemployment.skip_henderson is False
+    assert unemployment.long_run == "hp"
 
 
 @pytest.mark.parametrize(
@@ -87,6 +88,7 @@ def test_unemployment_reproduces_r() -> None:
         {"skip_henderson": True, "already_sa": False},             # skipping Henderson needs an adjusted input
         {"dataset": None},                                         # required source field present but empty
         {"category": ["supply", "supply"]},                        # duplicate category
+        {"long_run": "none"},                                      # none needs the difference transform
     ],
 )
 def test_parse_indicator_rejects(change: dict) -> None:
@@ -98,11 +100,14 @@ def test_settings(tmp_path: Path) -> None:
     settings = load_settings()
     assert settings.hp_lambda == 129600
     assert settings.output_start == date(2015, 2, 1)
+    assert settings.momentum == "cycle_change" and settings.zscore_scale == "mad"
+    assert settings.zscore_window == date(2010, 1, 1) and settings.zscore_min_obs == 84 and settings.zscore_end is None
     assert settings.x13 == {"outlier_types": "AO", "outlier_critical": 4.0, "aictest": None}
     bad = tmp_path / "settings.yaml"
     bad.write_text(
         "hp_lambda: 129600\nmin_observations: 24\nmin_seasonal_obs: 36\n"
         "output_start: 2015-02-01\ntrend_method: bandpass\nzscore_window: full\n"
+        "momentum: cycle_change\nzscore_scale: mad\nzscore_min_obs: 84\nzscore_end: null\naxis_clip: 3\n"
         "x13: {outlier_types: AO, outlier_critical: 4.0, aictest: null}\n",
         encoding="utf-8",
     )

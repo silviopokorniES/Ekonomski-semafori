@@ -5,24 +5,24 @@ Outputs: run_indicator returns a DataFrame [time, mom_z, cycle_z] over the full
 computed sample; run_all returns the long panel [country, indicator_id, time,
 mom_z, cycle_z] for every configured pair that ran, and logs each skipped pair
 with its reason.
-Order per indicator, as in the R process_group: fetch, apply the country
-override, optional start truncation, gap handling (see _contiguous), stale-series
-guard, disaggregate quarterly to monthly, seasonally adjust unless already
-adjusted (X-13 needs at least settings.min_seasonal_obs observations, otherwise
-the raw series is used, as in R), short-run trend (Henderson unless
-skip_henderson), long-run trend (settings.trend_method), cycle and MoM,
-z-score, sign inversion. Inversion commutes with the z-score; task 3.5 moves it
-before the z-score to match the documented order.
-The first cycle observation is dropped after z-scoring so the frame starts
-where MoM starts, exactly as R does (scale then slice(-1)).
+Order per indicator: fetch, apply the country override, optional start
+truncation, gap handling (see _contiguous), stale-series guard, disaggregate
+quarterly to monthly, seasonally adjust unless already adjusted (X-13 needs at
+least settings.min_seasonal_obs observations, otherwise the raw series is used),
+short-run trend (Henderson unless skip_henderson), long-run trend on the level()
+scale (HP of 100 ln SA under the ratio transform, of SA under difference; or the
+window mean; or zero, per the indicator's long_run field), cycle, momentum
+(change in the cycle, or the legacy percent change of the trend), sign
+inversion, z-score on the reference window. The first row is dropped because
+momentum starts one month later.
 Skips versus failures: a pair is skipped (logged, run continues) only for data
-reasons (SkippedIndicator, EmptyResponseError, a per-series X13Error). Anything
-else (network errors, a missing X-13 binary, a missing local file, a bad
-config) aborts the run, so an outage can never be published as "no data".
-Temporary parity settings (task 2.3, removed in Phase 3): trend_method
-hp_on_d12 estimates the long-run trend from the Henderson trend instead of the
-SA series; history_start truncates the fetched Eurostat history the way the R
-scripts' sinceTimePeriod filter did.
+reasons (SkippedIndicator, EmptyResponseError, a per-series X13Error, too few
+observations in the standardisation window). Anything else (network errors, a
+missing X-13 binary, a missing local file, a bad config) aborts the run, so an
+outage can never be published as "no data".
+Parity mode: trend_method hp_on_d12 runs the R reference formulas (_legacy) and
+history_start truncates the Eurostat history as the R scripts' sinceTimePeriod
+filter did; both exist only for tests/test_parity.py.
 """
 
 from __future__ import annotations
@@ -129,17 +129,37 @@ def run_indicator(
     if len(short) < settings.min_observations:
         raise SkippedIndicator(f"{len(short)} observations after trend extraction, need {settings.min_observations}")
     if settings.trend_method == "hp_on_d12":
-        long = trend.hp(short, settings.hp_lambda)
+        return _legacy(short, indicator, settings)
+    sa = sa.reindex(short.index)
+    level_sa = cyc.level(sa, indicator.transform)
+    if indicator.long_run == "hp":
+        long = LONG_RUN_TRENDS[settings.trend_method](level_sa, lam=settings.hp_lambda)
+    elif indicator.long_run == "mean":
+        long = pd.Series(level_sa[cyc.window_mask(level_sa.index, settings.zscore_window, settings.zscore_end)].mean(), index=short.index)
     else:
-        long = LONG_RUN_TRENDS[settings.trend_method](sa, lam=settings.hp_lambda).reindex(short.index)
-    frame = pd.DataFrame({
-        "cycle": cyc.cycle(short, long, indicator.transform),
-        "mom": cyc.mom(short, indicator.transform),
-    })
-    standardised = pd.DataFrame({
-        "cycle": cyc.zscore(frame["cycle"], settings.zscore_window),
-        "mom": cyc.zscore(frame["mom"], settings.zscore_window),
-    }).iloc[1:]
+        long = pd.Series(0.0, index=short.index)
+    cycle = cyc.cycle(short, long, indicator.transform)
+    mom = cyc.momentum(cycle) if settings.momentum == "cycle_change" else cyc.mom(short, indicator.transform)
+    frame = cyc.invert(pd.DataFrame({"cycle": cycle, "mom": mom}).iloc[1:], indicator.counter_cyclical)
+    try:
+        standardised = pd.DataFrame({
+            col: cyc.zscore(frame[col], settings.zscore_window, settings.zscore_scale, settings.zscore_min_obs, settings.zscore_end)
+            for col in ("cycle", "mom")
+        })
+    except ValueError as err:
+        raise SkippedIndicator(str(err)) from err
+    out = standardised.rename(columns={"cycle": "cycle_z", "mom": "mom_z"}).reset_index(names="time")
+    return out[["time", "mom_z", "cycle_z"]]
+
+
+def _legacy(short: pd.Series, indicator: Indicator, settings: Settings) -> pd.DataFrame:
+    """The R reference computation, kept for the parity regression test: HP on the
+    Henderson trend in levels, cycle in percent of trend, percent change of the
+    trend as momentum, z-score on the full sample with mean and sd, then the
+    first row dropped and the sign inverted."""
+    long = trend.hp(short, settings.hp_lambda)
+    frame = pd.DataFrame({"cycle": cyc.cycle_percent_of_trend(short, long), "mom": cyc.mom(short, indicator.transform)})
+    standardised = pd.DataFrame({col: cyc.zscore(frame[col]) for col in ("cycle", "mom")}).iloc[1:]
     standardised = cyc.invert(standardised, indicator.counter_cyclical)
     out = standardised.rename(columns={"cycle": "cycle_z", "mom": "mom_z"}).reset_index(names="time")
     return out[["time", "mom_z", "cycle_z"]]
