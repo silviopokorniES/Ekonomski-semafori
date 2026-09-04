@@ -2,7 +2,7 @@
 
 Monthly business cycle clocks for Croatia and 20 other European countries, published as animated scatter plots in Flourish. For each indicator the pipeline computes where its trend-cycle stands relative to its long-run trend (the cycle) and how fast that position is changing (momentum), standardises both, and writes the files the charts read.
 
-Developed at the Faculty of Economics and Business, University of Zagreb (EFZG). Methodology: [business_cycle_methodology.md](business_cycle_methodology.md) (English), [metodologija.md](metodologija.md) (Croatian). Changes that affect the numbers: [docs/CHANGELOG.md](docs/CHANGELOG.md).
+Developed at the Faculty of Economics and Business, University of Zagreb (EFZG). Methodology: [business_cycle_methodology.md](business_cycle_methodology.md). Changes that affect the numbers: [docs/CHANGELOG.md](docs/CHANGELOG.md).
 
 ## Layout
 

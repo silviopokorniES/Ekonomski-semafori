@@ -1,6 +1,6 @@
 # Ekonomski semafori: methodology
 
-Version 2.0, September 2026. Faculty of Economics and Business, University of Zagreb (EFZG). Croatian version: metodologija.md.
+Version 2.0, September 2026. Faculty of Economics and Business, University of Zagreb (EFZG).
 
 ## 1. What the clock shows
 
