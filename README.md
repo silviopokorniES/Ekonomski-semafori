@@ -19,7 +19,7 @@ The methodology transforms diverse macroeconomic indicators into a two-dimension
 ## 🎯 Key Features
 
 - **21 indicators for Croatia** including unique local data sources (vehicle registrations, insured persons)
-- **13-15 indicators for 19 other Euro Area countries** (Austria, Belgium, Cyprus, Estonia, Finland, France, Germany, Greece, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Portugal, Slovakia, Slovenia, Spain)
+- **Up to 18 indicators (typically 13-15 available) for 20 other countries** (Austria, Belgium, Bulgaria, Cyprus, Estonia, Finland, France, Germany, Greece, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Portugal, Slovakia, Slovenia, Spain)
 - **Automated data retrieval** from Eurostat and ECB Statistical Data Warehouse
 - **Robust error handling** with hierarchical fallback strategies
 - **Publication-ready outputs** in Excel format for Flourish Studio visualization
@@ -27,21 +27,22 @@ The methodology transforms diverse macroeconomic indicators into a two-dimension
 ## 📁 Repository Structure
 
 ```
-business-cycle-analysis/
-├── README.md                           # This file
-├── samo_hrvatska.R                     # Croatia-specific analysis (22 indicators)
-├── ostatak_zemalja.R          # Analysis for 19 other Euro Area countries
-├── methodology/
-│   ├── business_cycle_methodology.md  # Complete methodology (English)
-│   └── metodologija_poslovni_ciklus_HR.md  # Methodology (Croatian)
-├── output/                            # Generated Excel files (not tracked)
-│   ├── 1_vodeci_indikatori.xlsx
-│   ├── 2_podudarni_proizvodnja.xlsx
-│   ├── 3_podudarni_potrosnja_trgovina.xlsx
-│   ├── 4_vanjska_trgovina.xlsx
-│   ├── 5_kasni_indikatori_stecaj.xlsx
-│   └── combined_standardized_MoM_and_Cycle_*.xlsx
-└── .gitignore
+Ekonomski-semafori/
+├── README.md                        # This file
+├── CLAUDE.md, UPDATE_PLAN.md, TASKS.md   # Port plan and working rules
+├── business_cycle_methodology.md    # Complete methodology (English)
+├── metodologija.md                  # Methodology (Croatian)
+├── skripte/
+│   ├── samo_hrvatska.R              # Croatia-specific analysis (21 indicators), R reference
+│   └── ostale_zemlje.R              # Analysis for 20 other countries, R reference
+├── config/                          # Python port: countries, indicators, settings (YAML)
+├── src/ekonomski_semafori/          # Python port: fetch, adjust, trend, cycle, pipeline, output
+├── scripts/run_monthly.py           # Python port: monthly production run
+├── tests/
+├── data/                            # Croatian Excel inputs (xlsx not tracked, see data/README.md)
+├── docs/CHANGELOG.md
+├── environment.yml, pyproject.toml
+└── output/                          # Generated files (not tracked)
 ```
 
 ## 🔧 Installation
@@ -86,7 +87,7 @@ install.packages(c(
 
 ## 🐍 Python port (in progress)
 
-The pipeline is being ported from R to Python (see `UPDATE_PLAN.md` and `TASKS.md`). The R scripts in `skripte/` remain the reference implementation until the parity check passes. Note: the file is `skripte/ostale_zemlje.R`, not `ostatak_zemalja.R` as written below.
+The pipeline is being ported from R to Python (see `UPDATE_PLAN.md` and `TASKS.md`). The R scripts in `skripte/` remain the reference implementation until the parity check passes.
 
 ### Environment
 
@@ -120,7 +121,7 @@ Croatian Excel inputs live in `data/` and are not tracked by git. See `data/READ
 setwd("path/to/business-cycle-analysis")
 
 # Load the script
-source("samo_hrvatska.R")
+source("skripte/samo_hrvatska.R")
 
 # The script will:
 # 1. Download data from Eurostat, ECB, and local sources
@@ -133,10 +134,10 @@ source("samo_hrvatska.R")
 
 ```r
 # Load the script
-source("ostatak_zemalja.R")
+source("skripte/ostale_zemlje.R")
 
 # The script will:
-# 1. Process all 19 Euro Area countries sequentially
+# 1. Process all 20 countries sequentially
 # 2. Generate individual country files with separate sheets
 # 3. Create a master file combining all countries
 # 4. Display processing summary statistics
@@ -286,7 +287,7 @@ Standardized_MoM = (MoM - mean(MoM)) / sd(MoM)
 | **I** | Positive | Positive | Strong expansion | GDP growing and accelerating |
 | **II** | Negative | Positive | Recovery | Below trend but improving |
 | **III** | Negative | Negative | Deep recession | Below trend and deteriorating |
-| **IV** | Positive | Positive | Late expansion | Above trend but slowing |
+| **IV** | Positive | Negative | Late expansion | Above trend but slowing |
 
 Movement through quadrants typically follows clockwise pattern: I → IV → III → II → I
 
@@ -302,7 +303,7 @@ Movement through quadrants typically follows clockwise pattern: I → IV → III
 ### Combined Files
 - `combined_standardized_MoM_and_Cycle_Croatia.xlsx` - All Croatian indicators
 - `Euro_Area_Business_Cycles_All_Countries.xlsx` - All countries combined
-- `Business_Cycle_[Country].xlsx` - Individual country files (19 countries)
+- `Business_Cycle_[Country].xlsx` - Individual country files (20 countries)
 
 ### Data Structure
 
@@ -511,10 +512,14 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 📞 Support
 
 For questions or issues:
-- Open an [Issue](https://github.com/yourusername/business-cycle-analysis/issues)
-- Email: your.email@example.com
+- Open an [Issue](https://github.com/silviopokorniES/Ekonomski-semafori/issues)
 
 ## 🔄 Version History
+
+### Unreleased (2026-09-04)
+- OVI index removed (no longer published); 21 indicators for Croatia
+- Bulgaria added to the country list (20 countries; the scripts always processed it)
+- Python port started; see `docs/CHANGELOG.md`
 
 ### v1.0.0 (2025-01-21)
 - Initial release
