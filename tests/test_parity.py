@@ -46,7 +46,7 @@ CONSISTENT_SKIPS = {
 }
 
 
-NOT_IN_R = {"esi", "consumer_confidence", "order_books", "term_spread"}   # added after the R scripts were retired
+NOT_IN_R = {"esi", "consumer_confidence", "order_books", "term_spread", "gva", "capacity_utilisation", "house_prices", "loans_nfc"}   # added after the R scripts were retired
 
 
 def _pairs() -> list[tuple[str, str]]:

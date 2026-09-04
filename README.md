@@ -19,7 +19,7 @@ scripts/run_monthly.py   the monthly run
 data/            Croatian Excel inputs (not tracked; see data/README.md)
 tests/           unit tests, parity fixtures from the R reference (tests/fixtures/)
 legacy/          the R scripts that produced releases up to 2026; kept as the reference, not run
-docs/            changelog, reviews, trend-method comparison, note for the co-authors
+docs/            changelog, reviews, trend-method comparison, release notes
 notebooks/       comparison scripts and their results (not part of the monthly run)
 ```
 
@@ -51,7 +51,7 @@ python scripts/run_monthly.py
 
 The run takes about 25 minutes for 21 countries. It writes to `output/`: `all_countries_long.csv` (one row per indicator, category, country and month from February 2015), `by_indicator/<id>.csv`, `axis_bounds.csv`, `legacy/` (the Excel layout the current Flourish charts use), `logs/<date>.log`, `Processing_Summary.csv` (what ran and what was skipped, with reasons), and `vintages/<date>.csv` (the unclipped panel, archived for revision analysis). Data problems (a series Eurostat does not publish for a country, a stale series) are skipped and listed; a network failure or a missing binary stops the run, so an outage is never published as missing data.
 
-Master file columns: `time` (ISO date), `label` (Croatian month and year), `country`, `country_name`, `category`, `indicator_id`, `indicator_name_hr`, `indicator_name_en`, `mom_z`, `cycle_z`, `clipped`. Files are UTF-8 with a byte order mark so Excel shows diacritics.
+Master file columns: `time` (ISO date), `label` (Croatian month and year), `country`, `country_name`, `category`, `indicator_id`, `panel` (main, confirmation or financial), `indicator_name_hr`, `indicator_name_en`, `mom_z`, `cycle_z`, `clipped`. Files are UTF-8 with a byte order mark so Excel shows diacritics.
 
 ## Adding an indicator
 
@@ -68,7 +68,7 @@ The parity test replays the R scripts' configuration on the stored fixtures and 
 
 ## Countries
 
-Croatia, plus Austria, Belgium, Bulgaria, Cyprus, Estonia, Finland, France, Germany, Greece, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Portugal, Slovakia, Slovenia and Spain. Croatia has 25 indicators; the others have up to 22, depending on Eurostat coverage.
+Croatia, plus Austria, Belgium, Bulgaria, Cyprus, Estonia, Finland, France, Germany, Greece, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Portugal, Slovakia, Slovenia and Spain. Croatia has 29 indicators; the others have up to 26, depending on Eurostat coverage.
 
 ## Data sources
 
@@ -76,4 +76,4 @@ Eurostat (short-term business statistics, national accounts, balance of payments
 
 ## License and contact
 
-MIT License. Silvio Pokorni, [@silviopokorniES](https://github.com/silviopokorniES). Co-authors: Valentin Mabić, Zina Nicole Šimić. Issues: https://github.com/silviopokorniES/Ekonomski-semafori/issues
+MIT License. Silvio Pokorni, [@silviopokorniES](https://github.com/silviopokorniES). Issues: https://github.com/silviopokorniES/Ekonomski-semafori/issues

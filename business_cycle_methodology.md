@@ -8,7 +8,7 @@ Each indicator is a dot on a two-axis chart, one frame per month. The vertical a
 
 The four quadrants are read in the growth-cycle sense of Mintz (1969): expansion (above trend and rising), slowdown (above trend and falling), contraction (below trend and falling), recovery (below trend and rising). Contraction therefore means below trend and slowing, not necessarily falling output. A dot moves clockwise through the quadrants over a typical cycle.
 
-Croatia has 25 indicators, the other 20 countries have up to 22, depending on what Eurostat publishes for each. The countries are the 19 euro area members other than Croatia plus Bulgaria.
+Croatia has 29 indicators, the other 20 countries have up to 26, depending on what Eurostat publishes for each. Each indicator carries a panel label: main for the coincident clock, confirmation for the lagging series, financial for the financial-cycle series, so that the charts can show them apart. The countries are the 19 euro area members other than Croatia plus Bulgaria.
 
 ## 2. Data
 
@@ -25,6 +25,8 @@ All series are taken at the longest history the source publishes. Eurostat serie
 | Leading | New passenger car registrations (DZS) (Novo registrirana osobna vozila), Croatia only | DZS, Excel input | monthly | no |
 | Leading | New freight vehicle registrations (DZS) (Novo registrirana teretna vozila), Croatia only | DZS, Excel input | monthly | no |
 | Supply | GDP (BDP), also under demand | Eurostat namq_10_gdp | quarterly | yes |
+| Supply | Real gross value added (Realna bruto dodana vrijednost) | Eurostat namq_10_a10 | quarterly | yes |
+| Supply | Capacity utilisation in industry (Iskorištenost kapaciteta u industriji), level | Eurostat ei_bsin_q_r2 | quarterly | yes |
 | Supply | Industrial production (Industrijska proizvodnja) | Eurostat sts_inpr_m | monthly | yes |
 | Supply | Construction (Građevinarstvo) | Eurostat sts_copr_m | monthly | yes |
 | Supply | Total production (Ukupna proizvodnja) | Eurostat sts_tot_prod_m | monthly | yes |
@@ -41,6 +43,8 @@ All series are taken at the longest history the source publishes. Eurostat serie
 | Lagging | Bankruptcy declarations (Stečajne prijave), inverted | Eurostat sts_rb_m | monthly | yes |
 | Lagging | Unemployment (Nezaposlenost), inverted | Eurostat une_rt_m | monthly | yes |
 | Lagging | Non-performing loans (ECB) (Neprihodonosni krediti), inverted | ECB CBD2 | quarterly | no |
+| Financial | House price index (Indeks cijena stambenih nekretnina) | Eurostat prc_hpi_q | quarterly | no |
+| Financial | Loans to non-financial corporations (ECB) (Krediti nefinancijskim poduzećima) | ECB BSI | monthly | no |
 
 The Croatian Excel inputs are updated by hand each month from the DZS table of first-time registered road vehicles and the HZMO monthly count of insured persons; data/README.md gives the procedure. The OVI business confidence index (EIZ) was dropped in September 2026 because it is no longer published.
 
@@ -82,6 +86,8 @@ Quarterly-origin dots move smoothly by construction. Their monthly momentum is i
 
 Between annual reviews the X-13 models are fixed. In testing with automatic selection every month, two model candidates with almost equal fit could flip on rounding differences and move the trend of a series by several percent; freezing removes that source of revision but not the end-point revisions above.
 
+The financial-cycle series (house prices, loans) have cycles of fifteen to twenty years that the HP trend partly absorbs; they are shown on their own panel and their quadrant reading is not the business-cycle one.
+
 The lagging series are slow and partly administrative. Bankruptcy filings depend on insolvency law and, in 2020 and 2021, on moratoria; NPL ratios fell through supervisory clean-ups; both lag the cycle by a year or more. Read them as confirmation of earlier turns.
 
 Cycles are measured relative to each series' own history since 2010, so a dot at plus 1 means unusually high for that series, not high in any absolute sense. Sample lengths differ: some series start in the 1990s, others in 2010 or later.
@@ -92,7 +98,7 @@ The pipeline is Python 3.12 (environment.yml). The R scripts that produced the e
 
 ## 6. Planned changes
 
-Capacity utilisation, real gross value added, house prices, loans and inflation as further indicators; a separate panel for lagging and financial-cycle series; a comparison with the Eurostat business cycle clock chronology once that chronology is obtained.
+Inflation as a further indicator, once the schema has a year-on-year transformation; a separate panel for lagging and financial-cycle series; a comparison with the Eurostat business cycle clock chronology once that chronology is obtained.
 
 ## References
 

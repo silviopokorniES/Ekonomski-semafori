@@ -52,13 +52,19 @@ def selected(udg: dict[str, object]) -> dict[str, object]:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--countries", default=None, help="comma-separated codes; default all")
+    parser.add_argument("--indicators", default=None, help="comma-separated indicator ids; default all. With a subset, existing registry entries for other indicators are kept")
     parser.add_argument("--output", type=Path, default=ROOT / "config" / "x13_models.yaml")
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
     countries, indicators, settings = load_countries(), load_indicators(), load_settings()
     codes = args.countries.split(",") if args.countries else list(countries)
+    only = set(args.indicators.split(",")) if args.indicators else None
+    if only:
+        indicators = [i for i in indicators if i.id in only]
     x13 = settings.x13
     models: dict[str, dict[str, dict[str, dict[str, str]]]] = {}
+    if only and args.output.exists():
+        models = yaml.safe_load(args.output.read_text(encoding="utf-8")).get("models", {})   # keep the other indicators
     for code in codes:
         country = countries[code]
         for base in indicators:

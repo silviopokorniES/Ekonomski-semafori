@@ -87,7 +87,8 @@ _SOURCE_FIELDS: dict[str, frozenset[str]] = {
     "local": frozenset({"path", "column"}),
 }
 _ALL_SOURCE_FIELDS = frozenset().union(*_SOURCE_FIELDS.values())
-_INDICATOR_OPTIONAL = frozenset({"skip_henderson", "start", "impute", "long_run", "aggregate"})
+_INDICATOR_OPTIONAL = frozenset({"skip_henderson", "start", "impute", "long_run", "aggregate", "panel"})
+PANELS = frozenset({"main", "confirmation", "financial"})
 AGGREGATES = frozenset({"mean"})
 LONG_RUN = frozenset({"hp", "mean", "none"})
 
@@ -99,7 +100,9 @@ class Indicator:
     fields are None for the other sources. start truncates the fetched series to
     dates on or after it; impute fills internal gaps; aggregate mean averages a
     daily source to months; an ECB series_key of the form "A - B" is the
-    difference of two series (all applied in pipeline.fetch_series)."""
+    difference of two series (all applied in pipeline.fetch_series). panel tells
+    the charts where the dot belongs: main (the coincident clock), confirmation
+    (lagging series) or financial (financial-cycle series)."""
 
     id: str
     name_en: str
@@ -116,6 +119,7 @@ class Indicator:
     impute: bool = False
     long_run: str = "hp"
     aggregate: str | None = None
+    panel: str = "main"
     dataset: str | None = None
     filters: dict[str, str] | None = None
     series_key: str | None = None
@@ -167,6 +171,9 @@ def _parse_indicator(entry: dict[str, Any]) -> Indicator:
     aggregate = entry.get("aggregate")
     if aggregate is not None and aggregate not in AGGREGATES:
         raise ValueError(f"indicator {ind_id}: aggregate must be one of {sorted(AGGREGATES)}")
+    panel = entry.get("panel", "main")
+    if panel not in PANELS:
+        raise ValueError(f"indicator {ind_id}: panel must be one of {sorted(PANELS)}")
     if skip_henderson and not entry["already_sa"]:
         raise ValueError(f"indicator {ind_id}: skip_henderson requires already_sa")
 
@@ -214,6 +221,7 @@ def _parse_indicator(entry: dict[str, Any]) -> Indicator:
         impute=impute,
         long_run=long_run,
         aggregate=aggregate,
+        panel=panel,
         dataset=entry.get("dataset"),
         filters=filters,
         series_key=entry.get("series_key"),

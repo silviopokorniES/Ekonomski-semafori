@@ -7,8 +7,9 @@
 # start (optional date: drop observations before it), impute (optional, default false: fill
 # internal gaps), long_run (optional, default hp: the HP filter estimates the long-run trend;
 # mean uses the window mean, for survey balances and sentiment indices that are stationary by
-# construction; none uses the level itself, for spreads). start and impute are normally set per
-# country in countries.yaml overrides.
+# construction; none uses the level itself, for spreads), panel (optional, default main: the
+# coincident clock; confirmation for lagging series; financial for financial-cycle series).
+# start and impute are normally set per country in countries.yaml overrides.
 # Per source: eurostat needs dataset + filters; ecb needs series_key (may contain {ecb_code});
 # local needs path + column.
 #
@@ -148,6 +149,7 @@ indicators:
     already_sa: true
     transform: ratio
     counter_cyclical: true
+    panel: confirmation
     countries: all
 
   - id: total_production
@@ -243,6 +245,7 @@ indicators:
     already_sa: true
     transform: ratio
     counter_cyclical: true
+    panel: confirmation
     countries: all
 
   # ECB Data Portal; {ecb_code} is replaced from countries.yaml (EL -> GR)
@@ -256,6 +259,7 @@ indicators:
     already_sa: false
     transform: ratio
     counter_cyclical: true
+    panel: confirmation
     countries: all
 
   # Local Excel inputs, Croatia only; see data/README.md
@@ -359,5 +363,62 @@ indicators:
     skip_henderson: true
     transform: difference
     long_run: none
+    counter_cyclical: false
+    countries: all
+
+  # Tier 2 (added 2026-09-04). Codes verified against the Eurostat dimension lists and the ECB
+  # Data Portal on that date. HICP is deliberately not included: a price level is not a business
+  # cycle quantity and an inflation rate needs a transformation the schema does not have.
+  - id: gva
+    name_en: Real gross value added
+    name_hr: Realna bruto dodana vrijednost
+    category: supply
+    source: eurostat
+    dataset: namq_10_a10
+    filters: {na_item: B1G, nace_r2: TOTAL, s_adj: SCA, unit: CLV_I20, freq: Q}
+    frequency: Q
+    already_sa: true
+    transform: ratio
+    counter_cyclical: false
+    countries: all
+
+  - id: capacity_utilisation
+    name_en: Capacity utilisation in industry
+    name_hr: Iskorištenost kapaciteta u industriji
+    category: supply
+    source: eurostat
+    dataset: ei_bsin_q_r2
+    filters: {indic: BS-ICU-PC, s_adj: SA, freq: Q}
+    frequency: Q
+    already_sa: true
+    transform: difference
+    long_run: mean
+    counter_cyclical: false
+    countries: all
+
+  - id: house_prices
+    name_en: House price index
+    name_hr: Indeks cijena stambenih nekretnina
+    category: lagging
+    panel: financial
+    source: eurostat
+    dataset: prc_hpi_q
+    filters: {purchase: TOTAL, unit: I15_Q, freq: Q}
+    frequency: Q
+    already_sa: false
+    transform: ratio
+    counter_cyclical: false
+    countries: all
+
+  - id: loans_nfc
+    name_en: Loans to non-financial corporations (ECB)
+    name_hr: Krediti nefinancijskim poduzećima (ECB)
+    category: lagging
+    panel: financial
+    source: ecb
+    series_key: "BSI.M.{ecb_code}.N.A.A20.A.1.U2.2240.Z01.E"
+    frequency: M
+    already_sa: false
+    transform: ratio
     counter_cyclical: false
     countries: all

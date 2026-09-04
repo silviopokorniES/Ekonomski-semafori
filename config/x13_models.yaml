@@ -20,6 +20,27 @@ models:
         - 0.290861
         outliers: []
         transform: log
+    capacity_utilisation:
+      trend:
+        ar:
+        - 0.477141
+        - 0.523109
+        - -0.683347
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.780491
+        - 0.076097
+        outliers:
+        - ao2020.Feb
+        - ao2020.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ls2020.Jul
+        - ao2020.Aug
+        - ls2020.Aug
+        transform: none
     construction:
       trend:
         ar:
@@ -140,6 +161,54 @@ models:
         - ls2021.Apr
         - ls2022.Apr
         transform: log
+    gva:
+      trend:
+        ar:
+        - 0.511331
+        - 0.564293
+        - -0.666852
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.769123
+        - -0.102368
+        outliers:
+        - ao2019.Oct
+        - ao2019.Dec
+        - ao2020.Jan
+        - ao2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ao2020.Jun
+        - ls2020.Jul
+        - ls2020.Aug
+        - ao2020.Sep
+        - ao2020.Oct
+        - ls2021.Apr
+        transform: log
+    house_prices:
+      sa:
+        ar: []
+        arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers: []
+        transform: log
+      trend:
+        ar:
+        - 0.448572
+        - 0.624428
+        - -0.607255
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.805783
+        - 0.656838
+        outliers: []
+        transform: log
     household_consumption:
       trend:
         ar:
@@ -251,6 +320,51 @@ models:
         constant: true
         ma: []
         outliers: []
+        transform: log
+    loans_nfc:
+      sa:
+        ar:
+        - 0.543468
+        - 0.947468
+        arima: (1 1 0)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.765631
+        outliers:
+        - ao2003.Jun
+        - ao2004.Mar
+        - ao2004.Apr
+        - ao2004.May
+        - ao2005.Jun
+        - ao2005.Sep
+        - ao2007.Mar
+        - ao2007.Nov
+        - ao2014.Dec
+        - ao2021.Mar
+        - ao2021.Nov
+        transform: log
+      trend:
+        ar:
+        - 0.840538
+        arima: (1 1 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.574642
+        outliers:
+        - ao2003.Jun
+        - ls2004.Jun
+        - ls2004.Jul
+        - ls2004.Dec
+        - ls2005.Jun
+        - ao2005.Sep
+        - ls2007.Mar
+        - ao2007.Nov
+        - ls2014.Dec
+        - ls2016.Oct
+        - ao2021.Mar
+        - ls2021.Dec
         transform: log
     npl:
       sa:
@@ -435,6 +549,28 @@ models:
         - -0.730353
         outliers: []
         transform: log
+    capacity_utilisation:
+      trend:
+        ar:
+        - 0.502614
+        - 0.627877
+        - -0.688091
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.836245
+        - 0.099253
+        outliers:
+        - ls2009.Jan
+        - ls2009.Jul
+        - ls2020.Feb
+        - ao2020.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ao2020.Jul
+        - ls2020.Jul
+        transform: none
     construction:
       trend:
         ar:
@@ -558,6 +694,50 @@ models:
         - ao2021.Jan
         - ao2021.Mar
         transform: log
+    gva:
+      trend:
+        ar:
+        - 0.540316
+        - 0.680177
+        - -0.590103
+        arima: (3 1 1)
+        calendar:
+        - easter[8]
+        constant: true
+        ma:
+        - -0.847053
+        outliers:
+        - ls1996.Jan
+        - ls2008.Oct
+        - ao2020.Feb
+        - ao2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ao2020.Jun
+        - ao2020.Jul
+        - ls2020.Jul
+        - ao2020.Aug
+        - ao2020.Oct
+        - ls2020.Oct
+        - ao2020.Dec
+        transform: log
+    house_prices:
+      sa:
+        ar: []
+        arima: (2 2 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers: []
+        transform: log
+      trend:
+        ar: []
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers: []
+        transform: log
     household_consumption:
       trend:
         ar: []
@@ -679,6 +859,35 @@ models:
         - ls2020.Jul
         - ao2020.Aug
         - ls2023.Oct
+        transform: log
+    loans_nfc:
+      sa:
+        ar: []
+        arima: (0 1 0)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.935852
+        outliers:
+        - ao2010.Jul
+        - ao2026.Feb
+        transform: log
+      trend:
+        ar:
+        - -0.510015
+        arima: (1 1 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.581462
+        outliers:
+        - ao2007.Jun
+        - ls2009.Dec
+        - ls2010.Jul
+        - ls2014.Dec
+        - ls2017.Apr
+        - ls2025.Mar
+        - ao2026.Feb
         transform: log
     npl:
       sa:
@@ -847,6 +1056,24 @@ models:
         ma: []
         outliers: []
         transform: log
+    capacity_utilisation:
+      trend:
+        ar:
+        - 0.371959
+        - 0.446667
+        - -0.720483
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.802059
+        - -0.056431
+        outliers:
+        - ls2006.Jul
+        - ls2020.Jan
+        - ls2020.Apr
+        - ls2020.Jul
+        transform: none
     construction:
       trend:
         ar: []
@@ -992,6 +1219,84 @@ models:
         - ao2021.Mar
         - ao2021.Jun
         transform: log
+    gva:
+      trend:
+        ar:
+        - 0.637288
+        - 0.576891
+        - -0.589384
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.774917
+        - 0.405192
+        outliers:
+        - ao1996.Oct
+        - ls1996.Oct
+        - ao1996.Dec
+        - ao1997.Jan
+        - ls1997.Jan
+        - ao1997.Mar
+        - ls1997.Apr
+        - ao1997.Aug
+        - ao1997.Sep
+        - ls1997.Oct
+        - ao1997.Dec
+        - ao1998.Jan
+        - ls1998.Jan
+        - ao1998.Mar
+        - ls1998.Apr
+        - ls1998.May
+        - ls1998.Jul
+        - ao1998.Aug
+        - ao1998.Oct
+        - ls1998.Oct
+        - ls1998.Dec
+        - ls1999.Oct
+        - ls2000.Jan
+        - ls2000.Apr
+        - ao2020.Jan
+        - ls2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ls2020.Jul
+        - ls2020.Sep
+        - ls2020.Oct
+        - ao2020.Dec
+        - ls2021.Jan
+        - ls2021.Feb
+        - ls2021.Mar
+        transform: log
+    house_prices:
+      sa:
+        ar:
+        - 0.123225
+        - 0.228896
+        - -0.77213
+        - -0.871948
+        arima: (3 2 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.549935
+        - -0.878486
+        outliers:
+        - ao2008.Dec
+        transform: log
+      trend:
+        ar: []
+        arima: (3 2 1)(1 0 1)
+        calendar:
+        - easter[1]
+        constant: false
+        ma: []
+        outliers:
+        - ls2006.Apr
+        - ls2009.Jan
+        - ls2023.Jan
+        - ao2024.Mar
+        transform: log
     household_consumption:
       trend:
         ar:
@@ -1078,6 +1383,25 @@ models:
         outliers:
         - ls2009.Jan
         - ls2020.Apr
+        transform: log
+    loans_nfc:
+      sa:
+        ar: []
+        arima: (1 0 0)
+        calendar: []
+        constant: true
+        ma: []
+        outliers: []
+        transform: log
+      trend:
+        ar:
+        - -0.767684
+        arima: (1 1 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.824191
+        outliers: []
         transform: log
     npl:
       sa:
@@ -1222,6 +1546,20 @@ models:
         - ls2024.Aug
         - ls2024.Oct
         transform: log
+    capacity_utilisation:
+      trend:
+        ar:
+        - 0.246931
+        - 0.282048
+        - -0.775244
+        arima: (3 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.726789
+        outliers:
+        - ls2020.Apr
+        transform: none
     consumer_confidence:
       trend:
         ar: []
@@ -1273,6 +1611,56 @@ models:
         - ao2020.Jul
         - ls2020.Jul
         - ls2020.Sep
+        transform: log
+    gva:
+      trend:
+        ar: []
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ls2000.Apr
+        - ls2000.Jul
+        - ls2002.Apr
+        - ls2002.Jul
+        - ls2002.Oct
+        - ls2011.Jul
+        - ao2020.Jan
+        - ls2020.Jan
+        - ls2020.Mar
+        - ls2020.Apr
+        - ls2020.May
+        - ao2020.Jul
+        - ls2020.Jul
+        - ao2020.Aug
+        transform: log
+    house_prices:
+      sa:
+        ar:
+        - 0.348866
+        - 0.364767
+        - -0.708915
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.714254
+        - -0.22374
+        outliers: []
+        transform: log
+      trend:
+        ar:
+        - 0.348866
+        - 0.364767
+        - -0.708915
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.714254
+        - -0.22374
+        outliers: []
         transform: log
     household_consumption:
       trend:
@@ -1335,6 +1723,44 @@ models:
         - ls2020.Jul
         - ls2022.Apr
         - ls2022.Jul
+        transform: log
+    loans_nfc:
+      sa:
+        ar:
+        - 0.167156
+        - 0.16484
+        arima: (2 2 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.939252
+        - -0.126182
+        outliers:
+        - ao2014.Dec
+        - ao2016.Apr
+        - ao2018.Mar
+        - ao2019.Mar
+        - ao2019.Apr
+        - ao2019.May
+        transform: log
+      trend:
+        ar:
+        - 0.943524
+        - 0.285752
+        arima: (1 1 1)(1 0 0)
+        calendar: []
+        constant: false
+        ma:
+        - 0.780655
+        outliers:
+        - ls2008.Jul
+        - ao2014.Dec
+        - ls2016.May
+        - ls2018.Mar
+        - ls2018.Sep
+        - ls2019.Jun
+        - ls2021.Jun
+        - ls2022.Dec
         transform: log
     npl:
       sa:
@@ -1493,6 +1919,44 @@ models:
         - -0.093332
         outliers: []
         transform: log
+    capacity_utilisation:
+      trend:
+        ar: []
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao1984.May
+        - ls1984.Jun
+        - ls1984.Jul
+        - ao1984.Aug
+        - ls1984.Oct
+        - ls1984.Nov
+        - ao1984.Dec
+        - ls1992.Jan
+        - ls1992.Apr
+        - ls1992.Jul
+        - ls2001.Jan
+        - ls2001.Apr
+        - ao2001.Jul
+        - ls2008.Nov
+        - ao2008.Dec
+        - ao2009.Jan
+        - ls2009.Jan
+        - ao2009.Feb
+        - ls2010.Jan
+        - ls2010.Apr
+        - ls2019.Oct
+        - ls2020.Feb
+        - ao2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ls2020.Jul
+        - ls2020.Aug
+        - ls2021.Jan
+        - ls2021.Apr
+        transform: none
     construction:
       trend:
         ar: []
@@ -1638,6 +2102,56 @@ models:
         - ls2020.Jul
         - ao2020.Sep
         transform: log
+    gva:
+      trend:
+        ar: []
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls1996.Jan
+        - ls1996.Apr
+        - ls1997.Jan
+        - ls2001.Jan
+        - ls2009.Jan
+        - ls2009.Apr
+        - ls2020.Feb
+        - ao2020.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ao2020.Jul
+        - ls2020.Jul
+        - ao2020.Sep
+        transform: log
+    house_prices:
+      sa:
+        ar:
+        - 0.437086
+        - 0.538883
+        - -0.617734
+        - 0.916554
+        arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.762606
+        - 0.821873
+        outliers: []
+        transform: log
+      trend:
+        ar:
+        - 0.134077
+        - 0.286205
+        - -0.723895
+        arima: (3 2 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.195596
+        - 0.36828
+        outliers: []
+        transform: log
     household_consumption:
       trend:
         ar:
@@ -1773,6 +2287,42 @@ models:
         - -0.737825
         - -0.086912
         outliers: []
+        transform: log
+    loans_nfc:
+      sa:
+        ar:
+        - 0.373148
+        - 0.127595
+        - 0.228508
+        arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.15827
+        - 0.872309
+        outliers:
+        - ao2014.Dec
+        - ao2021.Mar
+        transform: log
+      trend:
+        ar:
+        - 0.406743
+        - 0.126344
+        - 0.300367
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.287327
+        - -0.101213
+        outliers:
+        - ls2007.Dec
+        - ls2008.Oct
+        - ls2014.Dec
+        - ls2020.Mar
+        - ao2021.Mar
+        - ls2022.Aug
+        - ls2022.Dec
         transform: log
     npl:
       sa:
@@ -1971,6 +2521,24 @@ models:
         - ls2004.Oct
         - ls2005.Jan
         transform: log
+    capacity_utilisation:
+      trend:
+        ar:
+        - 0.389838
+        - 0.464148
+        - -0.720412
+        - 0.279609
+        arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.799867
+        - 0.472117
+        outliers:
+        - ls2020.Apr
+        - ls2021.Oct
+        - ls2022.Jan
+        transform: none
     consumer_confidence:
       trend:
         ar:
@@ -2107,6 +2675,42 @@ models:
         - ao2020.May
         - ls2020.Oct
         transform: log
+    gva:
+      trend:
+        ar:
+        - 0.342903
+        - 0.482399
+        - -0.688912
+        - 0.193046
+        arima: (3 1 1)(1 0 0)
+        calendar: []
+        constant: true
+        ma:
+        - -0.81877
+        outliers:
+        - ls2008.Oct
+        - ls2020.Apr
+        - ls2020.Jul
+        transform: log
+    house_prices:
+      sa:
+        ar: []
+        arima: (3 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers: []
+        transform: log
+      trend:
+        ar: []
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2009.Apr
+        - ls2010.Jan
+        transform: log
     household_consumption:
       trend:
         ar:
@@ -2216,6 +2820,28 @@ models:
         ma:
         - -0.734588
         outliers: []
+        transform: log
+    loans_nfc:
+      sa:
+        ar: []
+        arima: (0 2 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.851603
+        outliers:
+        - ao2017.Sep
+        - ao2017.Oct
+        transform: log
+      trend:
+        ar: []
+        arima: (0 2 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.883812
+        outliers:
+        - ls2017.Sep
         transform: log
     npl:
       sa:
@@ -2333,6 +2959,21 @@ models:
         - ao2024.Dec
         - ls2025.Apr
         transform: log
+    capacity_utilisation:
+      trend:
+        ar:
+        - 0.397244
+        - 0.339942
+        - -0.71283
+        arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.683258
+        - 0.958083
+        outliers:
+        - ls2024.Apr
+        transform: none
     consumer_confidence:
       trend:
         ar: []
@@ -2426,6 +3067,23 @@ models:
         - ao2020.Jul
         - ls2020.Jul
         - ls2020.Sep
+        - ls2021.Jan
+        transform: log
+    gva:
+      trend:
+        ar: []
+        arima: (2 2 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2020.Feb
+        - ao2020.Mar
+        - ls2020.Apr
+        - ls2020.May
+        - ls2020.Jul
+        - ls2020.Aug
+        - ao2020.Sep
         - ls2021.Jan
         transform: log
     household_consumption:
@@ -2525,6 +3183,46 @@ models:
         - ao2017.Jun
         - ls2017.Jul
         - ls2017.Oct
+        transform: log
+    loans_nfc:
+      sa:
+        ar:
+        - -0.075441
+        - 0.078143
+        - 0.416924
+        - 0.726773
+        arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.329968
+        - 0.579889
+        outliers:
+        - ao2010.Jun
+        - ao2010.Jul
+        - ao2010.Aug
+        - ao2010.Sep
+        - ao2019.Feb
+        - ao2021.Mar
+        - ao2023.Dec
+        transform: log
+      trend:
+        ar:
+        - 0.027325
+        - 0.127042
+        - 0.530678
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.133299
+        - 0.159962
+        outliers:
+        - ls2010.Jun
+        - ls2013.Mar
+        - ls2019.Mar
+        - ao2021.Mar
+        - ao2023.Dec
         transform: log
     npl:
       sa:
@@ -2703,6 +3401,22 @@ models:
         - ao2020.Aug
         - ls2020.Aug
         transform: log
+    capacity_utilisation:
+      trend:
+        ar:
+        - 0.327235
+        - 0.380297
+        - -0.744505
+        arima: (3 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.781998
+        outliers:
+        - ls2013.Jan
+        - ls2013.Apr
+        - ls2020.Apr
+        transform: none
     construction:
       trend:
         ar: []
@@ -2758,6 +3472,29 @@ models:
         - ls2020.Apr
         - ls2020.Jun
         transform: none
+    house_prices:
+      sa:
+        ar: []
+        arima: (2 2 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers: []
+        transform: log
+      trend:
+        ar:
+        - 0.187499
+        - 0.157524
+        - -0.71076
+        - -0.128251
+        arima: (3 2 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.695115
+        - 0.191307
+        outliers: []
+        transform: log
     household_consumption:
       trend:
         ar: []
@@ -2945,6 +3682,21 @@ models:
         outliers:
         - ao2023.Dec
         transform: log
+    capacity_utilisation:
+      trend:
+        ar:
+        - 0.349956
+        - 0.442971
+        - -0.697793
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.772956
+        - 0.102158
+        outliers:
+        - ls2009.Jan
+        transform: none
     consumer_confidence:
       trend:
         ar:
@@ -3054,6 +3806,57 @@ models:
         - ls2020.Aug
         - ao2020.Sep
         transform: log
+    gva:
+      trend:
+        ar:
+        - 0.463704
+        - 0.560806
+        - -0.620346
+        arima: (3 1 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.812801
+        outliers:
+        - ls1995.Jan
+        - ls1995.Apr
+        - ls2009.Jan
+        - ls2020.Feb
+        - ls2020.Mar
+        - ls2020.Apr
+        - ls2020.May
+        - ao2020.Jul
+        - ls2020.Jul
+        transform: log
+    house_prices:
+      sa:
+        ar: []
+        arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2008.Oct
+        - ao2009.Jan
+        - ao2023.Jun
+        transform: log
+      trend:
+        ar:
+        - 0.200419
+        - 0.194681
+        - -0.711631
+        arima: (3 2 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.824041
+        - 0.564326
+        outliers:
+        - ls2008.Oct
+        - ls2009.Jan
+        - ls2009.Apr
+        - ao2023.Jun
+        transform: log
     household_consumption:
       trend:
         ar:
@@ -3157,6 +3960,34 @@ models:
         ma:
         - -0.7229
         outliers: []
+        transform: log
+    loans_nfc:
+      sa:
+        ar:
+        - 0.835216
+        arima: (1 1 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.686255
+        outliers:
+        - ao2005.Jun
+        transform: log
+      trend:
+        ar:
+        - 0.828063
+        - 0.949538
+        arima: (1 1 1)(1 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.683547
+        - 0.879353
+        outliers:
+        - ls2005.Jul
+        - ls2008.Mar
+        - ls2009.Sep
+        - ls2014.Jan
         transform: log
     npl:
       sa:
@@ -3311,6 +4142,30 @@ models:
         - ls2020.Apr
         - ls2020.Jul
         transform: log
+    capacity_utilisation:
+      trend:
+        ar:
+        - 0.418112
+        - 0.505296
+        - -0.671597
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.775738
+        - -0.129215
+        outliers:
+        - ao2019.Oct
+        - ao2019.Dec
+        - ao2020.Jan
+        - ao2020.Mar
+        - ls2020.Apr
+        - ls2020.May
+        - ao2020.Jun
+        - ls2020.Jul
+        - ao2020.Aug
+        - ls2020.Aug
+        transform: none
     construction:
       trend:
         ar: []
@@ -3447,6 +4302,58 @@ models:
         - ao2020.Nov
         - ls2021.Jul
         transform: log
+    gva:
+      trend:
+        ar: []
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ls1987.Apr
+        - ls2001.Oct
+        - ls2002.Jan
+        - ls2003.Apr
+        - ls2003.Jul
+        - ls2008.Jan
+        - ls2009.Jan
+        - ao2020.Feb
+        - ls2020.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ls2020.Jul
+        - ao2020.Aug
+        - ls2020.Aug
+        - ao2020.Oct
+        - ao2020.Nov
+        - ls2020.Nov
+        - ls2021.Jul
+        transform: log
+    house_prices:
+      sa:
+        ar:
+        - 0.167398
+        - 0.281756
+        - -0.65822
+        arima: (3 2 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.539649
+        - 0.848555
+        outliers: []
+        transform: log
+      trend:
+        ar: []
+        arima: (2 2 2)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2006.Jul
+        - ao2009.Jan
+        - ao2022.Mar
+        transform: log
     household_consumption:
       trend:
         ar: []
@@ -3552,6 +4459,26 @@ models:
         - ao2020.Jul
         - ls2020.Jul
         - ls2020.Sep
+        transform: log
+    loans_nfc:
+      sa:
+        ar: []
+        arima: (1 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers: []
+        transform: log
+      trend:
+        ar:
+        - 0.91569
+        arima: (1 1 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.727075
+        outliers:
+        - ls2020.Mar
         transform: log
     npl:
       sa:
@@ -3731,6 +4658,22 @@ models:
         - 0.090005
         outliers: []
         transform: log
+    capacity_utilisation:
+      trend:
+        ar:
+        - 0.24758
+        - 0.292717
+        - -0.804645
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.754922
+        - -0.007154
+        outliers:
+        - ls2020.Apr
+        - ls2020.Jul
+        transform: none
     cars_registered:
       sa:
         ar: []
@@ -3898,6 +4841,45 @@ models:
         - ls2020.Aug
         - ls2020.Oct
         transform: log
+    gva:
+      trend:
+        ar:
+        - 0.433705
+        - 0.46758
+        - -0.679603
+        - 0.261427
+        arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.74977
+        - -0.126015
+        outliers:
+        - ls2020.Feb
+        - ls2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ls2020.Jul
+        - ao2020.Aug
+        - ls2020.Aug
+        transform: log
+    house_prices:
+      sa:
+        ar: []
+        arima: (2 2 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers: []
+        transform: log
+      trend:
+        ar: []
+        arima: (2 2 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers: []
+        transform: log
     household_consumption:
       trend:
         ar:
@@ -4045,6 +5027,30 @@ models:
         - 0.216844
         outliers:
         - ls2020.Jul
+        transform: log
+    loans_nfc:
+      sa:
+        ar:
+        - 0.877234
+        arima: (1 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.670003
+        outliers:
+        - ao2012.Dec
+        transform: log
+      trend:
+        ar:
+        - 0.883661
+        arima: (1 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.671155
+        outliers:
+        - ls2012.Dec
+        - ls2020.Mar
         transform: log
     npl:
       sa:
@@ -4267,6 +5273,25 @@ models:
         - ls2022.Jul
         - ls2022.Oct
         transform: log
+    capacity_utilisation:
+      trend:
+        ar: []
+        arima: (2 1 1)(1 0 1)
+        calendar:
+        - easter[15]
+        constant: false
+        ma: []
+        outliers:
+        - ls1985.Jul
+        - ls1986.Oct
+        - ao2020.Jan
+        - ls2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ls2020.Jul
+        - ao2020.Aug
+        - ls2020.Aug
+        transform: none
     consumer_confidence:
       trend:
         ar: []
@@ -4311,6 +5336,39 @@ models:
         - ls2015.Jan
         - ls2015.Feb
         - ao2015.Mar
+        transform: log
+    gva:
+      trend:
+        ar:
+        - 0.26515
+        - 0.303828
+        - -0.777668
+        - 0.870006
+        arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.741385
+        - 0.641126
+        outliers:
+        - ls2015.Jan
+        transform: log
+    house_prices:
+      sa:
+        ar: []
+        arima: (3 2 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers: []
+        transform: log
+      trend:
+        ar: []
+        arima: (3 2 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers: []
         transform: log
     household_consumption:
       trend:
@@ -4427,6 +5485,31 @@ models:
         - ao2024.Aug
         - ls2024.Sep
         - ao2025.Jan
+        transform: log
+    loans_nfc:
+      sa:
+        ar:
+        - 0.932388
+        arima: (1 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.704008
+        outliers:
+        - ao2018.Dec
+        transform: log
+      trend:
+        ar: []
+        arima: (0 2 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.789841
+        outliers:
+        - ls2010.Nov
+        - ls2014.Jul
+        - ls2018.Dec
+        - ls2020.Mar
         transform: log
     npl:
       sa:
@@ -4571,6 +5654,28 @@ models:
         - ls2020.Apr
         - ls2020.Jul
         transform: log
+    capacity_utilisation:
+      trend:
+        ar:
+        - 0.52164
+        - 0.550531
+        - -0.646743
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.789343
+        - -0.089989
+        outliers:
+        - ls1980.Oct
+        - ls1981.Jan
+        - ao2020.Jun
+        - ls2020.Jul
+        - ao2020.Sep
+        - ao2020.Oct
+        - ls2020.Oct
+        - ao2020.Dec
+        transform: none
     consumer_confidence:
       trend:
         ar: []
@@ -4673,6 +5778,49 @@ models:
         - ao2020.Sep
         - ao2020.Oct
         - ls2020.Dec
+        transform: log
+    gva:
+      trend:
+        ar: []
+        arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao1997.Jun
+        - ao1997.Oct
+        - ao1998.Jan
+        - ls2008.Jan
+        - ls2019.Oct
+        - ls2020.Feb
+        - ao2020.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ao2020.Jul
+        - ls2020.Jul
+        - ls2020.Sep
+        - ao2020.Oct
+        - ls2020.Nov
+        - ao2020.Dec
+        transform: log
+    house_prices:
+      sa:
+        ar: []
+        arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2020.Jun
+        transform: log
+      trend:
+        ar: []
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2020.Jul
         transform: log
     household_consumption:
       trend:
@@ -4786,6 +5934,34 @@ models:
         - ls2020.Jul
         - ls2020.Aug
         - ao2020.Sep
+        transform: log
+    loans_nfc:
+      sa:
+        ar:
+        - 0.62391
+        - 0.080229
+        - 0.13261
+        - 0.896236
+        arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.631158
+        - 0.665712
+        outliers: []
+        transform: log
+      trend:
+        ar:
+        - -0.248261
+        - -0.150818
+        arima: (2 2 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.715213
+        - 0.206484
+        outliers:
+        - ls2018.Jun
         transform: log
     npl:
       sa:
@@ -4973,6 +6149,21 @@ models:
         - -0.698159
         outliers: []
         transform: log
+    capacity_utilisation:
+      trend:
+        ar:
+        - 0.424845
+        - 0.433593
+        - -0.665322
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.736592
+        - 0.159401
+        outliers:
+        - ls2023.Jan
+        transform: none
     consumer_confidence:
       trend:
         ar:
@@ -5089,6 +6280,76 @@ models:
         - ls2020.Aug
         - ls2020.Oct
         transform: log
+    gva:
+      trend:
+        ar:
+        - 0.425309
+        - 0.473945
+        - -0.646376
+        - -0.586546
+        arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.754021
+        - -0.430554
+        outliers:
+        - ao2008.Nov
+        - ao2008.Dec
+        - ao2009.Jan
+        - ls2009.Jan
+        - ao2009.Mar
+        - ls2009.Apr
+        - ao2020.Jan
+        - ao2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ls2020.Jul
+        - ls2020.Aug
+        - ls2020.Oct
+        transform: log
+    house_prices:
+      sa:
+        ar:
+        - 0.400964
+        - 0.287585
+        - -0.559223
+        arima: (3 2 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.390191
+        - 0.085761
+        outliers:
+        - ao2008.Sep
+        - ao2008.Oct
+        - ao2008.Nov
+        - ao2008.Dec
+        - ao2009.Jan
+        - ao2009.Apr
+        - ao2009.May
+        - ao2009.Jun
+        transform: log
+      trend:
+        ar:
+        - 0.252272
+        - 0.288181
+        - -0.628175
+        arima: (3 2 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.420892
+        - -0.113851
+        outliers:
+        - ls2006.Oct
+        - ls2007.Jan
+        - ls2008.Nov
+        - ao2008.Dec
+        - ls2009.Jan
+        - ls2009.Feb
+        - ls2009.Mar
+        transform: log
     household_consumption:
       trend:
         ar:
@@ -5187,6 +6448,35 @@ models:
         outliers:
         - ls1999.Apr
         - ls1999.Jul
+        transform: log
+    loans_nfc:
+      sa:
+        ar:
+        - 0.941146
+        - 0.555728
+        arima: (1 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.686083
+        - 0.328787
+        outliers:
+        - ao2011.Nov
+        - ao2013.Nov
+        - ao2021.Sep
+        transform: log
+      trend:
+        ar: []
+        arima: (0 2 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.699605
+        - 0.215444
+        outliers:
+        - ls2011.Dec
+        - ao2013.Nov
+        - ls2021.Oct
         transform: log
     npl:
       sa:
@@ -5362,6 +6652,30 @@ models:
         - ao2025.Sep
         - ao2026.Jan
         transform: log
+    capacity_utilisation:
+      trend:
+        ar:
+        - 0.41199
+        - 0.407112
+        - -0.678208
+        arima: (3 1 1)(0 1 1)
+        calendar:
+        - easter[1]
+        constant: false
+        ma:
+        - -0.744286
+        - 0.861692
+        outliers:
+        - ls2009.Jan
+        - ls2020.Jan
+        - ao2020.Feb
+        - ls2020.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ls2020.Jul
+        - ls2020.Aug
+        - ao2020.Sep
+        transform: none
     construction:
       trend:
         ar:
@@ -5478,6 +6792,39 @@ models:
         - ls2020.Apr
         - ls2020.Jul
         transform: log
+    gva:
+      trend:
+        ar:
+        - 0.394198
+        - 0.414022
+        - -0.677016
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.764966
+        - 0.176283
+        outliers:
+        - ls2020.Apr
+        - ls2020.Jul
+        transform: log
+    house_prices:
+      sa:
+        ar: []
+        arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers: []
+        transform: log
+      trend:
+        ar: []
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers: []
+        transform: log
     household_consumption:
       trend:
         ar:
@@ -5587,6 +6934,35 @@ models:
         - -0.724913
         - 0.502455
         outliers: []
+        transform: log
+    loans_nfc:
+      sa:
+        ar:
+        - 0.927055
+        arima: (1 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.817428
+        outliers:
+        - ao2007.May
+        - ao2008.Nov
+        - ao2020.Feb
+        transform: log
+      trend:
+        ar:
+        - 0.896561
+        - 0.934876
+        arima: (1 1 2)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.910948
+        - -0.166943
+        - 0.847474
+        outliers:
+        - ls2015.Jun
+        - ls2020.Mar
         transform: log
     npl:
       sa:
@@ -5768,6 +7144,25 @@ models:
         - ls2024.May
         - ls2025.Aug
         transform: log
+    capacity_utilisation:
+      trend:
+        ar:
+        - 0.333275
+        - 0.38876
+        - -0.727755
+        arima: (3 1 1)
+        calendar:
+        - td
+        constant: false
+        ma:
+        - -0.771711
+        outliers:
+        - ls2001.Jan
+        - ao2001.Mar
+        - ls2001.Apr
+        - ls2001.May
+        - ao2001.Jun
+        transform: none
     consumer_confidence:
       trend:
         ar:
@@ -5850,6 +7245,47 @@ models:
         - ao2020.Jul
         - ls2020.Jul
         - ls2020.Sep
+        transform: log
+    gva:
+      trend:
+        ar:
+        - 0.393664
+        - 0.462706
+        - -0.648589
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.75371
+        - -0.235441
+        outliers:
+        - ao2020.Jan
+        - ls2020.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ls2020.Jul
+        - ao2020.Aug
+        - ls2020.Aug
+        transform: log
+    house_prices:
+      sa:
+        ar: []
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2014.Sep
+        transform: log
+      trend:
+        ar: []
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2014.Jul
+        - ls2014.Oct
         transform: log
     household_consumption:
       trend:
@@ -5953,6 +7389,28 @@ models:
         - ao2009.Jan
         - ls2009.Jan
         - ao2009.Feb
+        transform: log
+    loans_nfc:
+      sa:
+        ar: []
+        arima: (0 1 1)(0 1 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.03617
+        - 0.969964
+        outliers: []
+        transform: log
+      trend:
+        ar: []
+        arima: (0 1 0)(0 1 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.877898
+        outliers:
+        - ls2017.Sep
+        - ls2018.Jul
         transform: log
     npl:
       sa:
@@ -6134,6 +7592,21 @@ models:
         - -0.16528
         outliers: []
         transform: log
+    capacity_utilisation:
+      trend:
+        ar: []
+        arima: (3 0 1)(1 0 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ls2020.Apr
+        - ls2020.Jul
+        - ls2023.Apr
+        - ao2025.Mar
+        - ls2025.Jul
+        - ls2026.Apr
+        transform: none
     consumer_confidence:
       trend:
         ar:
@@ -6278,6 +7751,53 @@ models:
         - ls2020.Jul
         - ao2020.Aug
         transform: log
+    gva:
+      trend:
+        ar:
+        - 0.36525
+        - 0.407569
+        - -0.687096
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.753789
+        - 0.160125
+        outliers:
+        - ls2017.Jan
+        - ls2020.Jan
+        - ao2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ls2020.Jul
+        - ls2020.Aug
+        - ls2020.Sep
+        transform: log
+    house_prices:
+      sa:
+        ar: []
+        arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2006.Jul
+        - ao2008.Mar
+        transform: log
+      trend:
+        ar: []
+        arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ao2006.Jul
+        - ls2006.Nov
+        - ls2008.Jan
+        - ao2008.Feb
+        - ls2008.Feb
+        - ao2008.May
+        transform: log
     household_consumption:
       trend:
         ar:
@@ -6415,6 +7935,30 @@ models:
         - ao2002.Apr
         - ls2002.Apr
         - ls2002.Jul
+        transform: log
+    loans_nfc:
+      sa:
+        ar:
+        - 0.8382
+        - 0.930965
+        arima: (1 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.688348
+        - 0.81854
+        outliers: []
+        transform: log
+      trend:
+        ar:
+        - -0.268557
+        arima: (0 2 1)(1 0 0)
+        calendar: []
+        constant: false
+        ma:
+        - 0.891802
+        outliers:
+        - ls2015.Jun
         transform: log
     npl:
       sa:
@@ -6592,6 +8136,27 @@ models:
         - 0.121416
         outliers: []
         transform: log
+    capacity_utilisation:
+      trend:
+        ar:
+        - 0.444105
+        - 0.539089
+        - -0.65568
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.786087
+        - -0.072744
+        outliers:
+        - ls2009.Jan
+        - ls2020.Feb
+        - ao2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ls2020.Jul
+        - ls2020.Aug
+        transform: none
     construction:
       trend:
         ar: []
@@ -6667,6 +8232,69 @@ models:
         - ls2021.Oct
         - ls2022.Apr
         transform: log
+    gva:
+      trend:
+        ar:
+        - 0.531818
+        - 0.601471
+        - -0.633746
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.791657
+        - -0.274882
+        outliers:
+        - ls2020.Feb
+        - ls2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ls2020.Jul
+        - ls2020.Aug
+        - ls2020.Sep
+        - ls2021.Apr
+        transform: log
+    house_prices:
+      sa:
+        ar: []
+        arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2008.Oct
+        - ao2009.Mar
+        - ao2012.Jun
+        - ao2012.Sep
+        - ao2012.Dec
+        transform: log
+      trend:
+        ar:
+        - 0.683259
+        - -0.597322
+        - -0.306046
+        arima: (2 2 2)(1 0 0)
+        calendar: []
+        constant: false
+        ma:
+        - -0.856475
+        - -0.743787
+        outliers:
+        - ls2006.Jul
+        - ao2008.Jul
+        - ao2008.Oct
+        - ao2009.Jan
+        - ls2009.Apr
+        - ao2012.Mar
+        - ls2012.Jul
+        - ls2012.Sep
+        - ao2012.Oct
+        - ao2012.Nov
+        - ls2012.Nov
+        - ls2017.Apr
+        - ls2019.Jul
+        - ao2022.Sep
+        transform: log
     household_consumption:
       trend:
         ar: []
@@ -6730,6 +8358,38 @@ models:
         - ao2015.Sep
         - ls2015.Oct
         - ao2016.Jan
+        transform: log
+    loans_nfc:
+      sa:
+        ar:
+        - 0.172261
+        arima: (1 1 0)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.745915
+        outliers:
+        - ao2007.Nov
+        - ao2010.Jun
+        - ao2014.Oct
+        - ao2014.Nov
+        - ao2014.Dec
+        transform: log
+      trend:
+        ar: []
+        arima: (0 2 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.905202
+        - 0.17913
+        outliers:
+        - ls2007.Dec
+        - ls2008.Dec
+        - ls2010.Jun
+        - ls2010.Sep
+        - ls2014.Dec
+        - ls2021.Mar
         transform: log
     npl:
       sa:
@@ -6871,6 +8531,23 @@ models:
         - -0.079972
         outliers: []
         transform: log
+    capacity_utilisation:
+      trend:
+        ar:
+        - 0.367254
+        - 0.319266
+        - -0.724754
+        arima: (3 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.715148
+        outliers:
+        - ls2003.Oct
+        - ls2004.Jan
+        - ls2020.Jan
+        - ls2020.Apr
+        transform: none
     construction:
       trend:
         ar:
@@ -6994,6 +8671,44 @@ models:
         - ls2020.Nov
         - ls2021.Apr
         transform: log
+    gva:
+      trend:
+        ar: []
+        arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ls2012.Apr
+        - ls2012.Jul
+        - ls2020.Feb
+        - ao2020.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ao2020.Jul
+        - ls2020.Jul
+        - ao2020.Sep
+        - ao2020.Oct
+        - ls2021.Apr
+        transform: log
+    house_prices:
+      sa:
+        ar: []
+        arima: (2 2 1)(1 0 0)
+        calendar: []
+        constant: false
+        ma: []
+        outliers: []
+        transform: log
+      trend:
+        ar: []
+        arima: (3 1 1)(1 0 0)
+        calendar:
+        - easter[8]
+        constant: true
+        ma: []
+        outliers: []
+        transform: log
     household_consumption:
       trend:
         ar:
@@ -7115,6 +8830,40 @@ models:
         ma:
         - -0.739977
         outliers: []
+        transform: log
+    loans_nfc:
+      sa:
+        ar:
+        - 0.944722
+        - 0.894758
+        arima: (1 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.75935
+        - 0.724871
+        outliers:
+        - ao2003.Dec
+        - ao2008.Dec
+        - ao2010.Nov
+        - ao2014.Nov
+        - ao2020.Dec
+        transform: log
+      trend:
+        ar: []
+        arima: (0 2 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.782873
+        outliers:
+        - ls2003.Dec
+        - ls2008.Dec
+        - ls2010.Dec
+        - ls2011.Apr
+        - ls2014.Dec
+        - ls2020.May
+        - ao2020.Dec
         transform: log
     npl:
       sa:
@@ -7315,6 +9064,34 @@ models:
         - -0.648409
         outliers: []
         transform: log
+    capacity_utilisation:
+      trend:
+        ar: []
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls1999.Jul
+        - ls1999.Oct
+        - ls2003.Oct
+        - ls2006.Jul
+        - ls2006.Oct
+        - ls2008.Oct
+        - ls2009.Jan
+        - ls2009.Apr
+        - ls2009.Jul
+        - ls2010.Jul
+        - ls2012.Oct
+        - ls2015.Jan
+        - ao2020.Feb
+        - ls2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ao2020.Jul
+        - ls2020.Jul
+        - ls2021.Jan
+        transform: none
     construction:
       trend:
         ar: []
@@ -7444,6 +9221,47 @@ models:
         - ao2021.Feb
         - ls2021.Feb
         transform: log
+    gva:
+      trend:
+        ar: []
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ao1999.Mar
+        - ao1999.Jun
+        - ao2019.Dec
+        - ls2020.Apr
+        - ao2020.May
+        - ls2020.Jul
+        - ao2020.Oct
+        - ls2021.Feb
+        transform: log
+    house_prices:
+      sa:
+        ar:
+        - 0.633069
+        - 0.475575
+        - -0.524279
+        arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.689404
+        - 0.932761
+        outliers: []
+        transform: log
+      trend:
+        ar: []
+        arima: (3 1 0)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2008.Jul
+        - ls2013.Jul
+        transform: log
     household_consumption:
       trend:
         ar:
@@ -7568,6 +9386,53 @@ models:
         - ls1999.Oct
         - ls2020.Apr
         - ls2020.Jul
+        transform: log
+    loans_nfc:
+      sa:
+        ar:
+        - 0.905628
+        - 0.440079
+        arima: (1 1 1)(1 0 0)
+        calendar: []
+        constant: false
+        ma:
+        - 0.604442
+        outliers:
+        - ao2013.Aug
+        - ao2013.Sep
+        - ao2013.Oct
+        - ao2013.Nov
+        - ao2014.Sep
+        - ao2014.Dec
+        - ao2016.Jan
+        - ao2021.Oct
+        - ao2023.Jan
+        transform: log
+      trend:
+        ar:
+        - -0.691458
+        - -0.349911
+        - -0.452168
+        arima: (2 2 0)(1 0 0)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2013.Aug
+        - ls2013.Sep
+        - ao2013.Oct
+        - ao2013.Nov
+        - ls2013.Dec
+        - ao2014.Sep
+        - ao2014.Dec
+        - ao2016.Jan
+        - ls2016.Dec
+        - ls2019.Dec
+        - ao2020.Mar
+        - ao2021.Oct
+        - ao2023.Jan
+        - ao2023.Mar
+        - ls2023.Dec
         transform: log
     npl:
       sa:
@@ -7747,6 +9612,24 @@ models:
         ma: []
         outliers: []
         transform: log
+    capacity_utilisation:
+      trend:
+        ar:
+        - 0.355879
+        - 0.38304
+        - -0.724762
+        - -0.120585
+        arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.752203
+        - -0.33784
+        outliers:
+        - ls2013.Apr
+        - ls2013.Jul
+        - ls2013.Oct
+        transform: none
     construction:
       trend:
         ar: []
@@ -7873,6 +9756,57 @@ models:
         - ls2020.Jul
         - ls2022.Jul
         - ls2023.Jul
+        transform: log
+    gva:
+      trend:
+        ar: []
+        arima: (3 1 1)(1 0 0)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ls1998.Oct
+        - ao2008.Nov
+        - ls2008.Dec
+        - ls2009.Jan
+        - ls2009.Feb
+        - ls2009.Apr
+        - ao2020.Jan
+        - ls2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ls2020.Jul
+        - ls2020.Aug
+        - ls2020.Oct
+        transform: log
+    house_prices:
+      sa:
+        ar:
+        - 0.466984
+        - 0.655066
+        - -0.583676
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.836289
+        - 0.171924
+        outliers: []
+        transform: log
+      trend:
+        ar:
+        - 0.482748
+        - 0.668316
+        - -0.574706
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.84804
+        - 0.146541
+        outliers:
+        - ls2009.Jul
+        - ls2009.Oct
         transform: log
     household_consumption:
       trend:
@@ -8022,6 +9956,32 @@ models:
         - -0.783931
         - 0.832856
         outliers: []
+        transform: log
+    loans_nfc:
+      sa:
+        ar:
+        - 0.778974
+        - -0.045261
+        - 0.187681
+        arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.721654
+        - 0.855841
+        outliers:
+        - ao2006.Oct
+        - ao2021.Mar
+        transform: log
+      trend:
+        ar: []
+        arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ls2006.Oct
+        - ao2021.Mar
         transform: log
     npl:
       sa:

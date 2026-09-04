@@ -24,6 +24,7 @@ def test_build_long_expands_categories_and_starts_at_output_start() -> None:
     long = build_long(_panel(), load_countries(), load_indicators(), load_settings())
     assert list(long.columns) == MASTER_COLUMNS
     assert long["clipped"].dtype == bool and long["cycle_z"].abs().max() <= 3
+    assert set(long.loc[long["indicator_id"] == "unemployment", "panel"]) == {"confirmation"} and set(long.loc[long["indicator_id"] == "gdp", "panel"]) == {"main"}
     assert long["time"].min() == pd.Timestamp("2015-02-01")
     gdp = long[(long["country"] == "HR") & (long["indicator_id"] == "gdp")]
     assert sorted(gdp["category"].unique()) == ["demand", "supply"]

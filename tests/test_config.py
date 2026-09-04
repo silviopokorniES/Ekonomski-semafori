@@ -71,9 +71,11 @@ def by_id_long_run(indicators) -> dict[str, str]:
 
 def test_indicator_counts() -> None:
     indicators = load_indicators()
-    assert sum(i.applies_to("HR") for i in indicators) == 25
-    assert sum(i.applies_to("AT") for i in indicators) == 22
-    assert by_id_long_run(indicators) == {"esi": "mean", "consumer_confidence": "mean", "order_books": "mean", "term_spread": "none"}
+    assert sum(i.applies_to("HR") for i in indicators) == 29
+    assert sum(i.applies_to("AT") for i in indicators) == 26
+    assert {i.id for i in indicators if i.panel == "confirmation"} == {"bankruptcies", "unemployment", "npl"}
+    assert {i.id for i in indicators if i.panel == "financial"} == {"house_prices", "loans_nfc"}
+    assert by_id_long_run(indicators) == {"esi": "mean", "consumer_confidence": "mean", "order_books": "mean", "term_spread": "none", "capacity_utilisation": "mean"}
     by_id = {i.id: i for i in indicators}
     assert by_id["gdp"].category == ("supply", "demand")
     assert "ovi" not in by_id
@@ -95,6 +97,7 @@ def test_unemployment_uses_sa_and_henderson() -> None:
         {"dataset": None},                                         # required source field present but empty
         {"category": ["supply", "supply"]},                        # duplicate category
         {"long_run": "none"},                                      # none needs the difference transform
+        {"panel": "sidebar"},                                      # unknown panel
     ],
 )
 def test_parse_indicator_rejects(change: dict) -> None:

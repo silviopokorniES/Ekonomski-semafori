@@ -5,7 +5,8 @@ mom_z, cycle_z], plus the config registries and settings.
 Outputs, under an output directory:
 - all_countries_long.csv: one row per (indicator, category, country, month) from
   settings.output_start, columns time (ISO, first of month), label (Croatian
-  month name and year), country, country_name, category, indicator_id,
+  month name and year), country, country_name, category, panel (main,
+  confirmation or financial), indicator_id,
   indicator_name_hr, indicator_name_en, mom_z, cycle_z (clipped at
   settings.axis_clip), clipped (true where a value was clipped).
 - by_indicator/<indicator_id>.csv: filtered views of the master file.
@@ -41,7 +42,7 @@ CATEGORY_SHEETS = {
 HR_MONTHS = ["siječanj", "veljača", "ožujak", "travanj", "svibanj", "lipanj",
              "srpanj", "kolovoz", "rujan", "listopad", "studeni", "prosinac"]
 LEGACY_COLUMNS = {"mom_z": "Mjesečna promjena (%)", "cycle_z": "Odstupanje od trenda (%)", "indicator_name_hr": "Varijabla"}
-MASTER_COLUMNS = ["time", "label", "country", "country_name", "category", "indicator_id",
+MASTER_COLUMNS = ["time", "label", "country", "country_name", "category", "panel", "indicator_id",
                   "indicator_name_hr", "indicator_name_en", "mom_z", "cycle_z", "clipped"]
 
 
@@ -55,6 +56,7 @@ def build_long(panel: pd.DataFrame, countries: dict[str, Country], indicators: l
     rows["country_name"] = rows["country"].map(lambda c: countries[c].name_en)
     rows["indicator_name_hr"] = rows["indicator_id"].map(lambda i: by_id[i].name_hr)
     rows["indicator_name_en"] = rows["indicator_id"].map(lambda i: by_id[i].name_en)
+    rows["panel"] = rows["indicator_id"].map(lambda i: by_id[i].panel)
     rows["label"] = [f"{HR_MONTHS[t.month - 1]} {t.year}" for t in rows["time"]]
     clip = settings.axis_clip
     rows["clipped"] = (rows["mom_z"].abs() > clip) | (rows["cycle_z"].abs() > clip)
