@@ -6,18 +6,21 @@ Manual monthly inputs for Croatia. The `*.xlsx` files in this folder are ignored
 
 | File | Sheet | Columns (exact header strings) | Source | Coverage (as of 2026-09-04) | Indicator ids |
 |---|---|---|---|---|---|
-| `prvi_put_reg.xlsx` | `Sheet1` | `time`, `Prvi put registrirana osobna vozila`, `Prvi put registrirana teretna vozila` | Državni zavod za statistiku (DZS), first-time registrations of road vehicles | 2015-01 to 2025-09, 129 rows | `cars_registered`, `trucks_registered` |
-| `broj_osiguranika.xlsx` | `Sheet1` | `time`, `Broj osiguranika` | Hrvatski zavod za mirovinsko osiguranje (HZMO), number of insured persons | 2015-01 to 2025-11, 131 rows | `insured_persons` |
+| `prvi_put_reg.xlsx` | `Sheet1` | `time`, `Prvi put registrirana osobna vozila`, `Prvi put registrirana teretna vozila` | Državni zavod za statistiku (DZS), first-time registered road vehicles, total (new and used, all owners): columns are DZS "osobna vozila" and "kamioni" | 2015-01 to 2025-09, 129 rows | `cars_registered`, `trucks_registered` |
+| `broj_osiguranika.xlsx` | `Sheet1` | `time`, `Broj osiguranika` | Hrvatski zavod za mirovinsko osiguranje (HZMO), total insured persons at month end | 2015-01 to 2026-07, 139 rows | `insured_persons` |
 
 Column types: `time` is an Excel date equal to the first day of the month; value columns are integer counts (not seasonally adjusted; the pipeline runs X-13 on them).
 
-Source URLs: to be filled in by the maintainer (DZS first-registration release page; HZMO monthly statistical report). Do not guess them.
+Sources (verified 2026-09-04):
+
+- HZMO: monthly news item "Prvi rezultati Hrvatskog zavoda za mirovinsko osiguranje o broju osiguranika za <mjesec> <godina>", listed at https://www.mirovinsko.hr/hr/vijesti/114, published around the 6th to 9th of the following month. The value is the sentence "na dan <last day of month> bilježi N osiguranika". Revisions are published as separate "Revidirani službeni podatci" items (June 2025 was revised from 1 768 228 to 1 783 516; the file holds the revised value).
+- DZS: "Statistika u nizu", Transport, table "Prvi put registrirana cestovna vozila", Excel file https://podaci.dzs.hr/media/rx4bmpuw/transport-registrirana-cestovna-vozila.xlsx (search https://podaci.dzs.hr/hr/search?q=registrirana if the path changes). The DZS PxWeb API does not carry this series. Annual totals in the file match the DZS releases TRAN-2024-1-2 and TRAN-2025-1-2 (osobna vozila, kamioni).
 
 ## Update procedure
 
 - Who: Silvio Pokorni.
 - When: after the DZS and HZMO monthly releases, before running `scripts/run_monthly.py`.
-- How: append one row per new month at the bottom of the sheet. Keep the header strings byte-identical to the table above (the config references them by name). Keep `time` as the first day of the month. Do not insert blank rows or notes below the data.
+- How: read the HZMO figure from the news item and the DZS figures from the Excel above; append one row per new month at the bottom of the sheet. Keep the header strings byte-identical to the table above (the config references them by name). Keep `time` as the first day of the month. Do not insert blank rows or notes below the data.
 - Keep a private backup of this folder outside git; after untracking, these are the only copies.
 
 ## Removed
