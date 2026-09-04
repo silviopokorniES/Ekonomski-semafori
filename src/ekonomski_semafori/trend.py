@@ -24,42 +24,38 @@ import logging
 import pandas as pd
 from statsmodels.tsa.filters.hp_filter import hpfilter
 
-from ekonomski_semafori.adjust import X13Error, model_blocks, run_x13, x13_binary
+from ekonomski_semafori.adjust import ESTIMATE, X13Error, model_blocks, outlier_block, run_x13, x13_binary
 
 log = logging.getLogger(__name__)
 
 _X11 = "x11{\n  save = (d12)\n}\n\n"
 _LADDER: tuple[tuple[str, str], ...] = (
     (
-        "automdl",
-        model_blocks(None)
-        + "regression{\n  aictest = (td easter)\n}\n\n"
-        "outlier{\n\n}\n\n" + _X11 + "estimate{\n\n}\n",
-    ),
-    (
         "airline",
         "transform{\n  function = auto\n}\n\n"
         "regression{\n\n}\n\n"
-        "outlier{\n\n}\n\n" + _X11 + "arima{\n  model = (0 1 1)(0 1 1)\n}\n\n" + "estimate{\n\n}\n",
+        "outlier{\n\n}\n\n" + _X11 + "arima{\n  model = (0 1 1)(0 1 1)\n}\n\n" + ESTIMATE,
     ),
     (
         "random_walk",
         "transform{\n  function = auto\n}\n\n"
-        "regression{\n\n}\n\n" + _X11 + "arima{\n  model = (0 1 0)(0 1 0)\n}\n\n" + "estimate{\n\n}\n",
+        "regression{\n\n}\n\n" + _X11 + "arima{\n  model = (0 1 0)(0 1 0)\n}\n\n" + ESTIMATE,
     ),
 )
 
 
-def trend_spec(model: dict[str, str] | None) -> str:
-    """Spec of the trend step with a frozen model: the same regressors and outlier
-    settings as the automatic rung, the model fixed."""
-    return model_blocks(model) + "regression{\n  aictest = (td easter)\n}\n\noutlier{\n\n}\n\n" + _X11 + "estimate{\n\n}\n"
+def trend_spec(model: dict[str, object] | None, series: pd.Series, transform: str = "auto") -> str:
+    """Spec of the trend step: automatic model with td and easter tests and full
+    outlier detection when model is None (with the given transform), otherwise the
+    same regressor tests with the model, constant and outliers fixed and detection
+    over the last 12 months."""
+    return model_blocks(model, "td easter", transform) + outlier_block(None, None, series, model) + _X11 + ESTIMATE
 
 
-def henderson(sa: pd.Series, model: dict[str, str] | None = None) -> pd.Series:
+def henderson(sa: pd.Series, model: dict[str, object] | None = None, transform: str = "auto") -> pd.Series:
     """X-11 final trend-cycle (D12) of a monthly series, with the R fallback ladder."""
     x13_binary()   # raises FileNotFoundError before any per-series fallback can hide it
-    rungs = ((("frozen", trend_spec(model)),) if model is not None else ()) + _LADDER
+    rungs = ((("frozen", trend_spec(model, sa)),) if model is not None else ()) + (("automdl", trend_spec(None, sa, transform)),) + _LADDER
     for name, spec in rungs:
         try:
             trend = run_x13(sa, spec, ("d12",))["d12"]

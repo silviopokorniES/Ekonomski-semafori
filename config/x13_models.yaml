@@ -1,1870 +1,8196 @@
 # Frozen X-13 models, identified 2026-09-04 by scripts/identify_x13_models.py.
-# transform: log or none; arima: (p d q)(P D Q). Re-identify at the annual review and diff before committing.
+# transform: log or none; arima: (p d q)(P D Q); constant: whether the automatic procedure kept a mean term;
+# calendar: the trading-day and Easter regressors the automatic test chose; outliers: the regressors it
+# identified (new ones are still detected over the last 12 months each run);
+# ar, ma: the estimated coefficients, used as starting values so monthly re-estimation stays in the same optimum.
+# Re-identify at the annual review and diff before committing.
 models:
   AT:
     building_permits:
       trend:
+        ar:
+        - 0.333782
+        - 0.320592
+        - -0.747552
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.736431
+        - 0.290861
+        outliers: []
         transform: log
     construction:
       trend:
+        ar:
+        - 0.523499
+        - 0.722788
         arima: (1 1 2)(1 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.875338
+        - -0.161211
+        - 0.945822
+        outliers:
+        - ls1998.Feb
+        - ao2000.Dec
+        - ls2003.Jan
+        - ao2012.Feb
+        - ao2013.Mar
+        - ls2020.Mar
+        - ao2020.Apr
+        - ao2022.Feb
+        - ao2023.Feb
         transform: log
     consumer_confidence:
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.15597
+        outliers:
+        - ao2000.Nov
+        - ao2020.Apr
+        - ao2021.Apr
+        - ls2022.Mar
+        - ls2022.Jul
         transform: none
     esi:
       trend:
+        ar:
+        - -0.188292
+        - 0.038576
+        - 0.080554
         arima: (3 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.324372
+        outliers:
+        - ao2020.Mar
         transform: none
     exports_goods:
       sa:
+        ar:
+        - -0.021067
+        - 0.187745
+        - 0.633006
         arima: (3 0 0)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.810744
+        outliers: []
         transform: log
       trend:
+        ar: []
         arima: (0 1 1)(0 1 1)
+        calendar:
+        - td1coef
+        constant: false
+        ma: []
+        outliers: []
         transform: log
     exports_services:
       sa:
+        ar:
+        - 0.695501
+        - -0.444018
         arima: (1 0 1)(1 1 0)
+        calendar: []
+        constant: true
+        ma:
+        - 0.506127
+        outliers:
+        - ao2026.Feb
         transform: log
       trend:
-        arima: (1 1 2)(1 0 1)
-        transform: none
+        ar:
+        - -0.654137
+        arima: (1 1 0)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ao2023.Oct
+        - ao2026.Feb
+        transform: log
     gdp:
       trend:
+        ar: []
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ls2008.Jan
+        - ls2019.Oct
+        - ao2020.Feb
+        - ao2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ls2020.Jun
+        - ao2020.Jul
+        - ls2020.Jul
+        - ao2020.Oct
+        - ls2020.Oct
+        - ls2021.Apr
+        - ls2022.Apr
         transform: log
     household_consumption:
       trend:
+        ar:
+        - 0.57266
+        - 0.456356
+        - -0.725885
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.742367
+        - 0.340028
+        outliers:
+        - ls2008.May
+        - ls2008.Jun
+        - ao2008.Jul
+        - ls2008.Jul
+        - ao2008.Oct
+        - ls2008.Oct
+        - ls2009.Jan
+        - ls2009.Feb
+        - ls2009.Apr
+        - ls2019.Nov
+        - ao2019.Dec
+        - ao2020.Jan
+        - ao2020.Feb
+        - ls2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ao2020.May
+        - ls2020.Jul
+        - ls2020.Aug
+        - ls2020.Sep
+        - ls2020.Oct
+        - ao2020.Nov
+        - ao2020.Dec
+        - ls2020.Dec
+        - ao2021.Mar
+        - ls2021.Apr
+        - ls2021.May
+        - ao2021.Jun
+        - ls2021.Jul
+        - ao2021.Aug
+        - ls2021.Oct
+        - ls2021.Nov
+        - ls2022.Jan
+        - ls2022.Feb
         transform: log
     imports_goods:
       sa:
+        ar: []
         arima: (2 0 2)(1 0 0)
+        calendar: []
+        constant: true
+        ma: []
+        outliers: []
         transform: log
       trend:
+        ar: []
         arima: (1 1 2)(0 0 1)
+        calendar:
+        - td1coef
+        - easter[1]
+        constant: false
+        ma: []
+        outliers: []
         transform: log
     imports_services:
       sa:
-        arima: (0 1 1)(0 1 1)
-        transform: none
+        ar: []
+        arima: (0 0 0)(0 1 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.180517
+        outliers: []
+        transform: log
       trend:
-        arima: (0 1 2)(1 0 0)
-        transform: none
+        ar: []
+        arima: (1 1 2)(0 0 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers: []
+        transform: log
     industrial_production:
       trend:
+        ar: []
         arima: (1 1 2)(1 0 1)
+        calendar:
+        - easter[8]
+        constant: true
+        ma: []
+        outliers:
+        - ao1999.Nov
+        - ao2000.Dec
+        - ls2008.Nov
+        - ao2020.Jan
+        - ls2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
         transform: log
     investment:
       trend:
+        ar: []
         arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers: []
         transform: log
     npl:
       sa:
+        ar: []
         arima: (3 1 1)(1 0 0)
+        calendar: []
+        constant: false
+        ma: []
+        outliers: []
         transform: log
       trend:
+        ar: []
         arima: (2 3 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers: []
         transform: log
     order_books:
       trend:
+        ar:
+        - -0.066996
+        - 0.467092
+        - -0.432849
         arima: (2 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.439343
+        - -0.476018
+        outliers:
+        - ls1998.Sep
+        - ls2020.Apr
+        - ao2020.May
         transform: none
     overnight_stays:
       sa:
-        arima: (3 0 0)(0 1 1)
-        transform: none
+        ar: []
+        arima: (2 1 2)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao1991.Apr
+        - ao1994.Apr
+        - ao1997.Apr
+        - ao2002.Apr
+        - ao2005.Apr
+        - ao2008.Apr
+        - ao2013.Apr
+        - ao2016.Apr
+        - ao2018.Apr
+        - ao2020.Jan
+        - ao2020.Feb
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jul
+        - ao2020.Dec
+        - ao2021.Apr
+        - ao2021.Oct
+        - ao2021.Dec
+        - ao2024.Apr
+        transform: log
       trend:
-        arima: (2 1 1)(0 0 1)
-        transform: none
+        ar:
+        - -0.132934
+        - -0.061222
+        arima: (2 1 1)(0 1 1)
+        calendar:
+        - td
+        - easter[8]
+        constant: false
+        ma:
+        - 0.915238
+        - 0.375562
+        outliers:
+        - ls1997.Dec
+        - ls2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ao2020.Jun
+        - ls2020.Jun
+        - ls2020.Oct
+        - ls2020.Nov
+        - ao2020.Dec
+        - ls2020.Dec
+        - ao2021.Mar
+        - ao2021.Apr
+        - ao2021.May
+        - ls2021.May
+        - ao2021.Jun
+        - ao2021.Nov
+        - ao2021.Dec
+        - ao2022.Jan
+        - ao2022.Feb
+        transform: log
     retail:
       trend:
-        arima: (1 1 2)(1 0 1)
-        transform: none
+        ar:
+        - -0.771965
+        - -0.363421
+        - 0.482166
+        arima: (2 1 0)(1 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.715174
+        outliers:
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.Nov
+        - ao2021.Jan
+        - ao2022.Sep
+        transform: log
     total_production:
       trend:
+        ar:
+        - -0.026794
         arima: (1 1 0)
+        calendar: []
+        constant: false
+        ma: []
+        outliers: []
         transform: log
     unemployment:
       trend:
+        ar: []
         arima: (1 1 0)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2004.Jan
+        - ao2006.Mar
+        - ls2008.Nov
+        - ls2009.Dec
+        - ao2011.Feb
+        - ls2011.Oct
+        - ao2020.Apr
+        - ls2020.May
+        - ls2020.Dec
         transform: log
     wholesale:
       trend:
+        ar:
+        - 0.859499
         arima: (1 0 1)
+        calendar:
+        - easter[1]
+        constant: true
+        ma:
+        - 0.218986
+        outliers:
+        - ls2024.Jan
         transform: log
   BE:
     bankruptcies:
       trend:
-        arima: (0 1 2)
-        transform: none
+        ar: []
+        arima: (0 1 1)
+        calendar:
+        - td
+        constant: false
+        ma:
+        - 0.537681
+        outliers:
+        - ao2018.May
+        - ls2020.Apr
+        - ls2020.Jun
+        - ao2020.Aug
+        transform: log
     building_permits:
       trend:
+        ar:
+        - 0.36154
+        - 0.39051
+        - -0.72922
         arima: (3 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.730353
+        outliers: []
         transform: log
     construction:
       trend:
-        arima: (0 1 1)
-        transform: none
+        ar:
+        - -0.694477
+        - -0.246433
+        arima: (2 1 0)
+        calendar:
+        - td
+        constant: false
+        ma: []
+        outliers:
+        - ao2010.Dec
+        - ao2012.Feb
+        - ls2020.Mar
+        - ls2020.May
+        transform: log
     consumer_confidence:
       trend:
+        ar:
+        - 0.910934
         arima: (1 0 0)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ls1985.Oct
+        - ao2020.Apr
+        - ls2022.Mar
         transform: none
     esi:
       trend:
+        ar:
+        - 0.793104
+        - 0.86207
         arima: (1 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.691895
+        - 0.98545
+        outliers:
+        - ls2020.Apr
+        - ls2022.Mar
         transform: none
     exports_goods:
       sa:
+        ar:
+        - -0.896943
+        - -0.753736
         arima: (2 1 2)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.346313
+        - -0.507271
+        - 0.947979
+        outliers:
+        - ao2020.Apr
+        - ao2020.May
         transform: log
       trend:
-        arima: (3 1 1)
-        transform: none
+        ar: []
+        arima: (2 1 2)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ls2020.Apr
+        - ao2020.Jun
+        transform: log
     exports_services:
       sa:
+        ar: []
         arima: (0 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.572962
+        - 0.824357
+        outliers:
+        - ao2008.Oct
+        - ao2020.Oct
+        - ao2021.Apr
         transform: log
       trend:
+        ar:
+        - -0.620428
+        - -0.318107
         arima: (2 1 0)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ao2008.Oct
+        - ao2020.Oct
+        - ao2021.Apr
         transform: log
     gdp:
       trend:
+        ar:
+        - 0.587597
+        - 0.714732
+        - -0.596836
         arima: (3 1 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.829319
+        outliers:
+        - ls2008.Oct
+        - ao2020.Feb
+        - ls2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ls2020.Jun
+        - ls2020.Jul
+        - ls2020.Aug
+        - ao2020.Oct
+        - ls2020.Nov
+        - ao2020.Dec
+        - ao2021.Jan
+        - ao2021.Mar
         transform: log
     household_consumption:
       trend:
+        ar: []
         arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ls2019.Nov
+        - ao2019.Dec
+        - ao2020.Jan
+        - ao2020.Feb
+        - ls2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ls2020.Jun
+        - ao2020.Jul
+        - ls2020.Jul
+        - ao2020.Aug
+        - ls2020.Oct
+        - ao2020.Nov
+        - ls2020.Nov
+        - ao2021.Jan
+        - ao2021.Feb
+        - ls2021.Feb
+        - ls2021.Jul
         transform: log
     imports_goods:
       sa:
+        ar: []
         arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2020.Apr
         transform: log
       trend:
+        ar:
+        - 0.021097
         arima: (1 1 0)
+        calendar:
+        - td
+        - easter[15]
+        constant: false
+        ma: []
+        outliers:
+        - ao2011.May
+        - ao2020.Apr
         transform: log
     imports_services:
       sa:
+        ar: []
         arima: (0 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.523968
+        - 0.650403
+        outliers:
+        - ao2008.Oct
+        - ao2014.Jul
+        - ao2015.Mar
+        - ao2019.May
+        - ao2019.Aug
+        - ao2020.Sep
+        - ao2021.Jan
         transform: log
       trend:
+        ar: []
         arima: (1 1 2)(1 0 1)
+        calendar:
+        - td1coef
+        constant: true
+        ma: []
+        outliers:
+        - ao2008.Oct
+        - ao2014.Jul
+        - ao2015.Mar
+        - ao2019.May
+        - ao2019.Aug
+        - ls2020.Mar
+        - ao2020.Sep
+        - ao2021.Jan
         transform: log
     industrial_production:
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.414519
+        outliers:
+        - ao2020.Apr
+        - ao2021.Jun
         transform: log
     investment:
       trend:
+        ar:
+        - 0.266057
+        - 0.329455
+        - -0.778189
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.813511
+        - -0.084326
+        outliers:
+        - ao2014.Sep
+        - ls2015.Jan
+        - ls2015.Apr
+        - ao2020.Feb
+        - ao2020.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ao2020.Jul
+        - ls2020.Jul
+        - ao2020.Aug
+        - ls2023.Oct
         transform: log
     npl:
       sa:
+        ar: []
         arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2018.Jun
+        - ao2021.Jun
         transform: log
       trend:
+        ar: []
         arima: (2 1 2)(1 0 0)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2018.Apr
+        - ls2018.Jul
+        - ls2018.Oct
+        - ao2021.Apr
+        - ls2021.Jul
+        - ls2021.Oct
         transform: log
     order_books:
       trend:
+        ar: []
         arima: (3 1 1)(1 0 1)
+        calendar:
+        - td
+        constant: false
+        ma: []
+        outliers:
+        - ls2020.Apr
         transform: none
     overnight_stays:
       sa:
-        arima: (1 1 0)(0 1 1)
-        transform: none
+        ar:
+        - -0.321675
+        - 0.802249
+        - 0.239586
+        arima: (3 0 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.983698
+        - 0.504387
+        outliers:
+        - ao1991.Oct
+        - ao1991.Nov
+        - ao1993.Dec
+        - ao1997.Apr
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        - ao2020.Oct
+        - ao2020.Nov
+        - ao2020.Dec
+        - ao2021.Jan
+        - ao2021.Feb
+        - ao2021.Mar
+        transform: log
       trend:
-        arima: (0 1 1)
-        transform: none
+        ar: []
+        arima: (3 1 1)(0 0 1)
+        calendar:
+        - easter[1]
+        constant: true
+        ma: []
+        outliers:
+        - ls2019.Dec
+        - ao2020.Mar
+        - ls2021.Jul
+        - ls2021.Aug
+        transform: log
     registrations:
       trend:
-        arima: (3 0 1)(0 0 1)
-        transform: none
+        ar: []
+        arima: (3 0 1)(1 0 1)
+        calendar:
+        - td
+        constant: true
+        ma: []
+        outliers:
+        - ao2020.Apr
+        transform: log
     retail:
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.450969
+        outliers:
+        - ao2006.Nov
+        - ao2008.Sep
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.Aug
+        - ao2020.Nov
         transform: log
     total_production:
       trend:
+        ar:
+        - 0.814382
         arima: (1 0 0)
+        calendar:
+        - td
+        constant: true
+        ma: []
+        outliers: []
         transform: log
     unemployment:
       trend:
-        arima: (2 1 2)
-        transform: none
+        ar:
+        - 0.26782
+        - 0.132378
+        - -0.469156
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.560746
+        - -0.136982
+        outliers:
+        - ls2009.Jan
+        transform: log
     wholesale:
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar:
+        - td1coef
+        constant: true
+        ma:
+        - 0.465895
+        outliers:
+        - ls2021.Mar
+        - ao2022.Nov
         transform: log
   BG:
     bankruptcies:
       trend:
+        ar:
+        - 0.861287
         arima: (1 0 1)
-        transform: none
+        calendar:
+        - td1coef
+        constant: true
+        ma:
+        - 0.480326
+        outliers:
+        - ao2018.Aug
+        - ao2020.Apr
+        transform: log
     building_permits:
       trend:
+        ar: []
         arima: (3 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers: []
         transform: log
     construction:
       trend:
+        ar: []
         arima: (0 2 2)(0 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2002.Jan
+        - ls2003.Jan
+        - ao2006.Jan
+        - ls2006.Feb
+        - ls2006.Apr
+        - ls2006.Oct
+        - ls2006.Dec
+        - ls2007.Sep
+        - ao2010.Feb
+        - ls2010.Dec
+        - ao2012.Feb
+        - ls2012.Dec
+        - ao2015.Oct
+        - ls2016.Jan
+        - ao2017.Jan
+        - ls2020.Mar
+        - ls2020.Jun
         transform: log
     consumer_confidence:
       trend:
+        ar:
+        - 0.663983
         arima: (1 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.845574
+        - 0.201342
+        outliers:
+        - ao2020.Apr
         transform: none
     esi:
       trend:
+        ar:
+        - 0.052983
         arima: (1 1 0)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls1993.Apr
+        - ao1994.Jun
+        - ls1994.Dec
+        - ls1998.Apr
+        - ls2008.Dec
+        - ls2020.Apr
         transform: none
     exports_goods:
       sa:
+        ar:
+        - -0.291145
         arima: (1 1 0)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.889804
+        outliers: []
         transform: log
       trend:
+        ar:
+        - -0.142504
         arima: (1 1 0)
+        calendar:
+        - td
+        - easter[8]
+        constant: false
+        ma: []
+        outliers: []
         transform: log
     exports_services:
       sa:
+        ar: []
         arima: (0 1 0)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.325147
+        outliers:
+        - ao2012.Jun
         transform: log
       trend:
+        ar: []
         arima: (1 1 1)(1 0 1)
+        calendar:
+        - td
+        - easter[1]
+        constant: true
+        ma: []
+        outliers:
+        - ao2012.Jun
         transform: log
     gdp:
       trend:
-        arima: (2 2 1)(0 0 1)
-        transform: none
+        ar: []
+        arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls1996.Jun
+        - ao1996.Sep
+        - ls1997.Jan
+        - ls1997.Apr
+        - ls1997.Jul
+        - ao1997.Aug
+        - ao1997.Oct
+        - ao1997.Nov
+        - ls1998.Jan
+        - ao1998.Feb
+        - ls1998.Apr
+        - ls1998.May
+        - ao1998.Jun
+        - ao1998.Oct
+        - ao1999.Apr
+        - ao1999.Jul
+        - ao1999.Sep
+        - ls1999.Oct
+        - ls1999.Dec
+        - ls2000.Jan
+        - ao2000.Apr
+        - ls2008.Oct
+        - ls2009.Jan
+        - ls2009.Apr
+        - ls2009.Jul
+        - ls2009.Oct
+        - ls2010.Jan
+        - ao2018.Sep
+        - ls2019.Jan
+        - ls2019.Apr
+        - ls2020.Jan
+        - ls2020.Apr
+        - ao2020.Jul
+        - ls2020.Oct
+        - ao2020.Dec
+        - ao2021.Mar
+        - ao2021.Jun
+        transform: log
     household_consumption:
       trend:
-        arima: (3 1 1)(0 0 1)
-        transform: none
+        ar:
+        - 0.443906
+        - 0.476033
+        - -0.741628
+        - 0.533201
+        arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.781139
+        - 0.187244
+        outliers:
+        - ao1996.Oct
+        - ls1996.Dec
+        - ls1997.Jan
+        - ls1997.Feb
+        - ls1997.Mar
+        - ls1997.Apr
+        - ls1998.Jan
+        - ls1998.Apr
+        - ls1999.Jul
+        transform: log
     imports_goods:
       sa:
+        ar: []
         arima: (0 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.330655
+        - 0.867837
+        outliers: []
         transform: log
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar:
+        - td1coef
+        - easter[1]
+        constant: true
+        ma:
+        - 0.28919
+        outliers:
+        - ls2009.Jan
+        - ls2020.Apr
         transform: log
     imports_services:
       sa:
+        ar: []
         arima: (0 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.297373
+        - 0.810822
+        outliers: []
         transform: log
       trend:
+        ar: []
         arima: (0 1 1)
-        transform: none
+        calendar:
+        - td1coef
+        constant: true
+        ma:
+        - 0.420792
+        outliers:
+        - ls2010.Jan
+        - ls2014.Jan
+        - ls2020.Mar
+        transform: log
     industrial_production:
       trend:
-        arima: (2 1 1)(1 0 1)
-        transform: none
-    investment:
-      trend:
-        arima: (3 1 0)(0 0 1)
-        transform: none
+        ar:
+        - -0.274618
+        - 0.55907
+        arima: (1 2 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.935296
+        - 0.922005
+        outliers:
+        - ls2009.Jan
+        - ls2020.Apr
+        transform: log
     npl:
       sa:
+        ar:
+        - 0.358182
+        - 0.395449
+        - -0.691926
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.789237
+        - -0.129603
+        outliers: []
         transform: log
       trend:
+        ar: []
         arima: (2 1 0)(1 0 0)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2015.Oct
+        - ls2019.Jul
+        - ls2024.Jan
         transform: log
     order_books:
       trend:
+        ar:
+        - 0.154469
+        - 0.178228
+        - -0.07293
         arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.328174
+        - 0.926879
+        outliers:
+        - ls1998.Feb
+        - ao2000.Aug
+        - ls2006.Jul
+        - ls2014.May
+        - ao2019.Jul
+        - ls2020.Apr
         transform: none
     registrations:
       trend:
-        arima: (1 0 1)(1 0 0)
-        transform: none
+        ar: []
+        arima: (0 1 1)(0 1 1)
+        calendar:
+        - td1coef
+        constant: false
+        ma: []
+        outliers:
+        - ls2015.Nov
+        - ao2018.Mar
+        - ao2018.Apr
+        - ao2018.May
+        - ao2018.Jul
+        - ao2018.Aug
+        - ao2018.Sep
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        transform: log
     retail:
       trend:
+        ar:
+        - -0.337226
+        - -0.157097
         arima: (2 2 1)(0 0 1)
+        calendar:
+        - easter[15]
+        constant: false
+        ma:
+        - 0.609816
+        - 0.662612
+        outliers:
+        - ls2013.Jan
+        - ls2015.Jan
+        - ls2020.Jan
+        - ls2020.Mar
+        - ls2020.Apr
+        - ls2020.Aug
+        - ao2023.Apr
         transform: log
     total_production:
       trend:
+        ar:
+        - -0.168949
         arima: (1 1 0)
-        transform: none
+        calendar:
+        - easter[1]
+        constant: true
+        ma: []
+        outliers: []
+        transform: log
     unemployment:
       trend:
-        arima: (3 1 1)(1 0 1)
-        transform: none
+        ar:
+        - 0.914802
+        - -0.179791
+        - 0.641823
+        arima: (2 1 0)(1 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.905964
+        outliers:
+        - ao2008.Dec
+        - ls2009.Jan
+        - ao2020.Feb
+        - ls2020.Apr
+        transform: log
     wholesale:
       trend:
+        ar: []
         arima: (1 2 2)(1 0 1)
+        calendar:
+        - td1coef
+        - easter[1]
+        constant: true
+        ma: []
+        outliers:
+        - ls2020.Mar
         transform: log
   CY:
     building_permits:
       trend:
+        ar:
+        - 0.346268
+        - 0.305549
+        - -0.730986
         arima: (3 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.70406
+        outliers:
+        - ls2024.Jul
+        - ls2024.Aug
+        - ls2024.Oct
         transform: log
     consumer_confidence:
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.141369
+        outliers:
+        - ao2001.Oct
+        - ls2011.Aug
+        - ls2013.Apr
+        - ls2020.Mar
         transform: none
     esi:
       trend:
+        ar:
+        - -0.365832
         arima: (1 1 0)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2001.Oct
+        - ao2013.Apr
+        - ls2020.Mar
+        - ls2020.Apr
+        - ls2021.May
+        - ls2022.Mar
         transform: none
     gdp:
       trend:
+        ar: []
         arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ls2000.Apr
+        - ls2000.Jul
+        - ls2002.Apr
+        - ls2002.Jul
+        - ls2002.Oct
+        - ls2011.Jul
+        - ao2020.Feb
+        - ls2020.Mar
+        - ls2020.Apr
+        - ls2020.May
+        - ao2020.Jul
+        - ls2020.Jul
+        - ls2020.Sep
         transform: log
     household_consumption:
       trend:
+        ar: []
         arima: (3 1 1)(0 0 1)
-        transform: none
-    investment:
-      trend:
-        arima: (3 0 1)(1 0 0)
-        transform: none
-    npl:
-      sa:
-        arima: (1 1 2)(1 0 0)
-        transform: log
-      trend:
-        arima: (2 2 2)(0 0 1)
-        transform: log
-    order_books:
-      trend:
-        arima: (1 1 0)(1 0 1)
-        transform: none
-    overnight_stays:
-      sa:
-        arima: (3 1 1)(0 1 1)
-        transform: none
-      trend:
-        arima: (2 1 1)
-        transform: none
-    unemployment:
-      trend:
-        arima: (3 1 0)(0 0 1)
-        transform: log
-    wholesale:
-      trend:
-        arima: (2 1 2)(0 1 1)
-        transform: none
-  DE:
-    bankruptcies:
-      trend:
-        arima: (0 1 1)
-        transform: log
-    building_permits:
-      trend:
-        arima: (3 1 1)(0 0 1)
-        transform: log
-    construction:
-      trend:
-        arima: (0 1 1)
-        transform: log
-    consumer_confidence:
-      trend:
-        arima: (2 1 0)
-        transform: none
-    esi:
-      trend:
-        arima: (2 1 0)(1 0 1)
-        transform: none
-    exports_goods:
-      sa:
-        arima: (3 1 1)(0 1 1)
-        transform: log
-      trend:
-        arima: (1 1 2)
-        transform: log
-    exports_services:
-      sa:
-        arima: (3 1 1)(0 1 1)
-        transform: log
-      trend:
-        arima: (3 1 1)(1 0 1)
-        transform: log
-    gdp:
-      trend:
-        arima: (3 1 1)
-        transform: log
-    household_consumption:
-      trend:
-        arima: (3 1 1)(0 0 1)
-        transform: log
-    imports_goods:
-      sa:
-        arima: (3 1 1)(0 1 1)
-        transform: log
-      trend:
-        arima: (0 1 2)
-        transform: log
-    imports_services:
-      sa:
-        arima: (3 1 1)(0 1 1)
-        transform: log
-      trend:
-        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ls2020.Feb
+        - ls2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ao2020.Jul
+        - ls2020.Jul
+        - ls2020.Sep
         transform: log
     industrial_production:
       trend:
-        arima: (3 1 1)(0 0 1)
-        transform: none
+        ar: []
+        arima: (0 2 2)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2013.Aug
+        - ls2020.Mar
+        - ao2020.Apr
+        transform: log
     investment:
       trend:
+        ar:
+        - 0.317792
+        - 0.305641
+        - -0.841104
         arima: (3 1 1)(0 0 1)
-        transform: none
+        calendar: []
+        constant: false
+        ma:
+        - -0.761067
+        - -0.490177
+        outliers:
+        - ls2016.Jan
+        - ao2016.Mar
+        - ls2016.Mar
+        - ao2016.Jun
+        - ls2016.Jun
+        - ls2016.Aug
+        - ao2016.Oct
+        - ao2016.Nov
+        - ls2017.Jul
+        - ao2018.Jan
+        - ls2018.Feb
+        - ls2018.Apr
+        - ao2020.Jan
+        - ao2020.Mar
+        - ls2020.Apr
+        - ls2020.Jun
+        - ao2020.Jul
+        - ls2020.Jul
+        - ls2022.Apr
+        - ls2022.Jul
+        transform: log
     npl:
       sa:
-        arima: (2 2 1)(0 0 1)
+        ar: []
+        arima: (1 1 2)(1 0 0)
+        calendar: []
+        constant: false
+        ma: []
+        outliers: []
         transform: log
       trend:
-        arima: (3 1 1)(1 0 1)
+        ar: []
+        arima: (2 2 2)(0 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2016.Jan
+        - ao2018.Jun
+        - ls2018.Oct
         transform: log
     order_books:
       trend:
-        arima: (3 1 1)(1 0 1)
+        ar: []
+        arima: (1 1 0)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2017.Mar
+        - ls2020.Apr
         transform: none
     overnight_stays:
       sa:
-        arima: (1 1 0)(0 1 1)
-        transform: none
+        ar: []
+        arima: (2 1 2)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        - ao2020.Jul
+        - ao2020.Aug
+        - ao2020.Sep
+        - ao2020.Nov
+        - ao2021.Jan
+        - ao2021.Feb
+        - ao2021.Mar
+        - ao2021.Apr
+        - ao2021.May
+        - ao2022.Jan
+        - ao2022.Feb
+        - ao2022.Mar
+        - ao2026.Mar
+        transform: log
       trend:
-        arima: (1 1 1)(1 0 1)
-        transform: none
-    registrations:
-      trend:
-        arima: (1 0 1)
-        transform: none
+        ar:
+        - 0.866909
+        - 0.072092
+        - -0.507934
+        arima: (2 0 0)(1 0 1)
+        calendar:
+        - easter[8]
+        constant: true
+        ma:
+        - -0.617132
+        outliers:
+        - ao2020.Feb
+        - ls2020.Feb
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        - ao2020.Jul
+        - ao2020.Sep
+        - ao2020.Nov
+        - ls2021.Jan
+        - ls2021.Feb
+        - ao2021.Mar
+        - ls2021.May
+        - ao2021.Jun
+        - ls2021.Jun
+        - ls2021.Aug
+        - ls2021.Oct
+        - ls2022.Jan
+        - ao2022.Mar
+        - ls2022.Apr
+        - ao2026.Mar
+        transform: log
     retail:
       trend:
-        arima: (0 1 1)
+        ar: []
+        arima: (0 2 2)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2005.May
+        - ao2010.Mar
+        - ls2013.Mar
+        - ls2013.May
+        - ao2020.Apr
+        - ao2021.Jan
         transform: log
-    total_production:
-      trend:
-        arima: (0 1 1)
-        transform: none
     unemployment:
       trend:
-        arima: (3 2 1)(1 0 1)
+        ar:
+        - 0.164842
+        - -0.054969
+        - -0.089628
+        arima: (3 1 0)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.096863
+        outliers: []
         transform: log
     wholesale:
       trend:
+        ar:
+        - -0.463782
+        arima: (1 1 0)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.50469
+        outliers:
+        - ls2023.Mar
+        - ao2023.Dec
+        transform: log
+  DE:
+    bankruptcies:
+      trend:
+        ar: []
+        arima: (0 1 1)
+        calendar:
+        - td
+        constant: false
+        ma:
+        - 0.304285
+        outliers: []
+        transform: log
+    building_permits:
+      trend:
+        ar:
+        - 0.410997
+        - 0.40076
+        - -0.704971
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.724558
+        - -0.093332
+        outliers: []
+        transform: log
+    construction:
+      trend:
+        ar: []
+        arima: (0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.385399
+        outliers:
+        - ao1991.Feb
+        - ls1994.Jan
+        - ao1994.Feb
+        - ao1995.Jan
+        - ls1995.Dec
+        - ao1996.Feb
+        - ls1996.Apr
+        - ao1997.Jan
+        - ao1999.Feb
+        - ao2010.Dec
+        - ao2012.Feb
+        - ao2020.Dec
+        transform: log
+    consumer_confidence:
+      trend:
+        ar:
+        - -0.013797
+        - 0.191372
+        arima: (2 1 0)
+        calendar:
+        - td1coef
+        constant: false
+        ma: []
+        outliers:
+        - ls1991.Jul
+        - ls2002.Nov
+        - ao2020.Mar
+        - ls2020.Apr
+        - ls2022.Mar
+        transform: none
+    esi:
+      trend:
+        ar:
+        - 0.332859
+        - 0.236899
+        - 0.618506
+        arima: (2 1 0)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.831569
+        outliers:
+        - ls1980.Jun
+        - ao1980.Aug
+        - ls1991.Jan
+        - ls1995.Apr
+        - ls1999.Oct
+        - ao2004.Jan
+        - ao2010.Apr
+        - ao2020.Mar
+        - ls2020.Apr
+        - ls2021.Jun
+        - ls2022.Mar
+        transform: none
+    exports_goods:
+      sa:
+        ar:
+        - -0.171684
+        - 0.058931
+        - 0.373318
+        arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.5661
+        - 0.818816
+        outliers:
+        - ao2020.Apr
+        - ao2020.May
+        transform: log
+      trend:
+        ar: []
         arima: (1 1 2)
+        calendar:
+        - td1coef
+        - easter[1]
+        constant: true
+        ma: []
+        outliers:
+        - ao1992.Jun
+        - ls1994.Dec
+        - ls2008.Dec
+        - ls2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        transform: log
+    exports_services:
+      sa:
+        ar:
+        - -0.014722
+        - 0.125051
+        - 0.282042
+        arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.705762
+        - 0.760897
+        outliers:
+        - ao1995.Apr
+        - ao2020.May
+        transform: log
+      trend:
+        ar: []
+        arima: (3 1 1)(1 0 1)
+        calendar:
+        - td1coef
+        - easter[1]
+        constant: true
+        ma: []
+        outliers:
+        - ls2020.Apr
+        transform: log
+    gdp:
+      trend:
+        ar:
+        - 0.413325
+        - 0.494149
+        - -0.669924
+        arima: (3 1 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.783637
+        outliers:
+        - ls2009.Jan
+        - ao2020.Jan
+        - ls2020.Jan
+        - ls2020.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ao2020.Jul
+        - ls2020.Jul
+        - ao2020.Sep
+        transform: log
+    household_consumption:
+      trend:
+        ar:
+        - 0.731275
+        - 0.646391
+        - -0.721841
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.81052
+        - 0.277414
+        outliers:
+        - ao2020.Jan
+        - ao2020.Feb
+        - ls2020.Mar
+        - ls2020.May
+        - ls2020.Jun
+        - ao2020.Jul
+        - ls2020.Jul
+        - ao2020.Oct
+        - ls2020.Oct
+        - ao2020.Dec
+        - ls2020.Dec
+        - ao2021.Feb
+        - ls2021.Feb
+        - ls2021.Jul
+        - ls2021.Oct
+        - ls2021.Dec
+        - ao2022.Jan
+        - ls2022.Jan
+        - ao2022.Feb
+        transform: log
+    imports_goods:
+      sa:
+        ar:
+        - -0.307176
+        - -0.039578
+        - 0.324079
+        arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.29763
+        - 0.813801
+        outliers:
+        - ao1993.Jan
+        - ao2020.Apr
+        - ao2020.May
+        transform: log
+      trend:
+        ar: []
+        arima: (0 1 2)
+        calendar:
+        - td1coef
+        - easter[1]
+        constant: true
+        ma:
+        - 0.469537
+        - -0.174138
+        outliers:
+        - ls1993.Jan
+        - ao1994.Dec
+        - ao2000.May
+        - ls2008.Dec
+        - ls2020.Apr
+        transform: log
+    imports_services:
+      sa:
+        ar:
+        - -0.359541
+        - -0.158004
+        - 0.219253
+        arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.1903
+        - 0.649443
+        outliers:
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        transform: log
+      trend:
+        ar:
+        - -0.013882
+        - 0.230776
+        - -0.19547
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.143356
+        - 0.052816
+        outliers:
+        - ls2020.Mar
+        - ls2020.Apr
+        - ls2020.May
+        - ls2020.Jul
+        transform: log
+    industrial_production:
+      trend:
+        ar:
+        - 0.283556
+        - 0.251842
+        - 0.210762
+        arima: (3 1 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.717237
+        outliers:
+        - ls2008.Nov
+        - ls2009.Jan
+        - ao2009.Apr
+        - ls2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ls2020.Oct
+        - ls2022.Mar
+        transform: log
+    investment:
+      trend:
+        ar:
+        - 0.349129
+        - 0.394561
+        - -0.705227
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.737825
+        - -0.086912
+        outliers: []
+        transform: log
+    npl:
+      sa:
+        ar: []
+        arima: (2 2 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers: []
+        transform: log
+      trend:
+        ar:
+        - 0.455186
+        - 0.500676
+        - -0.624636
+        - 0.587971
+        arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.74658
+        - 0.269828
+        outliers: []
+        transform: log
+    order_books:
+      trend:
+        ar: []
+        arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls1991.Jan
+        - ls2008.Nov
+        - ao2020.Apr
+        - ls2020.Apr
+        transform: none
+    overnight_stays:
+      sa:
+        ar: []
+        arima: (3 0 0)(0 1 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        - ao2020.Aug
+        - ao2020.Sep
+        - ao2020.Oct
+        - ao2020.Dec
+        - ao2021.Apr
+        - ao2021.May
+        - ao2021.Dec
+        transform: log
+      trend:
+        ar:
+        - -0.178027
+        arima: (1 1 1)(0 0 1)
+        calendar:
+        - easter[8]
+        constant: false
+        ma:
+        - -0.870262
+        - -0.198475
+        outliers:
+        - ao2020.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ls2020.Jun
+        - ls2020.Jul
+        - ao2020.Oct
+        - ls2020.Nov
+        - ao2020.Dec
+        - ao2021.Apr
+        - ls2021.Jun
+        - ao2021.Jul
+        - ls2021.Jul
+        - ls2021.Dec
+        - ls2022.Jan
+        transform: log
+    registrations:
+      trend:
+        ar: []
+        arima: (0 1 1)
+        calendar:
+        - td1coef
+        - easter[1]
+        constant: false
+        ma:
+        - 0.250433
+        outliers:
+        - ls2020.Mar
+        - ls2020.May
+        - ls2023.Aug
+        transform: log
+    retail:
+      trend:
+        ar: []
+        arima: (0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.530401
+        outliers:
+        - ao2020.Apr
+        - ls2020.May
+        - ao2021.Jan
+        - ao2021.Feb
+        - ao2021.Apr
+        - ao2021.Jun
+        transform: log
+    total_production:
+      trend:
+        ar: []
+        arima: (0 1 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.359597
+        outliers:
+        - ao2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ls2020.Jun
+        - ao2021.Feb
+        transform: log
+    unemployment:
+      trend:
+        ar:
+        - 0.808924
+        - 0.100526
+        - -0.483021
+        - 0.20549
+        arima: (3 2 1)(1 0 1)
+        calendar:
+        - easter[1]
+        constant: false
+        ma:
+        - -0.304307
+        - 0.636857
+        outliers:
+        - ao1995.Feb
+        - ls1995.Feb
+        - ls2004.Feb
+        - ls2004.Mar
+        - ls2005.Jan
+        - ao2005.Feb
+        - ls2005.Feb
+        - ao2005.May
+        - ao2005.Jun
+        - ls2005.Jul
+        - ao2015.Sep
+        transform: log
+    wholesale:
+      trend:
+        ar:
+        - -0.678498
+        arima: (1 1 2)
+        calendar:
+        - easter[1]
+        constant: false
+        ma:
+        - -0.396576
+        - 0.398032
+        outliers:
+        - ao1997.May
+        - ls1998.Jan
+        - ao2000.Jan
+        - ao2006.Dec
+        - ls2009.Jan
+        - ao2020.Apr
         transform: log
   EE:
     building_permits:
       trend:
+        ar:
+        - 0.206307
+        - 0.259587
+        - -0.707133
+        - 0.28687
         arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.780449
+        - -0.148081
+        outliers:
+        - ls2004.Jan
+        - ls2004.Feb
+        - ls2004.Jul
+        - ls2004.Aug
+        - ls2004.Sep
+        - ls2004.Oct
+        - ls2005.Jan
         transform: log
     consumer_confidence:
       trend:
+        ar:
+        - -0.117402
         arima: (1 1 0)
+        calendar:
+        - td
+        constant: false
+        ma: []
+        outliers:
+        - ls1993.Oct
+        - ls1995.Apr
+        - ls2001.May
+        - ao2005.Sep
+        - ls2020.Apr
+        - ao2020.Jun
+        - ls2020.Nov
+        - ao2021.Sep
+        - ls2022.May
+        - ao2022.Sep
         transform: none
     esi:
       trend:
+        ar:
+        - 0.086192
+        - 0.255232
         arima: (2 1 0)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls1992.Jul
+        - ls1992.Oct
+        - ls1993.Jan
+        - ls1993.Apr
+        - ls1993.Oct
+        - ls1994.Apr
+        - ls1994.Jul
+        - ls1996.Apr
+        - ls1996.Oct
+        - ls1997.Oct
+        - ls1998.Oct
+        - ls1999.Jan
+        - ls2000.Jan
+        - ao2001.Apr
+        - ls2020.Apr
+        - ls2020.Jul
         transform: none
     exports_goods:
       sa:
+        ar:
+        - -0.424261
+        - -0.121505
+        - 0.341001
         arima: (3 1 0)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.869225
+        outliers:
+        - ao2008.Oct
+        - ao2020.Apr
         transform: log
       trend:
-        arima: (1 1 0)
-        transform: none
+        ar: []
+        arima: (0 1 1)
+        calendar:
+        - td
+        - easter[1]
+        constant: false
+        ma:
+        - 0.155004
+        outliers:
+        - ls2008.Nov
+        - ls2010.Dec
+        transform: log
     exports_services:
       sa:
+        ar: []
         arima: (0 1 0)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.688517
+        outliers:
+        - ao2011.Apr
+        - ao2019.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        - ao2021.Dec
         transform: log
       trend:
+        ar: []
         arima: (0 1 0)(0 0 1)
+        calendar:
+        - td1coef
+        constant: true
+        ma:
+        - -0.229906
+        outliers:
+        - ao2009.Dec
+        - ao2011.Apr
+        - ao2019.Mar
+        - ao2020.Mar
+        - ls2020.Apr
+        - ls2021.Jan
+        - ao2021.Dec
         transform: log
     gdp:
       trend:
+        ar:
+        - 0.368183
+        - 0.255115
+        - -0.565879
+        - -0.298386
         arima: (3 2 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.409023
+        - 0.646947
+        outliers:
+        - ao2008.Aug
+        - ao2008.Sep
+        - ao2008.Oct
+        - ls2008.Oct
+        - ao2008.Nov
+        - ls2009.Apr
+        - ls2020.Feb
+        - ao2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ao2020.May
+        - ls2020.Oct
         transform: log
     household_consumption:
       trend:
+        ar:
+        - 0.504681
+        - 0.634029
+        - -0.564412
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.789687
+        - 0.497107
+        outliers:
+        - ao2020.Feb
+        - ls2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ls2020.Jul
+        - ls2020.Aug
+        - ao2020.Sep
         transform: log
     imports_goods:
       sa:
+        ar: []
         arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers: []
         transform: log
       trend:
+        ar: []
         arima: (1 1 2)
+        calendar:
+        - td1coef
+        - easter[1]
+        constant: true
+        ma: []
+        outliers:
+        - ls2008.Dec
+        - ls2020.Apr
+        - ao2022.Dec
         transform: log
     imports_services:
       sa:
+        ar: []
         arima: (0 1 0)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.958921
+        outliers:
+        - ao2019.Mar
+        - ao2020.Jul
+        - ao2020.Oct
+        - ao2020.Nov
+        - ao2020.Dec
+        - ao2021.Mar
+        - ao2021.Jun
         transform: log
       trend:
+        ar:
+        - -0.321444
         arima: (1 1 0)(0 0 1)
+        calendar:
+        - td1coef
+        constant: true
+        ma:
+        - -0.298439
+        outliers:
+        - ls2009.Jan
+        - ls2009.Mar
+        - ao2019.Mar
+        - ao2020.Mar
+        - ls2020.Mar
+        - ls2020.Jul
+        - ao2020.Oct
+        - ls2020.Nov
+        - ao2020.Dec
+        - ao2021.Jan
+        - ao2021.Feb
+        - ao2021.Mar
+        - ao2021.Jun
         transform: log
     industrial_production:
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar:
+        - td
+        - easter[8]
+        constant: true
+        ma:
+        - 0.202351
+        outliers:
+        - ls2008.Oct
         transform: log
     investment:
       trend:
+        ar:
+        - 0.417784
+        - 0.444103
+        - -0.675709
         arima: (3 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.734588
+        outliers: []
         transform: log
     npl:
       sa:
+        ar:
+        - 0.337568
+        - 0.388445
+        - -0.66995
+        - 0.838545
         arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.75518
+        - 0.666538
+        outliers: []
         transform: log
       trend:
+        ar:
+        - 0.497397
+        - 0.818684
+        - -0.461956
+        - -0.1514
         arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.610015
+        - 0.223044
+        outliers:
+        - ls2018.Oct
+        - ls2019.Jan
         transform: log
     order_books:
       trend:
+        ar: []
         arima: (1 1 2)(0 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls1992.Jul
+        - ls1993.Jan
+        - ls1996.Apr
+        - ls1998.Oct
+        - ls1999.Jul
+        - ls2001.Apr
+        - ls2020.Apr
         transform: none
-    overnight_stays:
-      sa:
-        arima: (0 0 0)(0 1 1)
-        transform: none
-      trend:
-        arima: (3 1 1)(0 0 1)
-        transform: log
     retail:
       trend:
+        ar: []
         arima: (1 1 2)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ls2003.Jan
+        - ao2004.Apr
+        - ao2011.Jan
+        - ao2020.Apr
+        - ls2021.May
         transform: log
     total_production:
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.201476
+        outliers:
+        - ao2026.Jan
         transform: log
     unemployment:
       trend:
+        ar:
+        - -0.517741
+        - -0.516073
         arima: (2 1 2)
+        calendar: []
+        constant: false
+        ma:
+        - -0.796147
+        - -0.884325
+        outliers: []
         transform: log
     wholesale:
       trend:
+        ar: []
         arima: (0 1 0)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.522286
+        outliers: []
         transform: log
   EL:
     building_permits:
       trend:
+        ar: []
         arima: (3 1 0)(0 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2005.Jul
+        - ao2005.Nov
+        - ls2006.Apr
+        - ao2010.Feb
+        - ao2010.Jun
+        - ls2011.Apr
+        - ls2023.Oct
+        - ao2024.Feb
+        - ls2024.Jul
+        - ao2024.Dec
+        - ls2025.Apr
         transform: log
     consumer_confidence:
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar:
+        - td
+        - easter[15]
+        constant: false
+        ma:
+        - 0.103527
+        outliers:
+        - ls1985.Oct
+        - ls2015.Feb
+        - ls2020.Mar
+        - ls2020.Apr
+        - ls2021.May
         transform: none
     esi:
       trend:
+        ar: []
         arima: (0 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.160904
+        - 0.926282
+        outliers:
+        - ao1983.Apr
+        - ao1983.Dec
+        - ls2015.Jul
+        - ao2020.Apr
+        - ls2020.May
         transform: none
     exports_goods:
       sa:
+        ar: []
         arima: (0 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.439833
+        - 0.920598
+        outliers: []
         transform: log
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar:
+        - td
+        constant: true
+        ma:
+        - 0.288122
+        outliers:
+        - ao2010.Sep
         transform: log
     exports_services:
       sa:
+        ar: []
         arima: (0 1 0)(1 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers: []
         transform: log
       trend:
+        ar: []
         arima: (1 1 2)(0 0 1)
-        transform: none
+        calendar:
+        - td1coef
+        constant: true
+        ma: []
+        outliers:
+        - ls2019.May
+        - ls2020.May
+        - ls2021.Jul
+        transform: log
     gdp:
       trend:
-        arima: (3 1 1)(0 0 1)
-        transform: none
+        ar: []
+        arima: (2 2 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2009.Jan
+        - ls2009.Apr
+        - ls2020.Feb
+        - ls2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ao2020.Jul
+        - ls2020.Jul
+        - ls2020.Sep
+        - ls2021.Jan
+        transform: log
     household_consumption:
       trend:
+        ar:
+        - 0.469365
+        - 0.569685
+        - -0.600019
         arima: (3 1 1)(0 0 1)
-        transform: none
+        calendar: []
+        constant: true
+        ma:
+        - -0.770604
+        - 0.238228
+        outliers:
+        - ls2020.Feb
+        - ls2020.Mar
+        - ls2020.Apr
+        - ls2020.May
+        - ao2020.Jul
+        - ls2020.Jul
+        - ls2020.Sep
+        transform: log
     imports_goods:
       sa:
+        ar:
+        - -0.580248
+        - -0.2456
         arima: (2 1 0)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.953871
+        outliers: []
         transform: log
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar:
+        - td1coef
+        - easter[1]
+        constant: false
+        ma:
+        - 0.406104
+        outliers: []
         transform: log
     imports_services:
       sa:
+        ar: []
         arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2015.Jul
         transform: log
       trend:
+        ar: []
         arima: (0 1 1)
-        transform: none
+        calendar:
+        - td1coef
+        constant: false
+        ma:
+        - 0.172302
+        outliers:
+        - ao2012.Mar
+        - ao2012.May
+        - ls2015.Jan
+        - ao2015.Jul
+        transform: log
     industrial_production:
       trend:
+        ar: []
         arima: (0 1 1)(0 0 1)
+        calendar:
+        - easter[8]
+        constant: false
+        ma:
+        - 0.507963
+        - 0.132614
+        outliers: []
         transform: log
     investment:
       trend:
+        ar:
+        - 0.472745
+        - 0.438349
+        - -0.687121
         arima: (3 1 1)(0 0 1)
-        transform: none
+        calendar: []
+        constant: false
+        ma:
+        - -0.733866
+        - 0.167614
+        outliers:
+        - ls2017.Apr
+        - ao2017.Jun
+        - ls2017.Jul
+        - ls2017.Oct
+        transform: log
     npl:
       sa:
+        ar:
+        - 0.428306
+        - 0.713522
+        - -0.642662
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.902548
+        - -0.421157
+        outliers:
+        - ao2024.Jul
+        - ao2024.Aug
+        - ao2024.Sep
         transform: log
       trend:
+        ar:
+        - 0.419974
+        - 0.718173
+        - -0.660485
         arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.951025
+        - 0.555381
+        outliers:
+        - ao2021.Feb
+        - ls2021.Mar
+        - ls2021.Apr
+        - ao2021.May
+        - ls2021.May
+        - ls2022.Jan
+        - ao2024.Apr
+        - ao2024.Jun
+        - ao2024.Jul
+        - ls2024.Jul
+        - ls2024.Sep
         transform: log
     order_books:
       trend:
+        ar: []
         arima: (0 1 2)
+        calendar:
+        - td1coef
+        - easter[15]
+        constant: false
+        ma:
+        - 0.100058
+        - 0.150393
+        outliers:
+        - ls2020.May
         transform: none
     overnight_stays:
       sa:
-        arima: (3 0 0)(0 1 1)
-        transform: none
+        ar:
+        - 0.643088
+        arima: (1 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.532
+        - 0.511302
+        outliers:
+        - ao1995.Mar
+        - ao1996.Dec
+        - ao2013.Apr
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        - ao2020.Jul
+        - ao2020.Oct
+        - ao2021.Mar
+        - ao2021.Apr
+        - ao2021.May
+        - ao2021.Jun
+        transform: log
       trend:
-        arima: (3 1 1)(0 0 1)
-        transform: none
-    retail:
-      trend:
-        arima: (2 2 1)(1 0 1)
-        transform: none
+        ar: []
+        arima: (2 1 2)(0 0 1)
+        calendar:
+        - easter[15]
+        constant: true
+        ma: []
+        outliers:
+        - ao1995.Mar
+        - ao1996.Dec
+        - ls2007.Nov
+        - ao2013.Apr
+        - ls2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ao2020.May
+        - ao2020.Jul
+        - ls2020.Jul
+        - ao2020.Oct
+        - ls2020.Oct
+        - ao2021.Mar
+        - ao2021.Apr
+        - ls2021.Apr
+        - ao2021.Jun
+        - ls2021.Jun
+        - ls2021.Dec
+        transform: log
     total_production:
       trend:
+        ar: []
         arima: (0 1 1)
-        transform: none
+        calendar:
+        - td1coef
+        constant: true
+        ma:
+        - 0.425448
+        outliers: []
+        transform: log
     unemployment:
       trend:
-        arima: (2 2 1)(0 0 1)
-        transform: none
+        ar:
+        - -0.570204
+        - -0.380046
+        arima: (2 2 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.846249
+        outliers:
+        - ls2004.Jan
+        - ls2008.Dec
+        - ls2020.Apr
+        - ao2023.Jan
+        - ls2024.Jan
+        - ao2024.Jun
+        - ao2026.Feb
+        - ao2026.Mar
+        transform: log
     wholesale:
       trend:
+        ar:
+        - 0.8282
         arima: (1 1 1)(0 0 1)
+        calendar:
+        - td1coef
+        constant: true
+        ma:
+        - 0.693707
+        - 0.570173
+        outliers:
+        - ao2021.Apr
+        - ls2021.Apr
+        - ao2023.Mar
+        - ls2023.Mar
+        - ao2024.Apr
         transform: log
   ES:
     building_permits:
       trend:
+        ar:
+        - 0.603197
+        - 0.700944
+        - -0.53854
         arima: (3 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.792813
+        outliers:
+        - ao2020.Feb
+        - ao2020.Mar
+        - ls2020.Apr
+        - ls2020.May
+        - ls2020.Jul
+        - ao2020.Aug
+        - ls2020.Aug
         transform: log
     construction:
       trend:
+        ar: []
         arima: (1 2 2)(0 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2009.Feb
+        - ls2009.Jun
+        - ls2010.Apr
+        - ao2010.Jun
+        - ao2010.Jul
+        - ls2010.Jul
+        - ao2010.Sep
+        - ao2011.Oct
+        - ao2012.Aug
+        - ls2013.Jan
+        - ao2013.Mar
+        - ls2014.Mar
+        - ls2015.Jun
+        - ao2020.Apr
+        - ao2020.May
+        - ls2020.May
+        - ao2021.Jun
+        - ls2025.Jan
+        - ls2025.Oct
         transform: log
     consumer_confidence:
       trend:
+        ar: []
         arima: (1 1 0)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls1990.Sep
+        - ao1991.Jan
+        - ao2009.Feb
+        - ls2020.Apr
+        - ls2020.Jun
+        - ls2021.Mar
+        - ls2022.Mar
         transform: none
     esi:
       trend:
+        ar: []
         arima: (2 1 2)
-        transform: none
-    gdp:
-      trend:
-        arima: (3 2 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2020.Apr
+        - ls2020.Jun
         transform: none
     household_consumption:
       trend:
-        arima: (3 1 1)(0 0 1)
-        transform: none
+        ar: []
+        arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ls1997.Oct
+        - ls1998.Jan
+        - ao1998.May
+        - ls1998.Oct
+        - ls1999.Jan
+        - ls1999.Apr
+        - ao2020.Feb
+        - ao2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ao2020.Jun
+        - ao2020.Jul
+        - ls2020.Jul
+        - ao2020.Sep
+        - ao2020.Oct
+        - ls2020.Dec
+        transform: log
     industrial_production:
       trend:
-        arima: (2 2 1)(1 0 1)
-        transform: none
+        ar: []
+        arima: (3 1 1)(1 0 1)
+        calendar:
+        - easter[15]
+        constant: false
+        ma: []
+        outliers:
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.Jun
+        - ls2020.Jul
+        transform: log
     investment:
       trend:
-        arima: (3 1 1)(0 0 1)
-        transform: none
+        ar:
+        - 0.461407
+        - 0.628401
+        - -0.557537
+        arima: (3 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.82846
+        outliers:
+        - ls2020.Feb
+        - ls2020.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ls2020.Jul
+        - ls2020.Aug
+        - ao2020.Sep
+        - ls2022.Oct
+        - ls2023.Jan
+        transform: log
     npl:
       sa:
+        ar:
+        - 0.42173
+        - 0.540615
+        - -0.63755
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.781561
+        - -0.08348
+        outliers: []
         transform: log
       trend:
+        ar: []
         arima: (2 2 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2017.Jul
         transform: log
     order_books:
       trend:
+        ar:
+        - 0.687554
+        - 0.121071
         arima: (2 1 1)
-        transform: none
-    overnight_stays:
-      sa:
-        arima: (3 0 0)(0 1 1)
-        transform: none
-      trend:
-        arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.646174
+        outliers:
+        - ls2020.Apr
         transform: none
     registrations:
       trend:
+        ar: []
         arima: (0 1 1)(0 0 1)
-        transform: none
+        calendar:
+        - td1coef
+        - easter[1]
+        constant: false
+        ma:
+        - 0.409868
+        - -0.226847
+        outliers:
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        - ao2024.May
+        - ls2025.Feb
+        - ls2025.Apr
+        transform: log
     retail:
       trend:
-        arima: (2 2 1)(1 0 1)
-        transform: none
+        ar: []
+        arima: (0 2 2)(1 0 1)
+        calendar:
+        - easter[15]
+        constant: false
+        ma: []
+        outliers:
+        - ao2002.Dec
+        - ls2007.Dec
+        - ls2010.Jul
+        - ao2012.Jan
+        - ao2012.Apr
+        - ls2012.Sep
+        - ao2017.Oct
+        - ls2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ls2020.Jun
+        - ao2021.Jan
+        - ls2021.Feb
+        - ao2021.Nov
+        - ao2022.Mar
+        transform: log
     unemployment:
       trend:
+        ar:
+        - 0.808182
         arima: (1 1 0)(0 0 1)
+        calendar:
+        - easter[8]
+        constant: false
+        ma:
+        - -0.206351
+        outliers:
+        - ao2001.Jan
+        - ls2001.May
+        - ao2002.Feb
+        - ao2008.Mar
+        - ao2020.Feb
+        - ls2020.May
         transform: log
     wholesale:
       trend:
+        ar:
+        - -0.439702
+        - -0.455515
         arima: (2 1 0)
+        calendar:
+        - easter[1]
+        constant: false
+        ma: []
+        outliers: []
         transform: log
   FI:
     building_permits:
       trend:
+        ar:
+        - 0.313003
+        - 0.3379
+        - -0.727525
         arima: (3 1 1)
-        transform: none
+        calendar: []
+        constant: false
+        ma:
+        - -0.746639
+        outliers:
+        - ao2023.Dec
+        transform: log
     consumer_confidence:
       trend:
+        ar:
+        - -0.085662
         arima: (1 1 0)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2020.Apr
+        - ls2022.Mar
         transform: none
     esi:
       trend:
+        ar: []
         arima: (2 1 2)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls1987.Jan
+        - ls2000.Oct
+        - ao2001.Mar
+        - ao2001.May
+        - ls2002.Jan
+        - ls2008.Nov
+        - ls2020.Apr
         transform: none
     exports_goods:
       sa:
+        ar:
+        - 0.077994
+        - 0.231863
+        - 0.241907
+        - 0.629073
         arima: (3 1 1)(1 0 0)
+        calendar: []
+        constant: false
+        ma:
+        - 0.736374
+        outliers:
+        - ao2024.Mar
         transform: log
       trend:
+        ar:
+        - 0.561192
+        - 0.166008
+        - 0.134205
         arima: (3 1 1)(0 0 1)
+        calendar:
+        - td
+        - easter[8]
+        constant: false
+        ma:
+        - 0.764523
+        - 0.225869
+        outliers: []
         transform: log
     exports_services:
       sa:
-        arima: (2 1 0)(1 1 1)
-        transform: none
+        ar:
+        - -0.520879
+        - -0.362437
+        - 0.102978
+        arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.232127
+        - 0.549524
+        outliers:
+        - ao2007.Dec
+        - ao2010.Apr
+        transform: log
       trend:
-        arima: (3 1 1)(0 0 1)
-        transform: none
+        ar:
+        - -0.755749
+        arima: (1 1 2)
+        calendar: []
+        constant: true
+        ma:
+        - -0.767479
+        - -0.27779
+        outliers:
+        - ls2008.Jan
+        - ao2010.Apr
+        transform: log
     gdp:
       trend:
+        ar:
+        - 0.465204
+        - 0.529907
+        - -0.626422
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.773379
+        - -0.077431
+        outliers:
+        - ls2009.Jan
+        - ao2020.Feb
+        - ls2020.Mar
+        - ls2020.Apr
+        - ls2020.May
+        - ls2020.Jul
+        - ls2020.Aug
+        - ao2020.Sep
         transform: log
     household_consumption:
       trend:
+        ar:
+        - 0.470083
+        - 0.500711
+        - -0.676877
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.806687
+        - 0.049991
+        outliers:
+        - ls1994.Oct
+        - ls1995.Jan
+        - ls2012.Jan
+        - ls2012.Apr
+        - ao2020.Jan
+        - ao2020.Mar
+        - ls2020.Apr
+        - ls2020.May
+        - ls2020.Jul
+        - ao2020.Aug
+        - ls2020.Aug
         transform: log
     imports_goods:
       sa:
+        ar: []
         arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers: []
         transform: log
       trend:
+        ar:
+        - -0.375113
         arima: (1 1 0)
+        calendar:
+        - td1coef
+        - easter[1]
+        constant: true
+        ma: []
+        outliers:
+        - ls2008.Dec
+        - ls2020.Apr
         transform: log
     imports_services:
       sa:
-        arima: (2 1 0)(0 1 1)
-        transform: none
+        ar:
+        - -0.651583
+        - -0.468401
+        arima: (2 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.235326
+        - 0.690501
+        outliers:
+        - ao2011.Jul
+        transform: log
       trend:
-        arima: (1 1 2)
-        transform: none
+        ar:
+        - -0.192353
+        - 0.337331
+        arima: (2 1 0)(0 0 1)
+        calendar:
+        - td1coef
+        constant: true
+        ma:
+        - 0.273087
+        outliers:
+        - ao2011.Jul
+        - ls2012.Mar
+        - ls2020.Apr
+        transform: log
     industrial_production:
       trend:
+        ar: []
         arima: (1 2 2)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2005.May
+        - ls2005.Jul
+        - ao2006.Jan
+        - ls2006.Feb
+        - ls2008.Dec
+        - ao2010.Jun
         transform: log
     investment:
       trend:
+        ar:
+        - 0.416995
+        - 0.439505
+        - -0.667234
         arima: (3 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.7229
+        outliers: []
         transform: log
     npl:
       sa:
+        ar:
+        - 0.428376
+        - 0.523171
+        - -0.698426
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.807755
+        - 0.591081
+        outliers:
+        - ao2018.Jun
+        - ao2018.Oct
         transform: log
       trend:
+        ar:
+        - 0.43106
+        - 0.51661
+        - -0.678919
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.788539
+        - 0.552449
+        outliers:
+        - ls2018.Jul
+        - ls2018.Oct
         transform: log
     order_books:
       trend:
+        ar:
+        - 0.761457
         arima: (1 1 2)
+        calendar: []
+        constant: false
+        ma:
+        - 0.943169
+        - -0.340934
+        outliers: []
         transform: none
     overnight_stays:
       sa:
+        ar:
+        - 0.179341
+        - 0.029149
+        - 0.184974
         arima: (3 1 1)(0 1 1)
-        transform: none
+        calendar: []
+        constant: false
+        ma:
+        - 0.169328
+        - 0.463811
+        outliers:
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        - ao2021.Feb
+        - ao2021.Jun
+        - ao2021.Jul
+        - ao2022.Jan
+        - ao2022.Feb
+        transform: log
       trend:
-        arima: (3 1 0)(1 0 1)
-        transform: none
+        ar: []
+        arima: (3 1 1)
+        calendar:
+        - td
+        constant: false
+        ma: []
+        outliers: []
+        transform: log
     total_production:
       trend:
-        arima: (2 1 2)(1 0 1)
-        transform: none
+        ar:
+        - 0.534315
+        - 0.08824
+        - 0.246683
+        arima: (3 1 1)(0 0 1)
+        calendar:
+        - easter[15]
+        constant: true
+        ma:
+        - 0.8078
+        - 0.345408
+        outliers:
+        - ao2010.Jun
+        - ls2020.Apr
+        transform: log
     unemployment:
       trend:
-        arima: (3 1 1)
-        transform: none
+        ar:
+        - 0.426155
+        - 0.088418
+        - 0.366845
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.751133
+        - -0.073398
+        outliers:
+        - ls2020.May
+        - ls2022.Jun
+        transform: log
     wholesale:
       trend:
+        ar: []
         arima: (0 2 2)(1 0 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ls2008.Nov
         transform: log
   FR:
     bankruptcies:
       trend:
-        arima: (0 1 1)(1 0 0)
-        transform: none
+        ar:
+        - -0.440092
+        - 0.186653
+        arima: (1 1 0)(1 0 0)
+        calendar:
+        - td
+        constant: false
+        ma: []
+        outliers:
+        - ao2015.May
+        - ao2018.Aug
+        - ls2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        transform: log
     building_permits:
       trend:
-        arima: (3 1 1)(1 0 1)
-        transform: none
+        ar:
+        - 0.413576
+        - 0.420564
+        - -0.708781
+        arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.74997
+        - 0.111197
+        outliers:
+        - ao2020.Apr
+        - ls2020.Apr
+        - ls2020.Jul
+        transform: log
     construction:
       trend:
+        ar: []
         arima: (1 1 2)
-        transform: none
+        calendar:
+        - easter[8]
+        constant: false
+        ma: []
+        outliers:
+        - ao1991.Feb
+        - ao1996.Feb
+        - ao1997.Jan
+        - ao1999.Feb
+        - ao2010.Dec
+        - ao2012.Jan
+        - ls2012.Mar
+        - ls2016.Feb
+        - ls2018.Jan
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        transform: log
     consumer_confidence:
       trend:
+        ar: []
         arima: (1 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls1985.Oct
+        - ao1993.Apr
+        - ao2020.Apr
+        - ao2020.Nov
+        - ls2022.Mar
         transform: none
     esi:
       trend:
+        ar:
+        - 0.809895
         arima: (1 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.669145
+        outliers:
+        - ls2008.Dec
+        - ls2020.Mar
+        - ls2020.Apr
+        - ls2020.Jun
         transform: none
     exports_goods:
       sa:
+        ar:
+        - -0.534496
+        - -0.225559
+        - 0.201033
         arima: (3 1 1)(0 1 1)
-        transform: none
+        calendar: []
+        constant: false
+        ma:
+        - 0.137552
+        - 0.822918
+        outliers:
+        - ao2020.Apr
+        - ao2020.May
+        transform: log
       trend:
-        arima: (2 1 0)
-        transform: none
+        ar: []
+        arima: (0 1 1)
+        calendar:
+        - td1coef
+        - easter[8]
+        constant: false
+        ma:
+        - 0.340063
+        outliers:
+        - ao2016.Dec
+        - ao2020.Mar
+        - ls2020.Apr
+        - ls2020.Jun
+        transform: log
     exports_services:
       sa:
+        ar:
+        - -0.954094
+        - -0.844225
         arima: (2 1 2)(0 1 1)
-        transform: none
+        calendar: []
+        constant: false
+        ma:
+        - -0.726707
+        - -0.592847
+        - 0.620126
+        outliers: []
+        transform: log
       trend:
-        arima: (1 1 0)
-        transform: none
+        ar: []
+        arima: (0 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2013.Oct
+        - ls2020.Apr
+        transform: log
     gdp:
       trend:
+        ar: []
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ls1987.Apr
+        - ls2001.Oct
+        - ls2003.Apr
+        - ls2003.Jul
+        - ls2008.Jan
+        - ls2009.Jan
+        - ls2019.Nov
+        - ls2019.Dec
+        - ls2020.Jan
+        - ao2020.Feb
+        - ls2020.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ls2020.Jul
+        - ls2020.Aug
+        - ls2020.Sep
+        - ao2020.Oct
+        - ls2020.Oct
+        - ao2020.Nov
+        - ls2021.Jul
         transform: log
     household_consumption:
       trend:
+        ar: []
         arima: (3 1 1)(0 0 1)
+        calendar:
+        - easter[8]
+        constant: true
+        ma: []
+        outliers:
+        - ao1996.Mar
+        - ls1996.Jul
+        - ls2020.Jan
+        - ao2020.Feb
+        - ao2020.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ao2020.Jul
+        - ls2020.Jul
+        - ls2020.Oct
+        - ao2020.Nov
+        - ls2020.Nov
+        - ao2021.Mar
+        - ls2021.Jul
         transform: log
     imports_goods:
       sa:
+        ar: []
         arima: (3 1 1)(0 1 1)
-        transform: none
-      trend:
-        arima: (3 1 1)
-        transform: none
-    imports_services:
-      sa:
-        arima: (2 1 0)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2020.Apr
+        - ao2020.May
         transform: log
       trend:
+        ar:
+        - 0.475838
+        - -0.398272
+        - 0.07595
+        arima: (3 1 0)
+        calendar:
+        - td1coef
+        constant: false
+        ma: []
+        outliers:
+        - ao2020.Mar
+        transform: log
+    imports_services:
+      sa:
+        ar:
+        - -0.526084
+        - -0.334805
+        arima: (2 1 0)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.600575
+        outliers: []
+        transform: log
+      trend:
+        ar: []
         arima: (1 1 2)
+        calendar:
+        - td1coef
+        constant: true
+        ma: []
+        outliers:
+        - ls2020.Mar
         transform: log
     industrial_production:
       trend:
-        arima: (0 1 1)
-        transform: none
+        ar: []
+        arima: (1 1 2)
+        calendar:
+        - easter[1]
+        constant: true
+        ma: []
+        outliers:
+        - ls2008.Nov
+        - ls2009.Jan
+        - ao2020.Mar
+        - ls2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ls2020.Jul
+        transform: log
     investment:
       trend:
+        ar: []
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2003.Jul
+        - ls2008.Jan
+        - ao2020.Jan
+        - ao2020.Feb
+        - ls2020.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ao2020.Jul
+        - ls2020.Jul
+        - ls2020.Sep
         transform: log
     npl:
       sa:
+        ar: []
         arima: (2 2 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers: []
         transform: log
       trend:
+        ar: []
         arima: (2 2 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2017.Jul
         transform: log
     order_books:
       trend:
+        ar:
+        - 0.792378
         arima: (1 1 2)
+        calendar:
+        - td1coef
+        constant: false
+        ma:
+        - 0.925755
+        - -0.284259
+        outliers:
+        - ls2020.Apr
         transform: none
     overnight_stays:
       sa:
-        arima: (1 1 0)(0 1 1)
-        transform: none
+        ar: []
+        arima: (0 1 2)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.269814
+        - -0.378449
+        - 0.541452
+        outliers:
+        - ao2009.Nov
+        - ao2017.Apr
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        - ao2020.Nov
+        - ao2020.Dec
+        - ao2021.Apr
+        - ao2021.Jul
+        transform: log
       trend:
-        arima: (0 1 1)
-        transform: none
+        ar: []
+        arima: (0 1 1)(0 1 1)
+        calendar:
+        - easter[15]
+        constant: false
+        ma:
+        - 0.864066
+        - 0.856984
+        outliers:
+        - ls2009.Oct
+        - ao2009.Nov
+        - ao2017.Apr
+        - ls2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ls2020.Jun
+        - ls2020.Jul
+        - ls2020.Sep
+        - ao2020.Nov
+        - ls2020.Nov
+        - ao2021.Apr
+        - ao2021.May
+        - ls2021.May
+        - ls2021.Jul
+        - ls2022.Feb
+        transform: log
     registrations:
       trend:
+        ar: []
         arima: (0 1 1)
-        transform: none
+        calendar:
+        - td
+        constant: true
+        ma:
+        - 0.41621
+        outliers:
+        - ls2020.Mar
+        - ao2020.Apr
+        - ls2020.Jun
+        transform: log
     retail:
       trend:
+        ar: []
         arima: (1 1 2)(1 0 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ao1999.Oct
+        - ao2015.Nov
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Aug
+        - ao2020.Nov
+        - ao2020.Dec
+        - ao2021.Apr
         transform: log
     unemployment:
       trend:
-        arima: (2 1 1)
-        transform: none
+        ar: []
+        arima: (3 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao1983.Jan
+        - ao1983.Mar
+        - ls2003.Jan
+        - ao2003.Aug
+        - ao2013.Sep
+        - ao2020.Feb
+        - ls2020.Feb
+        - ao2020.May
+        - ao2020.Jul
+        - ls2020.Jul
+        - ls2020.Oct
+        - ao2021.Apr
+        - ls2025.Feb
+        transform: log
     wholesale:
       trend:
-        arima: (0 1 1)(0 1 1)
-        transform: none
+        ar: []
+        arima: (0 1 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.507101
+        outliers:
+        - ls2020.Mar
+        - ao2020.Apr
+        - ls2020.Jun
+        - ao2023.Apr
+        transform: log
   HR:
     bankruptcies:
       trend:
+        ar: []
         arima: (0 1 2)
+        calendar:
+        - td1coef
+        constant: false
+        ma:
+        - 0.387033
+        - 0.317413
+        outliers:
+        - ls2015.Dec
+        - ao2023.Aug
         transform: log
     building_permits:
       trend:
+        ar:
+        - 0.322465
+        - 0.323248
+        - -0.745529
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.760724
+        - 0.090005
+        outliers: []
         transform: log
     cars_registered:
       sa:
+        ar: []
         arima: (0 1 1)(0 1 1)
-        transform: none
+        calendar: []
+        constant: false
+        ma:
+        - 0.287763
+        - 0.846907
+        outliers:
+        - ao2016.Dec
+        - ao2017.Dec
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        transform: log
       trend:
-        arima: (1 0 0)(1 0 0)
-        transform: none
+        ar: []
+        arima: (0 1 1)
+        calendar:
+        - td1coef
+        constant: true
+        ma:
+        - -0.032566
+        outliers:
+        - ao2016.Dec
+        - ao2017.Feb
+        - ao2017.Dec
+        - ls2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ls2020.Jul
+        transform: log
     construction:
       trend:
-        arima: (1 2 2)
-        transform: none
+        ar:
+        - -0.285203
+        - -0.203771
+        arima: (2 2 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.852723
+        - 0.163953
+        outliers:
+        - ls2003.Mar
+        - ls2004.Jul
+        - ls2005.Feb
+        - ls2008.Jan
+        - ao2010.Feb
+        - ao2012.Feb
+        - ao2017.Jan
+        - ls2020.Mar
+        - ao2020.Apr
+        transform: log
     consumer_confidence:
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.107603
+        outliers:
+        - ls2008.Jun
+        - ls2009.Sep
+        - ao2011.Mar
+        - ls2020.Mar
+        - ls2020.Apr
+        - ls2020.Jun
+        - ls2022.Feb
         transform: none
     esi:
       trend:
+        ar:
+        - -0.141715
         arima: (1 1 0)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2008.Nov
+        - ao2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ls2020.Jun
+        - ls2020.Aug
         transform: none
     exports_goods:
       sa:
+        ar:
+        - -0.952137
+        - -0.470841
         arima: (2 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.171465
+        - 0.819889
+        outliers:
+        - ao2020.Apr
         transform: log
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar:
+        - td
+        constant: true
+        ma:
+        - 0.502358
+        outliers:
+        - ls2020.Mar
         transform: log
     exports_services:
       sa:
+        ar:
+        - 0.332727
         arima: (0 1 0)(1 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.804567
+        outliers:
+        - ao2019.Apr
+        - ao2020.Sep
         transform: log
       trend:
+        ar:
+        - 0.434005
+        - 0.435294
         arima: (2 1 1)(0 0 1)
+        calendar:
+        - td
+        - easter[15]
+        constant: true
+        ma:
+        - 0.66662
+        - 0.470045
+        outliers:
+        - ao2019.Apr
+        - ls2020.Apr
+        - ao2020.Sep
         transform: log
     gdp:
       trend:
+        ar:
+        - 0.428263
+        - 0.435714
+        - -0.690251
         arima: (3 1 1)(0 0 1)
-        transform: none
+        calendar: []
+        constant: true
+        ma:
+        - -0.732836
+        - -0.058583
+        outliers:
+        - ls1995.Jul
+        - ls1995.Oct
+        - ao2020.Feb
+        - ls2020.Mar
+        - ls2020.Apr
+        - ls2020.May
+        - ls2020.Jul
+        - ao2020.Aug
+        - ls2020.Aug
+        - ls2020.Oct
+        transform: log
     household_consumption:
       trend:
+        ar:
+        - 0.506598
+        - 0.484186
+        - -0.751563
         arima: (3 1 1)(0 0 1)
-        transform: none
+        calendar: []
+        constant: true
+        ma:
+        - -0.83245
+        - -0.222575
+        outliers:
+        - ls1996.Nov
+        - ls1996.Dec
+        - ls1997.Jan
+        - ls1997.Feb
+        - ao1997.Mar
+        - ls1998.Jul
+        - ao1999.Jun
+        - ls1999.Jul
+        - ao1999.Aug
+        - ao1999.Oct
+        - ls1999.Oct
+        - ls2000.Jan
+        - ao2020.Feb
+        - ao2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ao2020.May
+        - ls2020.Oct
+        - ls2021.Apr
+        - ls2021.Jul
+        transform: log
     imports_goods:
       sa:
+        ar:
+        - -0.569281
+        - -0.134542
+        - 0.240788
         arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.059207
+        - 0.987648
+        outliers:
+        - ao2020.Apr
+        - ao2020.May
+        - ao2022.Aug
         transform: log
       trend:
+        ar:
+        - -0.411186
         arima: (1 1 0)
+        calendar:
+        - td1coef
+        constant: true
+        ma: []
+        outliers:
+        - ao2013.Jun
+        - ls2020.Mar
+        - ao2020.Apr
+        - ao2022.Aug
         transform: log
     imports_services:
       sa:
-        arima: (0 1 1)(0 1 1)
-        transform: none
+        ar:
+        - -0.372286
+        arima: (1 1 0)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.782427
+        outliers:
+        - ao2020.Feb
+        - ao2020.Apr
+        - ao2021.Jan
+        transform: log
       trend:
-        arima: (1 2 2)(0 0 1)
-        transform: none
+        ar:
+        - -0.407293
+        arima: (1 1 0)
+        calendar:
+        - td1coef
+        constant: true
+        ma: []
+        outliers:
+        - ao2020.Mar
+        - ls2020.Mar
+        - ao2021.Jan
+        transform: log
     industrial_production:
       trend:
+        ar: []
         arima: (0 1 1)
-        transform: none
+        calendar: []
+        constant: true
+        ma:
+        - 0.557226
+        outliers:
+        - ao2000.Jun
+        - ls2008.Dec
+        - ls2012.Jan
+        - ls2020.Apr
+        - ls2020.Jun
+        transform: log
     insured_persons:
       sa:
+        ar: []
         arima: (1 1 0)(1 1 1)
-        transform: none
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2019.May
+        - ao2020.Feb
+        - ao2024.Nov
+        transform: log
       trend:
+        ar:
+        - 0.386869
         arima: (1 1 2)
+        calendar: []
+        constant: true
+        ma:
+        - -0.852395
+        - -0.249191
+        outliers:
+        - ao2019.May
+        - ao2020.Feb
+        - ao2024.Nov
         transform: log
     investment:
       trend:
+        ar:
+        - 0.522299
+        - 0.492398
+        - -0.59283
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.743157
+        - 0.216844
+        outliers:
+        - ls2020.Jul
         transform: log
     npl:
       sa:
+        ar:
+        - 0.337283
+        - 0.388866
+        - -0.734769
+        - 0.360492
         arima: (3 1 1)(1 0 0)
+        calendar: []
+        constant: false
+        ma:
+        - -0.853922
+        outliers:
+        - ao2016.Sep
+        - ao2017.Jan
         transform: log
       trend:
+        ar:
+        - 0.415671
+        - 0.621915
+        - -0.684201
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.683384
+        - 0.523263
+        outliers:
+        - ao2016.Sep
+        - ao2017.Jan
         transform: log
     order_books:
       trend:
+        ar: []
         arima: (2 1 2)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ls2008.Nov
+        - ls2020.Apr
+        - ls2022.Jul
         transform: none
+    overnight_stays:
+      sa:
+        ar:
+        - 0.642728
+        - 0.485337
+        - -0.258337
+        arima: (3 0 0)(0 1 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.745513
+        outliers:
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        - ao2020.Aug
+        - ao2021.Apr
+        - ao2021.May
+        transform: log
+      trend:
+        ar:
+        - 0.487307
+        - 0.484059
+        arima: (1 1 1)(1 0 1)
+        calendar:
+        - easter[15]
+        constant: false
+        ma:
+        - 0.851499
+        - 0.252015
+        outliers:
+        - ao2020.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ls2020.Jun
+        - ls2020.Jul
+        - ls2020.Sep
+        - ao2020.Oct
+        - ao2020.Dec
+        - ao2021.Jun
+        - ls2021.Jun
+        transform: log
     registrations:
       trend:
-        arima: (0 1 1)
-        transform: none
+        ar: []
+        arima: (0 1 2)(0 0 1)
+        calendar:
+        - td1coef
+        constant: true
+        ma:
+        - 0.35137
+        - 0.251041
+        - 0.479601
+        outliers:
+        - ls2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ls2020.Jul
+        transform: log
     retail:
       trend:
+        ar: []
         arima: (0 2 2)
-        transform: none
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2000.Feb
+        - ls2020.Mar
+        - ao2020.Apr
+        - ls2020.Oct
+        transform: log
     total_production:
       trend:
-        arima: (0 2 2)
-        transform: none
+        ar: []
+        arima: (0 1 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.476812
+        outliers:
+        - ls2012.Jan
+        - ls2018.Jan
+        - ls2018.May
+        - ao2020.Mar
+        - ls2020.Apr
+        - ls2020.Jun
+        - ls2020.Jul
+        - ls2020.Oct
+        - ls2021.Jul
+        - ls2022.Jul
+        - ls2022.Sep
+        - ao2025.Jan
+        transform: log
     trucks_registered:
       sa:
+        ar: []
         arima: (0 1 1)(0 1 1)
-        transform: none
+        calendar: []
+        constant: false
+        ma:
+        - 0.496039
+        - 0.707612
+        outliers:
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        transform: log
       trend:
+        ar: []
         arima: (0 1 1)
-        transform: none
+        calendar:
+        - td1coef
+        constant: true
+        ma:
+        - 0.476952
+        outliers:
+        - ls2020.Mar
+        - ao2020.Apr
+        transform: log
     unemployment:
       trend:
-        arima: (1 1 2)
-        transform: none
+        ar: []
+        arima: (2 1 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ls2007.Jul
+        - ls2007.Sep
+        - ls2018.Jun
+        - ao2020.Feb
+        - ls2020.Feb
+        - ao2020.Apr
+        - ls2020.Apr
+        - ls2021.Jun
+        transform: log
     wholesale:
       trend:
+        ar:
+        - -0.731257
+        - -0.433136
         arima: (2 1 0)
+        calendar:
+        - td1coef
+        constant: true
+        ma: []
+        outliers:
+        - ls2010.Dec
+        - ls2012.Feb
+        - ao2020.Apr
+        - ao2020.May
+        - ao2023.Dec
+        - ao2024.Apr
+        - ao2025.Jan
         transform: log
   IE:
     building_permits:
       trend:
+        ar:
+        - 0.387577
+        - 0.310676
+        - -0.656259
+        - -0.570371
         arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.714559
+        - -0.294803
+        outliers:
+        - ls2022.Jan
+        - ls2022.Feb
+        - ls2022.Apr
+        - ls2022.Jul
+        - ls2022.Oct
         transform: log
     consumer_confidence:
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.20258
+        outliers:
+        - ls2020.Apr
+        - ls2022.Mar
         transform: none
     esi:
       trend:
+        ar: []
         arima: (0 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.217532
+        - 0.125758
+        outliers:
+        - ao1995.Sep
+        - ls2020.Apr
         transform: none
     gdp:
       trend:
+        ar:
+        - 0.287626
+        - 0.330629
+        - -0.753848
+        - 0.869166
         arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.734994
+        - 0.656661
+        outliers:
+        - ls2014.Oct
+        - ls2014.Dec
+        - ls2015.Jan
+        - ls2015.Feb
+        - ao2015.Mar
         transform: log
     household_consumption:
       trend:
+        ar:
+        - 0.501793
+        - 0.36466
+        - -0.683962
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.725746
+        - -0.250332
+        outliers:
+        - ls1999.Apr
+        - ls1999.Jul
+        - ls1999.Oct
+        - ls2000.Jan
+        - ao2020.Feb
+        - ls2020.Mar
+        - ls2020.Apr
+        - ls2020.May
+        - ao2020.Jul
+        - ls2020.Jul
+        - ao2020.Aug
         transform: log
     industrial_production:
       trend:
+        ar:
+        - -0.480748
+        - -0.255694
         arima: (2 1 0)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.264346
+        outliers:
+        - ao1989.Jul
+        - ao2004.Aug
+        - ao2005.Nov
+        - ao2006.Feb
+        - ao2011.Jul
+        - ls2012.Sep
+        - ao2014.Apr
+        - ao2014.May
+        - ls2015.Feb
+        - ls2016.Feb
+        - ao2016.Aug
+        - ao2017.Nov
+        - ao2018.Mar
+        - ao2019.Oct
+        - ao2019.Dec
+        - ao2020.Feb
+        - ls2020.Nov
+        - ao2021.Oct
+        - ao2021.Nov
+        - ao2022.Apr
+        - ao2022.Jul
+        - ao2022.Dec
+        - ls2023.Mar
+        - ao2023.Apr
+        - ao2023.Jun
+        - ao2025.Mar
         transform: log
     investment:
       trend:
+        ar: []
         arima: (2 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2015.Oct
+        - ls2016.Nov
+        - ao2016.Dec
+        - ls2017.Jan
+        - ls2017.Mar
+        - ao2017.Apr
+        - ls2017.May
+        - ao2017.Jul
+        - ao2017.Aug
+        - ls2017.Aug
+        - ao2017.Sep
+        - ao2018.Jul
+        - ls2018.Sep
+        - ao2018.Oct
+        - ao2018.Dec
+        - ao2019.Jan
+        - ao2019.Feb
+        - ls2019.Apr
+        - ls2019.Jun
+        - ao2019.Jul
+        - ao2019.Aug
+        - ao2019.Sep
+        - ao2019.Oct
+        - ao2020.Feb
+        - ao2020.Apr
+        - ls2020.May
+        - ls2020.Jun
+        - ls2020.Jul
+        - ao2020.Aug
+        - ao2020.Dec
+        - ao2021.Feb
+        - ls2021.Mar
+        - ao2021.Jun
+        - ao2021.Nov
+        - ao2022.Apr
+        - ls2023.Jul
+        - ao2023.Oct
+        - ao2024.Mar
+        - ao2024.Apr
+        - ls2024.Apr
+        - ls2024.Jul
+        - ao2024.Aug
+        - ls2024.Sep
+        - ao2025.Jan
         transform: log
     npl:
       sa:
+        ar:
+        - 0.392367
+        - 0.493132
+        - -0.714545
+        - 0.421108
         arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.777242
+        - 0.333136
+        outliers: []
         transform: log
       trend:
+        ar:
+        - 0.462446
+        - 0.671066
+        - -0.66599
+        - 0.38359
         arima: (3 1 1)(1 0 1)
+        calendar:
+        - easter[8]
+        constant: true
+        ma:
+        - -0.755667
+        - 0.637226
+        outliers: []
         transform: log
     order_books:
       trend:
+        ar: []
         arima: (0 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.511548
+        - 0.177697
+        outliers:
+        - ls2020.Apr
+        - ls2021.May
         transform: none
     overnight_stays:
       sa:
-        arima: (3 0 1)(0 1 0)
-        transform: none
+        ar:
+        - 0.892141
+        - 0.940774
+        arima: (1 0 0)(1 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.640349
+        outliers:
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        - ao2021.May
+        transform: log
       trend:
-        arima: (3 1 1)(0 0 1)
-        transform: none
+        ar: []
+        arima: (0 1 0)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ls2020.Jul
+        - ao2020.Aug
+        - ls2020.Oct
+        - ao2020.Dec
+        - ls2021.Feb
+        - ao2021.Jun
+        - ls2021.Jun
+        - ls2021.Oct
+        - ao2022.Apr
+        - ao2022.Dec
+        - ao2023.Jun
+        transform: log
     retail:
       trend:
+        ar:
+        - 0.1835
+        - -0.414587
         arima: (2 1 1)
-        transform: none
+        calendar: []
+        constant: true
+        ma:
+        - 0.80473
+        outliers:
+        - ao2021.Jan
+        - ls2021.May
+        - ls2021.Jun
+        transform: log
     unemployment:
       trend:
+        ar:
+        - 0.143286
+        - 0.52736
+        - -0.393433
         arima: (3 1 1)(0 0 1)
-        transform: none
+        calendar:
+        - easter[15]
+        constant: false
+        ma:
+        - -0.766341
+        - 0.074533
+        outliers:
+        - ao2004.Dec
+        - ls2012.Jan
+        - ao2015.Dec
+        - ls2020.Jan
+        - ao2020.Apr
+        - ao2020.Jun
+        - ls2020.Jul
+        - ls2020.Oct
+        - ls2021.Jan
+        - ao2021.Dec
+        - ls2022.Mar
+        - ao2022.Dec
+        - ls2024.Feb
+        - ao2024.Jul
+        - ls2025.Jul
+        transform: log
   IT:
     building_permits:
       trend:
+        ar:
+        - 0.447626
+        - 0.385172
+        - -0.655525
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.702218
+        - -0.064763
+        outliers:
+        - ls2020.Apr
+        - ls2020.Jul
         transform: log
-    construction:
-      trend:
-        arima: (3 1 1)(1 0 1)
-        transform: none
     consumer_confidence:
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.205363
+        outliers:
+        - ls2020.Mar
+        - ls2022.Mar
+        - ls2022.Nov
         transform: none
     esi:
       trend:
+        ar:
+        - 0.787901
         arima: (0 1 0)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.978822
+        outliers:
+        - ls1980.Apr
+        - ls2020.Mar
+        - ao2020.May
         transform: none
     exports_goods:
       sa:
+        ar: []
         arima: (2 1 1)(0 1 1)
-        transform: none
-      trend:
-        arima: (1 1 2)
-        transform: none
-    exports_services:
-      sa:
-        arima: (1 1 0)(0 1 1)
-        transform: none
-      trend:
-        arima: (1 1 1)
-        transform: none
-    gdp:
-      trend:
-        arima: (3 1 1)
-        transform: none
-    household_consumption:
-      trend:
-        arima: (3 1 1)
-        transform: none
-    imports_goods:
-      sa:
-        arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2020.Apr
+        - ao2020.May
         transform: log
       trend:
+        ar: []
+        arima: (1 1 2)(0 0 1)
+        calendar:
+        - td
+        - easter[8]
+        constant: true
+        ma: []
+        outliers:
+        - ls2008.Dec
+        - ls2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ls2020.Aug
+        - ao2021.Jun
+        transform: log
+    exports_services:
+      sa:
+        ar:
+        - 0.289382
+        - 0.307166
+        arima: (1 1 0)(1 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.865733
+        outliers:
+        - ao2020.Feb
+        transform: log
+      trend:
+        ar: []
+        arima: (1 1 2)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2020.Mar
+        - ls2020.Apr
+        transform: log
+    gdp:
+      trend:
+        ar: []
+        arima: (3 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao1997.Jun
+        - ls1997.Oct
+        - ls1998.Jan
+        - ls2006.Oct
+        - ls2008.Jan
+        - ls2019.Oct
+        - ao2019.Dec
+        - ao2020.Jan
+        - ls2020.Feb
+        - ao2020.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ls2020.Jul
+        - ao2020.Aug
+        - ao2020.Sep
+        - ao2020.Oct
+        - ls2020.Dec
+        transform: log
+    household_consumption:
+      trend:
+        ar: []
+        arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2019.Jun
+        - ls2019.Oct
+        - ls2020.Feb
+        - ls2020.Mar
+        - ls2020.Apr
+        - ls2020.May
+        - ao2020.Jun
+        - ls2020.Jul
+        - ls2020.Aug
+        - ao2020.Oct
+        - ls2020.Oct
+        - ls2020.Dec
+        - ls2021.Apr
+        - ls2022.Apr
+        - ls2022.Oct
+        - ls2023.Jan
+        - ls2024.Jan
+        transform: log
+    imports_goods:
+      sa:
+        ar: []
+        arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2020.Apr
+        - ao2020.May
+        - ao2022.Aug
+        transform: log
+      trend:
+        ar:
+        - 0.016574
         arima: (1 1 0)
+        calendar:
+        - td
+        - easter[1]
+        constant: false
+        ma: []
+        outliers:
+        - ls2020.Mar
+        - ls2020.Apr
         transform: log
     imports_services:
       sa:
-        arima: (0 1 0)(0 1 1)
-        transform: none
-      trend:
-        arima: (1 1 2)
-        transform: none
-    industrial_production:
-      trend:
-        arima: (3 1 1)(1 0 1)
-        transform: none
-    investment:
-      trend:
-        arima: (3 1 1)
-        transform: none
-    npl:
-      sa:
-        arima: (3 1 1)(1 0 1)
+        ar: []
+        arima: (0 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.071959
+        - 0.637256
+        outliers:
+        - ao2020.Feb
         transform: log
       trend:
+        ar: []
+        arima: (2 1 2)
+        calendar:
+        - td1coef
+        constant: true
+        ma: []
+        outliers:
+        - ls2008.Jul
+        - ao2020.Mar
+        - ls2020.Mar
+        transform: log
+    industrial_production:
+      trend:
+        ar: []
+        arima: (1 1 2)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2008.Dec
+        - ls2009.Feb
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        - ao2020.Aug
+        - ao2022.Jan
+        transform: log
+    investment:
+      trend:
+        ar:
+        - 0.459079
+        - 0.540195
+        - -0.667065
+        arima: (3 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.792266
+        outliers:
+        - ls1996.Apr
+        - ls2020.Feb
+        - ao2020.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ls2020.Jul
+        - ls2020.Aug
+        - ao2020.Sep
+        transform: log
+    npl:
+      sa:
+        ar:
+        - 0.398742
+        - 0.523439
+        - -0.631478
+        - 0.889048
+        arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.785785
+        - 0.567691
+        outliers: []
+        transform: log
+      trend:
+        ar:
+        - 0.527989
+        - 0.829519
+        - -0.493518
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.775281
+        - 0.726221
+        outliers: []
         transform: log
     order_books:
       trend:
+        ar: []
         arima: (2 1 0)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao1980.Feb
+        - ao2000.Aug
+        - ao2002.Aug
+        - ao2011.Aug
+        - ls2020.Apr
+        - ao2020.May
+        - ao2020.Jun
         transform: none
     overnight_stays:
       sa:
-        arima: (3 1 1)(0 1 1)
-        transform: none
+        ar:
+        - 0.885904
+        - 0.33019
+        - -0.322041
+        arima: (3 0 0)(0 1 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.782992
+        outliers:
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        - ao2020.Jul
+        - ao2021.Apr
+        transform: log
       trend:
-        arima: (1 1 0)(1 0 1)
-        transform: none
+        ar:
+        - -0.601458
+        - -0.241627
+        - -0.055803
+        - -0.477153
+        arima: (3 1 1)(1 0 1)
+        calendar:
+        - easter[8]
+        constant: false
+        ma:
+        - -0.885263
+        - -0.726787
+        outliers:
+        - ls2000.Jan
+        - ao2002.Jan
+        - ao2020.Mar
+        - ls2020.Mar
+        - ls2020.May
+        - ls2020.Jun
+        - ao2020.Jul
+        - ls2020.Jul
+        - ls2020.Sep
+        - ao2020.Oct
+        - ao2020.Nov
+        - ls2020.Nov
+        - ls2021.Apr
+        - ls2021.May
+        - ao2021.Jun
+        - ls2021.Jun
+        - ls2021.Aug
+        - ls2025.Jan
+        transform: log
     retail:
       trend:
+        ar: []
         arima: (0 2 2)(0 0 1)
-        transform: none
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2002.Jan
+        - ao2012.Feb
+        - ls2020.Mar
+        - ao2020.Apr
+        - ls2020.May
+        - ls2020.Jun
+        - ls2020.Aug
+        - ls2020.Nov
+        - ls2021.Feb
+        - ls2021.Mar
+        - ls2021.May
+        - ao2021.Oct
+        - ls2022.Jan
+        - ao2022.May
+        transform: log
     total_production:
       trend:
+        ar:
+        - -0.389957
         arima: (1 1 0)
-        transform: none
+        calendar: []
+        constant: true
+        ma: []
+        outliers: []
+        transform: log
     unemployment:
       trend:
+        ar:
+        - -0.231386
+        - -0.267208
         arima: (1 2 1)(1 0 1)
-        transform: none
+        calendar:
+        - easter[15]
+        constant: false
+        ma:
+        - 0.779374
+        - 0.705598
+        outliers:
+        - ao1987.May
+        - ls1987.Jun
+        - ls1994.Jan
+        - ls1994.Jul
+        - ls1994.Oct
+        - ls1997.Jul
+        - ls1998.Apr
+        - ls1999.Jan
+        - ls2001.Oct
+        - ls2003.Jul
+        - ls2004.Sep
+        - ao2019.Apr
+        - ls2020.Mar
+        - ls2020.May
+        - ls2020.Jun
+        - ls2020.Jul
+        - ao2021.Apr
+        transform: log
     wholesale:
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar:
+        - td1coef
+        constant: false
+        ma:
+        - 0.31129
+        outliers:
+        - ao2023.Dec
         transform: log
   LT:
     building_permits:
       trend:
+        ar:
+        - 0.302702
+        - 0.286855
+        - -0.735992
         arima: (3 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.698159
+        outliers: []
         transform: log
     consumer_confidence:
       trend:
+        ar:
+        - 0.068511
         arima: (1 1 0)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2009.Sep
+        - ao2020.Apr
+        - ao2020.May
         transform: none
     esi:
       trend:
+        ar:
+        - -0.035922
         arima: (1 1 0)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao1993.Oct
+        - ao1993.Nov
+        - ao1993.Dec
+        - ao1994.Apr
+        - ao1994.Jul
+        - ls1994.Aug
+        - ao1994.Sep
+        - ls1994.Dec
+        - ao1995.Jan
+        - ao1997.May
+        - ls1998.Oct
+        - ao1999.Jun
+        - ls2008.Dec
+        - ls2020.Apr
         transform: none
     exports_goods:
       sa:
+        ar: []
         arima: (0 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.316833
+        - 0.786067
+        outliers: []
         transform: log
       trend:
+        ar:
+        - -0.175662
         arima: (1 1 0)
+        calendar:
+        - td1coef
+        constant: true
+        ma: []
+        outliers:
+        - ao2012.May
+        - ls2020.Apr
         transform: log
     exports_services:
       sa:
+        ar: []
         arima: (0 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.490446
+        - 0.747196
+        outliers:
+        - ao2020.Apr
         transform: log
       trend:
+        ar:
+        - -0.178604
+        - -0.264981
+        - 0.839887
         arima: (2 1 1)(1 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.456853
+        - 0.982972
+        outliers:
+        - ls2009.Jan
+        - ls2020.Mar
+        - ao2020.Apr
         transform: log
     gdp:
       trend:
+        ar:
+        - 0.425312
+        - 0.473947
+        - -0.646376
+        - -0.586559
         arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.754022
+        - -0.430581
+        outliers:
+        - ao2008.Nov
+        - ao2008.Dec
+        - ao2009.Jan
+        - ls2009.Jan
+        - ao2009.Mar
+        - ls2009.Apr
+        - ao2020.Jan
+        - ao2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ls2020.Jul
+        - ls2020.Aug
+        - ls2020.Oct
         transform: log
     household_consumption:
       trend:
+        ar:
+        - 0.363832
+        - 0.431464
+        - -0.673508
         arima: (3 1 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.74303
+        outliers: []
         transform: log
     imports_goods:
       sa:
+        ar: []
         arima: (0 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers: []
         transform: log
       trend:
+        ar:
+        - -0.165326
         arima: (1 1 0)
+        calendar:
+        - td
+        constant: true
+        ma: []
+        outliers:
+        - ls2009.Jan
+        - ao2012.May
+        - ls2020.Apr
         transform: log
     imports_services:
       sa:
+        ar:
+        - -0.268989
+        - -0.237859
+        - 0.887113
         arima: (2 1 0)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.535772
+        outliers:
+        - ao2020.Apr
         transform: log
       trend:
+        ar:
+        - -0.244153
+        - -0.218366
+        - -0.093328
         arima: (3 1 0)(0 0 1)
+        calendar:
+        - easter[1]
+        constant: true
+        ma:
+        - 0.090041
+        outliers:
+        - ao2020.Mar
+        - ls2020.Mar
         transform: log
     industrial_production:
       trend:
-        arima: (0 1 1)
-        transform: none
+        ar: []
+        arima: (0 1 2)
+        calendar: []
+        constant: true
+        ma:
+        - 0.371101
+        - 0.223255
+        outliers:
+        - ao1998.Sep
+        - ls1998.Dec
+        - ao1999.Apr
+        - ls1999.Aug
+        - ao2000.Oct
+        - ls2008.Oct
+        - ao2012.May
+        transform: log
     investment:
       trend:
+        ar:
+        - 0.428944
+        - 0.499435
+        - -0.689047
+        - -0.529236
         arima: (3 1 1)(1 0 1)
-        transform: none
+        calendar: []
+        constant: true
+        ma:
+        - -0.768919
+        - -0.710464
+        outliers:
+        - ls1999.Apr
+        - ls1999.Jul
+        transform: log
     npl:
       sa:
+        ar:
+        - 0.391696
+        - 0.470553
+        - -0.681274
         arima: (3 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.772695
+        outliers:
+        - ao2023.Apr
+        - ao2023.May
+        - ao2023.Jun
+        - ao2023.Jul
         transform: log
       trend:
+        ar:
+        - 0.261108
+        - 0.329921
+        - -0.740646
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.760366
+        - 0.487363
+        outliers:
+        - ao2023.Jan
+        - ao2023.Mar
+        - ao2023.Apr
+        - ao2023.May
+        - ls2023.May
+        - ls2023.Jul
         transform: log
     order_books:
       trend:
+        ar: []
         arima: (1 1 2)(0 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao1993.Nov
+        - ls1994.Feb
+        - ls1994.Aug
+        - ao2007.Nov
+        - ao2007.Dec
         transform: none
     overnight_stays:
       sa:
-        arima: (2 1 1)(0 1 1)
-        transform: none
+        ar: []
+        arima: (0 1 2)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.321872
+        - -0.346848
+        - 0.647936
+        outliers:
+        - ao2012.Jan
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        - ao2020.Oct
+        - ao2020.Dec
+        - ao2021.Jan
+        transform: log
       trend:
-        arima: (1 1 1)
+        ar:
+        - -0.111533
+        arima: (1 1 0)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ls2012.Jan
+        - ls2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ao2020.Jun
+        - ls2020.Jun
+        - ao2020.Oct
+        - ls2020.Oct
+        - ls2020.Dec
+        - ao2021.Jan
+        - ao2021.Apr
+        - ls2021.Apr
+        - ls2021.Jun
+        - ls2025.Apr
         transform: log
     retail:
       trend:
+        ar: []
         arima: (0 1 1)(0 1 1)
+        calendar:
+        - easter[8]
+        constant: false
+        ma:
+        - 0.135441
+        - 0.956504
+        outliers:
+        - ao1998.Sep
+        - ls2000.Jan
+        - ls2009.Jan
+        - ls2009.Sep
+        - ls2020.Mar
+        - ao2020.Apr
         transform: log
     total_production:
       trend:
+        ar: []
         arima: (0 1 1)
-        transform: none
+        calendar: []
+        constant: true
+        ma:
+        - -0.042302
+        outliers:
+        - ao2021.Dec
+        transform: log
     unemployment:
       trend:
+        ar:
+        - 0.331275
+        - 0.37448
+        - -0.1057
+        - 0.79945
         arima: (3 1 1)(1 0 1)
-        transform: none
+        calendar:
+        - easter[1]
+        constant: false
+        ma:
+        - -0.315104
+        - 0.946028
+        outliers:
+        - ls2007.Jan
+        - ls2026.Jan
+        - ls2026.Apr
+        transform: log
     wholesale:
       trend:
+        ar:
+        - 0.109254
         arima: (1 1 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.558325
+        outliers:
+        - ls2020.Apr
+        - ls2020.Jun
+        - ao2022.Mar
+        - ls2022.Dec
         transform: log
   LU:
     building_permits:
       trend:
+        ar: []
         arima: (3 1 0)(1 0 0)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2004.Jul
+        - ls2014.Jul
+        - ao2014.Nov
+        - ls2015.Apr
+        - ao2024.Feb
+        - ao2024.Nov
+        - ao2025.Sep
+        - ao2026.Jan
         transform: log
     construction:
       trend:
-        arima: (2 0 2)
-        transform: none
+        ar:
+        - 0.128942
+        - 0.19943
+        - 0.521223
+        arima: (2 1 1)(1 0 1)
+        calendar:
+        - easter[1]
+        constant: false
+        ma:
+        - 0.804666
+        - 0.822078
+        outliers:
+        - ao2005.Jan
+        - ao2010.Feb
+        - ao2010.Dec
+        - ao2012.Feb
+        - ao2013.Jan
+        - ao2017.Jan
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2024.Jan
+        - ao2025.Aug
+        transform: log
     consumer_confidence:
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.374052
+        outliers:
+        - ao2020.Apr
+        - ls2022.Mar
         transform: none
     esi:
       trend:
+        ar:
+        - -0.01127
+        - -0.010256
+        - -0.072656
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.139358
+        - 0.098711
+        outliers:
+        - ao2020.Apr
         transform: none
     exports_goods:
       sa:
+        ar: []
         arima: (0 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.607934
+        - 0.82251
+        outliers:
+        - ao2013.Dec
+        - ao2021.Mar
         transform: log
       trend:
+        ar: []
         arima: (0 1 1)(0 1 1)
+        calendar:
+        - td1coef
+        constant: false
+        ma: []
+        outliers:
+        - ao2013.Dec
+        - ao2021.Mar
         transform: log
     exports_services:
       sa:
+        ar:
+        - -0.943478
+        - -0.893742
         arima: (2 1 2)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.724091
+        - -0.649173
+        - 0.764961
+        outliers:
+        - ao2022.Jul
         transform: log
       trend:
+        ar: []
         arima: (1 1 2)(1 0 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ao2022.Jul
         transform: log
     gdp:
       trend:
+        ar:
+        - 0.374654
+        - 0.385652
+        - -0.692476
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.76208
+        - 0.161795
+        outliers:
+        - ls2020.Apr
+        - ls2020.Jul
         transform: log
     household_consumption:
       trend:
+        ar:
+        - 0.319431
+        - 0.335065
+        - -0.744121
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.772678
+        - 0.147525
+        outliers:
+        - ls1995.Oct
+        - ls1996.Jan
+        - ls1999.Oct
+        - ls2000.Jan
+        - ao2020.Jan
+        - ls2020.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ao2020.Jul
+        - ls2020.Jul
+        - ao2020.Oct
+        - ls2020.Oct
+        - ls2021.Jan
         transform: log
     imports_goods:
       sa:
-        arima: (0 1 1)(0 1 1)
-        transform: none
-      trend:
-        arima: (0 1 1)
-        transform: none
-    imports_services:
-      sa:
-        arima: (2 1 2)(0 1 1)
+        ar: []
+        arima: (0 1 2)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2005.Nov
+        - ao2020.Apr
         transform: log
       trend:
+        ar: []
+        arima: (0 1 1)
+        calendar:
+        - td1coef
+        - easter[1]
+        constant: true
+        ma:
+        - 0.704905
+        outliers:
+        - ao2005.Nov
+        - ls2009.Jan
+        - ao2020.Apr
+        transform: log
+    imports_services:
+      sa:
+        ar:
+        - -0.939896
+        - -0.915588
+        arima: (2 1 2)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.702646
+        - -0.608086
+        - 0.772664
+        outliers:
+        - ao2020.Aug
+        - ao2022.Jul
+        transform: log
+      trend:
+        ar:
+        - 0.144033
         arima: (1 1 0)
+        calendar:
+        - td1coef
+        constant: true
+        ma: []
+        outliers:
+        - ao2020.Aug
+        - ao2022.Jul
         transform: log
     industrial_production:
       trend:
+        ar: []
         arima: (0 1 1)
-        transform: none
+        calendar: []
+        constant: false
+        ma:
+        - 0.525082
+        outliers:
+        - ls2008.Oct
+        - ls2008.Dec
+        - ao2009.Mar
+        - ls2020.Mar
+        - ao2020.Apr
+        - ls2020.Jun
+        transform: log
     investment:
       trend:
+        ar:
+        - 0.266638
+        - 0.304399
+        - -0.786222
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.724913
+        - 0.502455
+        outliers: []
         transform: log
     npl:
       sa:
+        ar:
+        - 0.282493
+        - 0.407284
+        - -0.743237
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.821182
+        - -0.06536
+        outliers: []
         transform: log
       trend:
+        ar:
+        - 0.282493
+        - 0.407284
+        - -0.743237
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.821182
+        - -0.06536
+        outliers: []
         transform: log
     order_books:
       trend:
+        ar:
+        - -0.171933
         arima: (1 1 0)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls1980.Mar
+        - ls1980.Jun
+        - ls1983.Dec
+        - ls1987.Feb
+        - ls1987.Dec
+        - ls1989.Jul
+        - ls1990.Feb
+        - ls1991.Apr
+        - ls1994.Oct
+        - ls1995.Apr
+        - ls1995.Aug
+        - ls1995.Dec
+        - ls1999.Oct
+        - ao2000.Apr
+        - ls2001.Nov
+        - ls2004.May
+        - ao2004.Jun
+        - ls2004.Nov
+        - ls2005.Sep
+        - ao2007.Feb
+        - ls2008.Nov
+        - ls2010.Feb
+        - ls2010.Jun
+        - ls2010.Dec
+        - ao2011.Jan
+        - ls2011.May
+        - ls2011.Aug
+        - ao2012.May
+        - ls2012.Jul
+        - ao2016.Jun
+        - ao2020.Aug
+        - ls2020.Oct
+        - ao2021.Jan
+        - ls2021.May
+        - ao2021.Aug
+        - ao2023.Mar
+        - ao2023.Oct
+        - ao2023.Dec
+        - ls2025.Aug
         transform: none
     overnight_stays:
       sa:
-        arima: (0 1 1)(0 1 1)
-        transform: none
+        ar:
+        - -0.320826
+        arima: (1 1 0)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.554735
+        outliers:
+        - ao1991.Jan
+        - ao2000.May
+        - ao2010.Jul
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        - ao2021.Mar
+        - ao2021.Apr
+        transform: log
       trend:
-        arima: (1 2 2)(0 0 1)
-        transform: none
+        ar: []
+        arima: (1 1 0)(1 0 1)
+        calendar:
+        - easter[1]
+        constant: true
+        ma: []
+        outliers:
+        - ao1991.Jan
+        - ao2000.May
+        - ao2010.Jul
+        - ls2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ls2020.Jul
+        - ls2021.May
+        transform: log
     retail:
       trend:
+        ar:
+        - 0.816591
+        - -0.151061
+        - 0.233994
+        - -0.646091
         arima: (3 1 1)(1 0 1)
+        calendar:
+        - td
+        constant: false
+        ma:
+        - 0.883747
+        - -0.672128
+        outliers: []
         transform: log
     wholesale:
       trend:
+        ar:
+        - -0.097994
         arima: (1 1 0)
-        transform: none
+        calendar:
+        - td1coef
+        constant: false
+        ma: []
+        outliers:
+        - ao2020.Apr
+        transform: log
   LV:
     bankruptcies:
       trend:
+        ar:
+        - 0.640757
         arima: (1 0 1)(0 0 1)
+        calendar:
+        - td1coef
+        constant: true
+        ma:
+        - 0.228524
+        - 0.287769
+        outliers:
+        - ls2020.Apr
         transform: log
     building_permits:
       trend:
+        ar: []
         arima: (2 1 2)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2006.Aug
+        - ao2008.Aug
+        - ls2010.Jan
+        - ls2010.May
+        - ls2013.Mar
+        - ls2013.May
+        - ls2013.Jul
+        - ao2014.Aug
+        - ls2016.Mar
+        - ls2019.Jun
+        - ls2021.Jul
+        - ao2022.Jul
+        - ls2024.Jan
+        - ls2024.May
+        - ls2025.Aug
         transform: log
     consumer_confidence:
       trend:
+        ar:
+        - -0.324876
         arima: (1 1 0)
+        calendar:
+        - td1coef
+        constant: false
+        ma: []
+        outliers:
+        - ls2008.Dec
+        - ls2020.Apr
+        - ao2022.Jun
         transform: none
     exports_goods:
       sa:
+        ar:
+        - -0.965561
+        - -0.802051
         arima: (2 1 2)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.595677
+        - -0.566714
+        - 0.82347
+        outliers: []
         transform: log
       trend:
+        ar:
+        - -0.21839
         arima: (1 1 0)
+        calendar:
+        - td
+        - easter[1]
+        constant: true
+        ma: []
+        outliers: []
         transform: log
     exports_services:
       sa:
+        ar: []
         arima: (0 1 0)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.706039
+        outliers: []
         transform: log
       trend:
+        ar:
+        - -0.236465
         arima: (1 1 0)
+        calendar:
+        - td1coef
+        - easter[15]
+        constant: true
+        ma: []
+        outliers:
+        - ls2009.Mar
+        - ls2020.Apr
         transform: log
     gdp:
       trend:
+        ar:
+        - 0.400666
+        - 0.479945
+        - -0.646268
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.756673
+        - -0.26123
+        outliers:
+        - ao2020.Feb
+        - ls2020.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ao2020.Jul
+        - ls2020.Jul
+        - ls2020.Sep
         transform: log
     household_consumption:
       trend:
+        ar:
+        - 0.509755
+        - 0.615793
+        - -0.601298
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.791979
+        - 0.141977
+        outliers:
+        - ao2020.Feb
+        - ls2020.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ls2020.Jul
+        - ls2020.Aug
+        - ao2020.Sep
         transform: log
     imports_goods:
       sa:
+        ar: []
         arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2020.Apr
+        - ao2020.May
         transform: log
       trend:
+        ar:
+        - 0.613954
         arima: (1 1 2)
+        calendar:
+        - td1coef
+        - easter[8]
+        constant: true
+        ma:
+        - 0.816158
+        - -0.334439
+        outliers:
+        - ls2020.Apr
         transform: log
     imports_services:
       sa:
+        ar: []
         arima: (2 1 2)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2008.Oct
+        - ao2020.Jan
+        - ao2020.Feb
+        - ao2020.Apr
+        - ao2020.May
         transform: log
       trend:
+        ar: []
         arima: (1 1 2)
+        calendar:
+        - td1coef
+        constant: true
+        ma: []
+        outliers:
+        - ao2008.Oct
+        - ls2020.Mar
+        - ls2020.Apr
         transform: log
     industrial_production:
       trend:
+        ar: []
         arima: (1 1 2)(1 0 1)
-        transform: none
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ls2009.Jan
+        - ao2016.Feb
+        - ls2020.Apr
+        transform: log
     investment:
       trend:
+        ar:
+        - 0.391169
+        - 0.510248
+        - -0.660727
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.778355
+        - 0.217839
+        outliers:
+        - ao2008.Nov
+        - ls2008.Dec
+        - ao2009.Jan
+        - ls2009.Jan
+        - ao2009.Feb
         transform: log
     npl:
       sa:
+        ar:
+        - 0.366335
+        - 0.428624
+        - -0.709791
+        - 0.136208
         arima: (3 1 1)(1 0 0)
+        calendar: []
+        constant: false
+        ma:
+        - -0.90742
+        outliers:
+        - ao2015.Sep
+        - ao2015.Dec
+        - ao2016.Mar
+        - ao2016.Jul
+        - ao2018.Mar
+        - ao2018.Jul
+        - ao2019.Dec
+        - ao2020.Apr
         transform: log
       trend:
+        ar:
+        - 0.501088
+        - 0.696751
+        - -0.595614
         arima: (3 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.74237
+        outliers:
+        - ls2015.Oct
+        - ls2016.Jan
+        - ls2016.Apr
+        - ao2016.Jul
+        - ao2018.Mar
+        - ao2018.Jul
+        - ls2020.Jan
+        - ao2020.Apr
         transform: log
     order_books:
       trend:
+        ar:
+        - -0.078098
         arima: (1 1 0)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls1993.Oct
+        - ls1994.Jan
+        - ls1994.Apr
+        - ls1995.Apr
+        - ls1997.Jul
+        - ls1998.Oct
+        - ls1999.Oct
+        - ls2010.May
+        - ls2020.Apr
         transform: none
     overnight_stays:
       sa:
+        ar: []
         arima: (0 1 0)(0 1 1)
-        transform: none
+        calendar: []
+        constant: false
+        ma:
+        - 0.729537
+        outliers:
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        - ao2020.Aug
+        - ao2021.Nov
+        transform: log
       trend:
+        ar: []
         arima: (0 1 1)
-        transform: none
+        calendar: []
+        constant: true
+        ma:
+        - 0.329736
+        outliers:
+        - ao2020.Mar
+        - ls2020.Apr
+        - ls2020.Jun
+        - ls2020.Jul
+        - ls2020.Sep
+        - ao2020.Nov
+        - ls2020.Dec
+        - ls2021.Jul
+        - ao2021.Nov
+        transform: log
     registrations:
       trend:
+        ar: []
         arima: (0 1 1)
-        transform: none
+        calendar:
+        - td1coef
+        constant: false
+        ma:
+        - 0.616233
+        outliers:
+        - ao2020.Apr
+        - ao2020.May
+        - ao2023.Jul
+        transform: log
     retail:
       trend:
+        ar:
+        - -0.221984
+        - 0.595201
         arima: (1 2 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.891899
+        - 0.91818
+        outliers:
+        - ao2005.Jan
+        - ls2009.Jan
+        - ao2020.Apr
+        - ls2021.Jan
         transform: log
     total_production:
       trend:
+        ar: []
         arima: (0 1 1)
-        transform: none
+        calendar: []
+        constant: true
+        ma:
+        - 0.171628
+        outliers:
+        - ls2020.Apr
+        transform: log
     unemployment:
       trend:
+        ar: []
         arima: (3 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2001.Oct
+        - ls2002.Jul
+        - ao2020.Feb
+        - ls2020.Apr
+        - ao2024.Sep
         transform: log
     wholesale:
       trend:
+        ar:
+        - -0.503787
         arima: (1 1 1)(0 0 1)
+        calendar:
+        - td1coef
+        constant: false
+        ma:
+        - -0.598614
+        - 0.248085
+        outliers:
+        - ao2020.Apr
         transform: log
   MT:
-    bankruptcies:
-      trend:
-        arima: (1 0 1)
-        transform: none
     building_permits:
       trend:
+        ar:
+        - 0.289526
+        - 0.271865
+        - -0.737817
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.763348
+        - -0.16528
+        outliers: []
         transform: log
     consumer_confidence:
       trend:
+        ar:
+        - -0.093103
+        - -0.236235
         arima: (2 1 0)
+        calendar:
+        - td1coef
+        - easter[1]
+        constant: false
+        ma: []
+        outliers:
+        - ls2012.Dec
+        - ls2020.Apr
+        - ao2020.Jul
         transform: none
     esi:
       trend:
+        ar: []
         arima: (0 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2005.May
+        - ls2005.Jul
+        - ls2020.Apr
+        - ao2022.Feb
+        - ao2023.Sep
+        - ao2024.Sep
         transform: none
     exports_goods:
       sa:
+        ar: []
         arima: (0 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.709451
+        - 0.880815
+        outliers:
+        - ao2016.Jul
+        - ao2016.Aug
+        - ao2016.Sep
+        - ao2019.Jun
         transform: log
       trend:
-        arima: (1 0 1)
-        transform: none
+        ar: []
+        arima: (0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.70584
+        outliers:
+        - ao2016.Jul
+        - ls2016.Jul
+        - ls2016.Oct
+        - ao2019.Jun
+        transform: log
     exports_services:
       sa:
-        arima: (0 1 0)(0 1 1)
-        transform: none
+        ar:
+        - 0.94457
+        arima: (0 1 0)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.618299
+        outliers:
+        - ao2009.Mar
+        - ao2009.Dec
+        - ao2010.Mar
+        - ao2011.Jun
+        - ao2011.Sep
+        - ao2011.Dec
+        - ao2012.Mar
+        - ao2012.Jun
+        - ao2012.Sep
+        - ao2012.Dec
+        - ao2022.Dec
+        - ao2024.Sep
+        - ao2024.Dec
+        - ao2025.Jun
+        transform: log
       trend:
-        arima: (1 1 1)
-        transform: none
+        ar: []
+        arima: (1 0 0)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ao2008.Mar
+        - ao2009.Mar
+        - ao2009.Dec
+        - ao2010.Mar
+        - ao2010.Jun
+        - ao2010.Sep
+        - ao2010.Dec
+        - ls2011.Apr
+        - ao2011.Jun
+        - ao2011.Sep
+        - ao2011.Dec
+        - ao2012.Mar
+        - ao2012.Jun
+        - ao2012.Sep
+        - ao2012.Dec
+        - ls2012.Dec
+        - ls2015.Jan
+        - ls2016.Jan
+        - ls2018.Jan
+        - ls2019.Jan
+        - ls2019.Oct
+        - ls2020.Apr
+        - ao2021.Dec
+        - ao2022.Mar
+        - ao2022.Sep
+        - ao2022.Dec
+        - ao2023.Dec
+        - ao2024.Sep
+        - ao2024.Dec
+        - ao2025.Mar
+        - ao2025.Jun
+        transform: log
     gdp:
       trend:
+        ar:
+        - 0.386823
+        - 0.398841
+        - -0.686051
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.719536
+        - 0.348401
+        outliers:
+        - ao2020.Jan
+        - ls2020.Mar
+        - ls2020.Apr
+        - ls2020.May
+        - ao2020.Jul
+        - ls2020.Jul
+        - ao2020.Aug
         transform: log
     household_consumption:
       trend:
+        ar:
+        - 0.322169
+        - 0.399654
+        - -0.765599
+        - 0.722213
         arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.777736
+        - 0.344437
+        outliers:
+        - ls2020.Feb
+        - ao2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ao2020.Jul
+        - ls2020.Jul
+        - ls2020.Sep
+        - ls2021.Apr
+        - ls2021.Jul
         transform: log
     imports_goods:
       sa:
+        ar: []
         arima: (2 1 0)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2025.Sep
         transform: log
       trend:
+        ar: []
         arima: (1 1 0)(1 0 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ao2025.Sep
+        transform: log
+    imports_services:
+      sa:
+        ar:
+        - 0.697694
+        arima: (0 1 1)(1 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.293754
+        - 0.289482
+        outliers:
+        - ao2009.Mar
+        - ao2009.Dec
+        - ao2010.Mar
+        - ao2010.Jun
+        - ao2010.Sep
+        - ao2010.Dec
+        - ao2011.Jun
+        - ao2011.Sep
+        - ao2011.Dec
+        - ao2012.Mar
+        - ao2012.Jun
+        - ao2012.Sep
+        - ao2012.Dec
+        - ao2022.Mar
+        - ao2023.Mar
+        - ao2023.Dec
+        - ao2024.Mar
+        - ao2024.Jun
+        - ao2024.Sep
+        - ao2025.Jun
+        transform: log
+      trend:
+        ar:
+        - -0.285037
+        arima: (1 1 0)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.81486
+        outliers:
+        - ls2009.Jan
+        - ao2009.Mar
+        - ao2009.Dec
+        - ao2010.Mar
+        - ao2010.Jun
+        - ao2010.Sep
+        - ao2010.Dec
+        - ao2011.Jun
+        - ao2011.Sep
+        - ao2011.Dec
+        - ao2012.Mar
+        - ao2012.Jun
+        - ao2012.Sep
+        - ao2012.Dec
+        - ls2012.Dec
+        - ls2019.Jan
+        - ls2019.Oct
+        - ls2022.Jan
+        - ao2022.Mar
+        - ao2023.Mar
+        - ao2023.Dec
+        - ao2024.Mar
+        - ao2024.Jun
+        - ao2024.Sep
+        - ao2025.Jun
         transform: log
     industrial_production:
       trend:
+        ar: []
         arima: (2 1 1)(1 0 1)
+        calendar:
+        - easter[8]
+        constant: false
+        ma: []
+        outliers:
+        - ao2015.Jan
         transform: log
     investment:
       trend:
+        ar:
+        - 0.402132
+        - 0.358753
+        - -0.696391
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.705448
+        - 0.175915
+        outliers:
+        - ao2002.Apr
+        - ls2002.Apr
+        - ls2002.Jul
         transform: log
     npl:
       sa:
+        ar: []
         arima: (1 1 2)
+        calendar: []
+        constant: true
+        ma: []
+        outliers: []
         transform: log
       trend:
+        ar: []
         arima: (1 1 2)
+        calendar: []
+        constant: true
+        ma: []
+        outliers: []
         transform: log
     order_books:
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.46434
+        outliers:
+        - ao2005.May
+        - ao2005.Jun
+        - ls2020.Apr
+        - ao2021.Aug
+        - ao2023.Sep
         transform: none
     overnight_stays:
       sa:
-        arima: (1 1 0)(0 1 1)
-        transform: none
+        ar:
+        - 0.696342
+        arima: (1 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.347298
+        - 0.744468
+        outliers:
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        - ao2020.Jul
+        - ao2020.Nov
+        - ao2021.Mar
+        - ao2021.Apr
+        - ao2021.May
+        - ao2022.Jan
+        transform: log
       trend:
-        arima: (0 1 0)(1 0 1)
-        transform: none
+        ar: []
+        arima: (0 1 1)
+        calendar:
+        - easter[8]
+        constant: true
+        ma:
+        - -0.047078
+        outliers:
+        - ls2005.Jan
+        - ls2005.Mar
+        - ao2005.Oct
+        - ao2006.Dec
+        - ls2007.Mar
+        - ls2007.Jul
+        - ao2011.May
+        - ao2020.Mar
+        - ls2020.Apr
+        - ls2020.Jun
+        - ls2020.Jul
+        - ao2020.Aug
+        - ao2020.Sep
+        - ao2020.Nov
+        - ao2021.Jan
+        - ao2021.Mar
+        - ls2021.Mar
+        - ao2021.Apr
+        - ls2021.Jun
+        - ao2021.Jul
+        - ls2021.Jul
+        - ao2021.Aug
+        - ls2021.Dec
+        - ao2022.Jan
+        - ls2022.Apr
+        transform: log
     registrations:
       trend:
+        ar: []
         arima: (0 1 1)
-        transform: none
+        calendar:
+        - td1coef
+        constant: false
+        ma:
+        - 0.647799
+        outliers:
+        - ao2015.Jan
+        - ao2020.Apr
+        - ao2020.May
+        transform: log
+    retail:
+      trend:
+        ar: []
+        arima: (0 2 2)(0 0 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ao2002.Dec
+        - ao2004.Jun
+        - ao2005.Sep
+        - ls2008.Jan
+        - ao2008.Feb
+        - ls2008.Feb
+        - ao2008.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ls2020.May
+        - ao2021.Jun
+        - ls2021.Aug
+        transform: log
     total_production:
       trend:
+        ar: []
         arima: (2 1 2)
-        transform: none
+        calendar:
+        - td1coef
+        constant: true
+        ma: []
+        outliers:
+        - ao2022.Jan
+        transform: log
     wholesale:
       trend:
+        ar: []
         arima: (0 2 2)(1 0 1)
+        calendar:
+        - td1coef
+        constant: false
+        ma: []
+        outliers:
+        - ao2003.Mar
+        - ao2016.Mar
+        - ls2020.Apr
+        - ls2026.Apr
         transform: log
   NL:
     bankruptcies:
       trend:
+        ar:
+        - -0.382411
         arima: (1 1 0)
+        calendar:
+        - td
+        constant: false
+        ma: []
+        outliers:
+        - ao2022.Apr
         transform: log
     building_permits:
       trend:
+        ar:
+        - 0.279928
+        - 0.326479
+        - -0.757706
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.732414
+        - 0.121416
+        outliers: []
         transform: log
     construction:
       trend:
-        arima: (0 1 1)(0 0 1)
-        transform: none
+        ar: []
+        arima: (0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.453399
+        outliers:
+        - ls2014.Oct
+        transform: log
     consumer_confidence:
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.100886
+        outliers:
+        - ls2007.Sep
+        - ao2008.Jul
+        - ao2013.Jan
+        - ls2020.Apr
+        - ls2022.Mar
         transform: none
     esi:
       trend:
+        ar:
+        - 0.8954
         arima: (1 1 1)
+        calendar:
+        - td1coef
+        constant: false
+        ma:
+        - 0.714641
+        outliers:
+        - ls1980.Apr
+        - ls1982.Apr
+        - ao1982.Oct
+        - ls1983.Jun
+        - ao1985.Jul
+        - ls1986.Jan
+        - ls2020.Apr
+        - ls2020.Jun
         transform: none
     gdp:
       trend:
+        ar: []
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls1999.Jan
+        - ls2006.Apr
+        - ls2006.Jul
+        - ls2009.Jan
+        - ls2010.Jan
+        - ls2010.Apr
+        - ls2010.Jul
+        - ls2014.Jul
+        - ls2014.Oct
+        - ls2020.Feb
+        - ls2020.Mar
+        - ls2020.Apr
+        - ls2020.May
+        - ao2020.Jul
+        - ls2020.Jul
+        - ao2020.Oct
+        - ls2020.Oct
+        - ls2021.Apr
+        - ls2021.Oct
+        - ls2022.Apr
         transform: log
     household_consumption:
       trend:
+        ar: []
         arima: (2 2 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2007.Jan
+        - ls2018.Jan
+        - ao2019.Dec
+        - ao2020.Jan
+        - ao2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ls2020.Jul
+        - ls2020.Aug
+        - ls2020.Oct
+        - ao2020.Nov
+        - ls2021.Apr
+        - ls2022.Apr
         transform: log
     industrial_production:
       trend:
+        ar: []
         arima: (0 1 2)
-        transform: none
+        calendar: []
+        constant: false
+        ma:
+        - 0.347442
+        - 0.180304
+        outliers: []
+        transform: log
     investment:
       trend:
+        ar:
+        - 0.412622
+        - 0.351758
+        - -0.821527
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.791484
+        - -0.133645
+        outliers:
+        - ao2007.Jun
+        - ls2007.Oct
+        - ls2008.Jan
+        - ao2008.Apr
+        - ls2014.Aug
+        - ao2014.Sep
+        - ls2014.Oct
+        - ls2014.Dec
+        - ls2015.Jan
+        - ls2015.Mar
+        - ls2015.Apr
+        - ao2015.May
+        - ao2015.Jun
+        - ls2015.Aug
+        - ao2015.Sep
+        - ls2015.Oct
+        - ao2016.Jan
         transform: log
     npl:
       sa:
+        ar: []
         arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2022.Oct
         transform: log
       trend:
+        ar: []
         arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ao2022.Oct
         transform: log
     order_books:
       trend:
+        ar: []
         arima: (1 1 2)(1 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao1982.Oct
+        - ao1983.Jan
+        - ao1992.Jul
+        - ls2008.Dec
+        - ao2020.Apr
+        - ls2020.Apr
         transform: none
     overnight_stays:
       sa:
-        arima: (2 0 0)(0 1 1)
-        transform: none
+        ar: []
+        arima: (3 0 1)(0 1 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        - ao2020.Oct
+        - ao2020.Nov
+        - ao2020.Dec
+        - ao2021.Jan
+        - ao2021.Feb
+        - ao2021.Mar
+        - ao2021.Apr
+        - ao2021.Dec
+        - ao2022.Jan
+        - ao2022.Feb
+        transform: log
       trend:
-        arima: (3 1 1)(0 0 1)
-        transform: none
+        ar:
+        - -0.745182
+        - -0.410426
+        arima: (2 1 1)(0 0 1)
+        calendar:
+        - easter[15]
+        constant: true
+        ma:
+        - -0.729202
+        - 0.369957
+        outliers:
+        - ls2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ls2020.Jun
+        - ls2020.Jul
+        - ao2020.Oct
+        - ls2020.Oct
+        - ao2021.Jan
+        - ao2021.Feb
+        - ao2021.Mar
+        - ls2021.May
+        - ls2021.Jul
+        - ls2021.Dec
+        - ls2022.Feb
+        - ls2022.Mar
+        transform: log
     retail:
       trend:
+        ar: []
         arima: (1 1 2)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2020.Mar
+        - ao2020.Apr
+        - ls2020.Dec
+        - ao2021.Jan
+        - ls2021.Mar
+        - ls2021.May
+        - ao2021.Dec
+        - ao2022.Jan
         transform: log
-    unemployment:
-      trend:
-        arima: (1 1 1)
-        transform: none
     wholesale:
       trend:
+        ar: []
         arima: (1 0 0)(0 1 1)
+        calendar:
+        - td1coef
+        constant: false
+        ma: []
+        outliers:
+        - ao2021.Dec
         transform: log
   PT:
     bankruptcies:
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar:
+        - td1coef
+        - easter[1]
+        constant: true
+        ma:
+        - 0.657448
+        outliers: []
         transform: log
     building_permits:
       trend:
+        ar:
+        - 0.390427
+        - 0.407679
+        - -0.661218
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.747049
+        - -0.079972
+        outliers: []
         transform: log
     construction:
       trend:
+        ar:
+        - -0.510735
         arima: (1 2 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.914442
+        outliers:
+        - ao2008.Aug
+        - ao2020.Apr
         transform: log
     consumer_confidence:
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.021864
+        outliers:
+        - ao1993.Dec
+        - ls2008.Jun
+        - ls2010.Oct
+        - ls2020.Apr
+        - ls2022.Mar
         transform: none
     esi:
       trend:
+        ar:
+        - 0.465077
+        - 0.21146
         arima: (2 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.656814
+        - 0.103721
+        outliers:
+        - ls1994.Oct
+        - ls2020.Apr
+        - ao2020.Jun
+        - ls2020.Jun
         transform: none
     exports_goods:
       sa:
+        ar:
+        - -0.893416
+        - -0.448219
         arima: (2 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.238461
+        - 0.799504
+        outliers:
+        - ao2003.Apr
+        - ao2020.Apr
+        - ao2020.May
         transform: log
       trend:
+        ar: []
         arima: (0 1 1)(0 1 1)
+        calendar:
+        - td1coef
+        - easter[1]
+        constant: false
+        ma: []
+        outliers:
+        - ao2003.Feb
+        - ao2003.Apr
+        - ao2004.May
+        - ls2008.Dec
+        - ls2020.Mar
+        - ao2020.Apr
+        - ao2020.May
         transform: log
     exports_services:
       sa:
+        ar: []
         arima: (2 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2004.Jun
+        - ao2020.Apr
+        - ao2020.May
         transform: log
       trend:
+        ar: []
         arima: (1 1 2)
+        calendar:
+        - td1coef
+        constant: true
+        ma: []
+        outliers:
+        - ao2004.Jun
+        - ls2020.Mar
+        - ls2020.Apr
+        - ao2020.May
         transform: log
     gdp:
       trend:
+        ar: []
         arima: (3 1 1)(0 0 1)
-        transform: none
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ls2000.Jan
+        - ls2000.Apr
+        - ao2020.Feb
+        - ls2020.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ls2020.Jul
+        - ls2020.Aug
+        - ls2020.Oct
+        - ls2020.Nov
+        - ls2021.Apr
+        transform: log
     household_consumption:
       trend:
+        ar:
+        - 0.560469
+        - 0.499781
+        - -0.741902
+        - 0.877693
         arima: (3 1 1)(1 0 1)
-        transform: none
+        calendar: []
+        constant: false
+        ma:
+        - -0.773054
+        - 0.665116
+        outliers:
+        - ao2019.Dec
+        - ao2020.Jan
+        - ao2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ls2020.Jul
+        - ls2020.Aug
+        - ao2020.Sep
+        - ls2021.Jan
+        - ao2021.Feb
+        - ao2021.Apr
+        - ls2021.Apr
+        - ls2021.Jun
+        transform: log
     imports_goods:
       sa:
+        ar:
+        - -0.614551
+        - -0.266437
+        - 0.164595
         arima: (3 1 0)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.821674
+        outliers:
+        - ao2020.Apr
+        - ao2020.May
         transform: log
       trend:
+        ar:
+        - -0.348926
         arima: (1 1 0)
+        calendar:
+        - td
+        - easter[8]
+        constant: true
+        ma: []
+        outliers:
+        - ls2008.Dec
+        - ao2010.Jun
+        - ao2020.Mar
+        - ls2020.Apr
+        - ls2020.Jun
         transform: log
     imports_services:
       sa:
+        ar:
+        - -0.455286
+        - -0.102359
+        - 0.194488
         arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.141981
+        - 0.757358
+        outliers:
+        - ao2020.Feb
         transform: log
       trend:
+        ar:
+        - 0.354376
         arima: (1 1 2)
+        calendar:
+        - td1coef
+        - easter[1]
+        constant: true
+        ma:
+        - 0.96235
+        - -0.366852
+        outliers:
+        - ao1998.Jan
+        - ao2009.Apr
+        - ao2020.Mar
+        - ls2020.Mar
         transform: log
     industrial_production:
       trend:
+        ar: []
         arima: (0 1 2)
-        transform: none
+        calendar: []
+        constant: false
+        ma:
+        - 0.427201
+        - 0.175686
+        outliers:
+        - ls2005.Jan
+        - ao2005.Aug
+        - ls2008.Dec
+        - ls2020.Mar
+        - ls2020.Apr
+        - ls2020.Jun
+        - ls2020.Jul
+        transform: log
     investment:
       trend:
+        ar:
+        - 0.392638
+        - 0.445373
+        - -0.66475
         arima: (3 1 1)
-        transform: none
+        calendar: []
+        constant: false
+        ma:
+        - -0.739977
+        outliers: []
+        transform: log
     npl:
       sa:
+        ar:
+        - 0.463584
+        - 0.593783
+        - -0.640377
+        - 0.821064
         arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.86362
+        - 0.192021
+        outliers:
+        - ao2019.Sep
+        - ao2020.Jan
         transform: log
       trend:
+        ar: []
         arima: (2 2 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2019.Aug
+        - ls2019.Oct
+        - ao2020.Jan
         transform: log
     order_books:
       trend:
+        ar:
+        - -0.060539
         arima: (1 1 0)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2004.Sep
+        - ao2005.Jan
+        - ao2008.Jan
+        - ls2008.May
+        - ls2008.Jul
+        - ao2008.Oct
+        - ls2008.Oct
+        - ao2011.Jul
+        - ao2020.Apr
+        - ls2020.May
         transform: none
     overnight_stays:
       sa:
-        arima: (2 1 2)(0 1 1)
-        transform: none
+        ar:
+        - -0.207192
+        - 0.18094
+        - 0.232369
+        arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.255004
+        - 0.640938
+        outliers:
+        - ao1991.Apr
+        - ao1997.Mar
+        - ao2002.Mar
+        - ao2005.Apr
+        - ao2008.Apr
+        - ao2013.Apr
+        - ao2016.Apr
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        - ao2020.Jul
+        - ao2020.Nov
+        - ao2021.Jan
+        - ao2021.Feb
+        - ao2021.Mar
+        - ao2021.Apr
+        - ao2021.May
+        - ao2021.Aug
+        - ao2022.Jan
+        transform: log
       trend:
-        arima: (3 1 1)(0 0 1)
-        transform: none
+        ar:
+        - -0.397339
+        - -0.542026
+        arima: (1 1 0)(1 0 1)
+        calendar:
+        - td1coef
+        - easter[15]
+        constant: false
+        ma:
+        - -0.710837
+        outliers:
+        - ls2020.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        - ls2020.Jun
+        - ao2020.Jul
+        - ls2020.Oct
+        - ao2020.Nov
+        - ls2021.Jan
+        - ls2021.Feb
+        - ls2021.May
+        - ls2021.Jun
+        - ls2021.Aug
+        - ls2021.Oct
+        - ao2022.Jan
+        transform: log
     registrations:
       trend:
-        arima: (1 1 1)
-        transform: none
+        ar: []
+        arima: (0 1 1)
+        calendar:
+        - td1coef
+        - easter[8]
+        constant: true
+        ma:
+        - 0.658176
+        outliers:
+        - ls2020.Mar
+        - ao2020.Apr
+        - ls2020.Jun
+        - ao2021.Jan
+        - ao2021.Feb
+        transform: log
     retail:
       trend:
-        arima: (0 2 2)
-        transform: none
+        ar: []
+        arima: (2 1 1)
+        calendar:
+        - td
+        constant: false
+        ma: []
+        outliers:
+        - ls2020.Apr
+        - ls2020.May
+        - ls2021.Apr
+        transform: log
     unemployment:
       trend:
+        ar:
+        - 0.025796
+        - 0.414898
+        - -0.229616
         arima: (3 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.569749
+        outliers:
+        - ao1998.May
+        - ls1998.Nov
+        - ls2018.Sep
+        - ls2020.Mar
+        - ls2020.Jun
+        - ao2021.Mar
         transform: log
     wholesale:
       trend:
-        arima: (1 0 0)
-        transform: none
+        ar:
+        - 0.814882
+        arima: (1 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.290094
+        outliers:
+        - ao2020.Apr
+        - ao2020.May
+        transform: log
   SI:
     bankruptcies:
       trend:
+        ar: []
         arima: (0 1 1)(0 1 1)
-        transform: none
+        calendar:
+        - td1coef
+        constant: false
+        ma:
+        - 0.822544
+        - 0.887302
+        outliers:
+        - ao2020.Apr
+        transform: log
     building_permits:
       trend:
+        ar:
+        - 0.346063
+        - 0.274838
+        - -0.750222
         arima: (3 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.648409
+        outliers: []
         transform: log
     construction:
       trend:
+        ar: []
         arima: (0 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2008.Jan
         transform: log
     consumer_confidence:
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar:
+        - td
+        constant: false
+        ma:
+        - 0.344641
+        outliers:
+        - ao1999.Jun
+        - ls2007.Sep
+        - ls2020.Apr
         transform: none
     esi:
       trend:
+        ar: []
         arima: (0 1 1)(0 1 1)
+        calendar:
+        - td
+        constant: false
+        ma: []
+        outliers:
+        - ls1995.Jun
+        - ao1996.Feb
+        - ls2020.Apr
         transform: none
     exports_goods:
       sa:
+        ar:
+        - -0.654858
+        - -0.35445
+        - 0.231735
         arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.105611
+        - 0.97459
+        outliers:
+        - ao2020.Apr
+        - ao2020.May
         transform: log
       trend:
+        ar:
+        - 0.069841
+        - -0.196592
         arima: (2 1 0)
-        transform: none
+        calendar:
+        - td
+        constant: true
+        ma: []
+        outliers: []
+        transform: log
     exports_services:
       sa:
+        ar: []
         arima: (0 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.345212
+        - 0.718915
+        outliers:
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2022.Sep
         transform: log
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar:
+        - td1coef
+        constant: true
+        ma:
+        - 0.444087
+        outliers:
+        - ls2008.Jan
+        - ls2008.Dec
+        - ao2020.Mar
+        - ls2020.Mar
+        - ls2020.Jun
+        - ao2022.Sep
         transform: log
     gdp:
       trend:
+        ar:
+        - 0.549369
+        - 0.669667
+        - -0.589504
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.802024
+        - 0.410148
+        outliers:
+        - ao1999.Feb
+        - ls1999.Mar
+        - ls1999.Apr
+        - ao1999.May
+        - ls1999.Jul
+        - ls1999.Aug
+        - ls1999.Oct
+        - ls2009.Jan
+        - ls2009.Apr
+        - ao2020.Feb
+        - ls2020.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ao2020.Jul
+        - ls2020.Jul
+        - ao2020.Oct
+        - ls2020.Oct
+        - ls2021.Jan
+        - ao2021.Feb
+        - ls2021.Feb
         transform: log
     household_consumption:
       trend:
+        ar:
+        - 0.495226
+        - 0.46175
+        - -0.641444
+        - -0.848003
         arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - -0.759784
+        - -0.477101
+        outliers:
+        - ls1999.Apr
+        - ls1999.Jul
+        - ao2019.Oct
+        - ls2019.Dec
+        - ao2020.Jan
+        - ls2020.Feb
+        - ao2020.Mar
+        - ao2020.Apr
+        - ls2020.Apr
+        - ao2020.Jun
+        - ls2020.Jul
+        - ao2020.Aug
+        - ao2020.Oct
+        - ls2020.Oct
+        - ao2020.Nov
+        - ls2021.Jan
+        - ls2021.Feb
+        - ao2021.Mar
+        - ls2021.Jun
+        - ls2021.Jul
+        - ls2021.Aug
+        - ao2021.Sep
         transform: log
     imports_goods:
       sa:
+        ar:
+        - -0.103718
+        - 0.083608
+        - 0.361678
         arima: (3 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.408282
+        - 0.952136
+        outliers:
+        - ao2020.Apr
+        - ao2020.May
         transform: log
       trend:
+        ar: []
         arima: (2 1 2)
+        calendar:
+        - td1coef
+        - easter[1]
+        constant: true
+        ma: []
+        outliers:
+        - ls2008.Nov
+        - ls2009.Jan
+        - ls2020.Mar
+        - ao2020.Apr
         transform: log
     imports_services:
       sa:
+        ar: []
         arima: (0 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.482863
+        - 0.700776
+        outliers:
+        - ao2020.Apr
         transform: log
       trend:
+        ar: []
         arima: (2 1 2)(1 0 1)
+        calendar:
+        - td1coef
+        - easter[1]
+        constant: true
+        ma: []
+        outliers:
+        - ls2020.Apr
         transform: log
     industrial_production:
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar:
+        - easter[1]
+        constant: true
+        ma:
+        - 0.501227
+        outliers:
+        - ao2008.Nov
+        - ls2008.Nov
+        - ls2020.Mar
+        - ao2020.Apr
+        - ls2020.Jul
+        - ao2023.Aug
         transform: log
     investment:
       trend:
+        ar:
+        - 0.413959
+        - 0.412556
+        - -0.666941
         arima: (3 1 1)
-        transform: none
+        calendar: []
+        constant: true
+        ma:
+        - -0.778288
+        outliers:
+        - ls1999.Apr
+        - ls1999.Jul
+        - ls1999.Oct
+        - ls2020.Apr
+        - ls2020.Jul
+        transform: log
     npl:
       sa:
+        ar: []
         arima: (3 1 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers: []
         transform: log
       trend:
+        ar: []
         arima: (2 1 2)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2019.Oct
+        - ls2020.Jan
+        - ls2025.Jul
+        - ls2025.Oct
         transform: log
     order_books:
       trend:
+        ar: []
         arima: (0 1 0)(1 0 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ls1999.Feb
+        - ls1999.Apr
+        - ls2008.Oct
+        - ls2020.Apr
+        - ls2020.Aug
         transform: none
     overnight_stays:
       sa:
-        arima: (2 1 2)(0 1 1)
-        transform: none
+        ar: []
+        arima: (0 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.682951
+        - 0.505855
+        outliers:
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        - ao2020.Oct
+        - ao2020.Nov
+        - ao2020.Dec
+        - ao2021.Jan
+        - ao2021.Feb
+        - ao2021.Mar
+        - ao2021.Apr
+        - ao2021.May
+        - ao2021.Jun
+        - ao2022.Jan
+        - ao2022.Jun
+        transform: log
       trend:
-        arima: (1 1 0)
+        ar: []
+        arima: (1 1 2)(1 0 1)
+        calendar:
+        - easter[15]
+        constant: true
+        ma: []
+        outliers:
+        - ls2010.Jan
+        - ls2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ls2020.Jul
+        - ls2020.Oct
+        - ls2020.Nov
+        - ao2020.Dec
+        - ao2021.Jan
+        - ao2021.May
+        - ls2021.May
+        - ao2021.Jun
+        - ao2022.Jan
+        - ao2022.Feb
+        - ao2022.Jun
         transform: log
     registrations:
       trend:
+        ar: []
         arima: (0 1 1)(0 1 1)
-        transform: none
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ls2020.Nov
+        - ls2021.May
+        transform: log
     retail:
       trend:
+        ar: []
         arima: (0 1 1)(0 0 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.202923
+        - 0.351096
+        outliers:
+        - ao2004.Feb
+        - ao2005.Aug
+        - ls2005.Nov
+        - ao2008.Feb
+        - ao2008.May
+        - ls2009.Feb
+        - ls2016.Oct
+        - ls2018.Oct
+        - ls2020.Mar
+        - ao2020.Apr
+        - ls2020.Nov
+        - ao2021.Jan
+        - ls2021.Feb
+        - ao2021.Apr
+        - ls2021.Aug
+        - ao2022.Jan
+        - ao2022.Mar
         transform: log
     total_production:
       trend:
+        ar: []
         arima: (0 1 1)
-        transform: none
+        calendar: []
+        constant: true
+        ma:
+        - 0.309297
+        outliers:
+        - ls2020.Mar
+        - ao2020.Apr
+        - ls2020.Jul
+        - ao2021.Jan
+        transform: log
     unemployment:
       trend:
+        ar:
+        - 0.927298
+        - -0.606156
         arima: (2 1 2)
-        transform: none
+        calendar:
+        - easter[1]
+        constant: false
+        ma:
+        - 0.25711
+        - -0.377371
+        outliers:
+        - ls2009.Jan
+        - ls2020.Apr
+        transform: log
     wholesale:
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar: []
+        constant: true
+        ma:
+        - 0.279389
+        outliers:
+        - ao2020.Apr
         transform: log
   SK:
     building_permits:
       trend:
+        ar: []
         arima: (2 1 0)(0 1 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers: []
         transform: log
     construction:
       trend:
+        ar: []
         arima: (2 1 0)(1 0 1)
+        calendar:
+        - easter[1]
+        constant: false
+        ma: []
+        outliers:
+        - ls2008.Jan
+        - ao2009.Jan
+        - ls2022.Jan
         transform: log
     consumer_confidence:
       trend:
+        ar:
+        - -0.849462
+        - -0.626478
         arima: (2 1 2)
+        calendar: []
+        constant: false
+        ma:
+        - -0.694984
+        - -0.487578
+        outliers:
+        - ls1999.Jul
+        - ls2002.Nov
+        - ls2009.Feb
+        - ls2020.Apr
         transform: none
     esi:
       trend:
+        ar:
+        - -0.152997
         arima: (1 1 0)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls1993.Nov
+        - ls1994.Jul
+        - ao1994.Sep
+        - ls1994.Dec
+        - ao1995.Apr
+        - ao1995.Dec
+        - ls1996.Mar
+        - ls1996.Jun
+        - ao1996.Nov
+        - ao1997.Apr
+        - ls2020.Apr
+        - ls2020.Jun
         transform: none
     exports_goods:
       sa:
+        ar:
+        - 0.226181
+        - 0.168216
+        - 0.299984
         arima: (3 1 1)(0 1 1)
-        transform: none
+        calendar: []
+        constant: false
+        ma:
+        - 0.763404
+        - 0.780389
+        outliers:
+        - ao2020.Apr
+        - ao2020.May
+        transform: log
       trend:
-        arima: (2 1 1)(0 0 1)
-        transform: none
+        ar:
+        - 0.350287
+        arima: (1 1 0)
+        calendar:
+        - td1coef
+        - easter[8]
+        constant: true
+        ma: []
+        outliers:
+        - ao2016.Jul
+        - ao2020.Apr
+        - ls2020.Apr
+        - ls2020.Jun
+        transform: log
     exports_services:
       sa:
-        arima: (0 1 1)(0 1 1)
-        transform: none
+        ar:
+        - -0.323252
+        - 0.798739
+        arima: (1 1 0)(1 0 0)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2008.Sep
+        - ao2008.Dec
+        - ao2009.Jun
+        - ao2009.Sep
+        - ao2009.Nov
+        - ao2011.Oct
+        - ao2015.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        transform: log
       trend:
-        arima: (0 1 0)(1 0 1)
-        transform: none
+        ar: []
+        arima: (0 2 2)(0 0 1)
+        calendar:
+        - easter[1]
+        constant: false
+        ma: []
+        outliers:
+        - ao2008.Sep
+        - ao2008.Dec
+        - ao2009.Jun
+        - ao2009.Sep
+        - ao2009.Nov
+        - ao2010.Dec
+        - ao2011.Oct
+        - ao2015.Mar
+        - ls2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        - ls2020.Jul
+        - ls2022.Jul
+        - ls2023.Jul
+        transform: log
     household_consumption:
       trend:
+        ar: []
         arima: (3 1 0)(0 0 1)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ls1999.Apr
+        - ls1999.Jul
+        - ls1999.Oct
+        - ls2003.Jan
+        - ls2004.Jan
+        - ls2008.Oct
+        - ls2009.Jan
+        - ls2009.Apr
+        - ao2019.Dec
+        - ls2020.Apr
+        - ao2020.Jun
+        - ls2020.Jul
+        - ls2020.Dec
+        - ls2021.Jan
+        - ls2021.Feb
+        - ls2021.Apr
+        - ls2021.May
+        - ao2021.Jun
+        - ls2021.Jul
+        - ls2022.Jul
+        - ls2022.Oct
+        - ls2023.Jan
+        - ls2023.Apr
         transform: log
     imports_goods:
       sa:
-        arima: (3 1 1)(0 1 1)
-        transform: none
+        ar:
+        - -0.96086
+        - -0.707165
+        arima: (2 1 2)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.460112
+        - -0.313667
+        - 0.817005
+        outliers:
+        - ao2020.Apr
+        - ao2020.May
+        transform: log
       trend:
-        arima: (3 1 1)
-        transform: none
+        ar:
+        - -0.241101
+        arima: (1 1 0)
+        calendar:
+        - td1coef
+        - easter[1]
+        constant: true
+        ma: []
+        outliers:
+        - ls2020.Apr
+        - ls2020.Jun
+        transform: log
     imports_services:
       sa:
-        arima: (2 1 1)(0 1 1)
-        transform: none
+        ar: []
+        arima: (0 1 0)(0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.229924
+        outliers:
+        - ao2008.Mar
+        - ao2008.Dec
+        - ao2009.Dec
+        - ao2010.Sep
+        - ao2011.May
+        - ao2011.Aug
+        - ao2011.Dec
+        - ao2012.Jan
+        - ao2012.Sep
+        - ao2012.Nov
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        - ao2022.Jul
+        - ao2022.Sep
+        transform: log
       trend:
-        arima: (0 2 2)(1 0 0)
-        transform: none
+        ar: []
+        arima: (0 2 1)(0 0 1)
+        calendar:
+        - easter[8]
+        constant: false
+        ma:
+        - 0.852162
+        - 0.524979
+        outliers:
+        - ao2008.Mar
+        - ao2008.Dec
+        - ls2009.Aug
+        - ao2009.Dec
+        - ao2010.Sep
+        - ao2011.May
+        - ao2011.Aug
+        - ao2011.Dec
+        - ls2011.Dec
+        - ls2012.Feb
+        - ls2012.Sep
+        - ao2012.Oct
+        - ls2012.Dec
+        - ls2020.Jan
+        - ls2020.Apr
+        - ls2020.Jul
+        - ls2022.Jan
+        - ao2022.Jul
+        - ao2022.Sep
+        - ls2023.Jan
+        transform: log
     industrial_production:
       trend:
+        ar: []
         arima: (0 1 1)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2004.Dec
+        - ls2008.Jan
+        - ls2009.Jan
+        - ao2015.Aug
+        - ls2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2025.Jan
         transform: log
     investment:
       trend:
-        arima: (3 1 1)(0 0 1)
-        transform: none
+        ar:
+        - 0.278724
+        - 0.353503
+        - -0.754221
+        - 0.647924
+        arima: (3 1 1)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.783931
+        - 0.832856
+        outliers: []
+        transform: log
     npl:
       sa:
-        arima: (2 1 0)(1 0 1)
-        transform: none
+        ar: []
+        arima: (2 1 2)(0 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2025.Oct
+        - ao2026.Jan
+        transform: log
       trend:
-        arima: (2 1 2)
-        transform: none
+        ar: []
+        arima: (2 1 2)(1 0 0)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls2025.Mar
+        - ao2025.Oct
+        - ao2026.Jan
+        transform: log
     order_books:
       trend:
+        ar: []
         arima: (0 1 1)
+        calendar: []
+        constant: false
+        ma:
+        - 0.220531
+        outliers:
+        - ls1993.Nov
+        - ao1994.Apr
+        - ls1994.Jul
+        - ao1994.Sep
+        - ao1994.Dec
+        - ls1995.Apr
+        - ls1996.Mar
+        - ls1996.Jun
+        - ls1998.Dec
+        - ao1999.Mar
+        - ls2003.Jan
+        - ao2004.Mar
+        - ls2004.Jul
+        - ls2020.Apr
+        - ls2020.Jun
+        - ls2020.Aug
         transform: none
     overnight_stays:
       sa:
-        arima: (3 0 1)(0 1 1)
-        transform: none
+        ar: []
+        arima: (2 1 2)(1 1 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ao2005.Aug
+        - ao2013.Mar
+        - ao2020.Jan
+        - ao2020.Feb
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        - ao2020.Oct
+        - ao2020.Dec
+        - ao2021.Nov
+        - ao2021.Dec
+        - ao2024.Apr
+        - ao2024.Sep
+        - ao2025.Jul
+        transform: log
       trend:
-        arima: (1 1 0)
-        transform: none
+        ar:
+        - 0.04288
+        - 0.588296
+        - -0.667529
+        arima: (2 1 0)(1 0 1)
+        calendar: []
+        constant: false
+        ma:
+        - -0.792038
+        outliers:
+        - ao2005.Aug
+        - ao2013.Mar
+        - ls2019.Jun
+        - ls2020.Jan
+        - ls2020.Feb
+        - ls2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ao2020.Jun
+        - ls2020.Jul
+        - ao2020.Sep
+        - ls2020.Oct
+        - ao2020.Dec
+        - ls2021.Jan
+        - ao2021.Apr
+        - ls2021.Apr
+        - ls2021.Jun
+        - ls2021.Jul
+        - ls2021.Nov
+        - ao2021.Dec
+        - ao2022.Jan
+        - ls2022.Jan
+        - ls2022.Mar
+        - ao2024.Apr
+        - ao2024.Sep
+        - ao2025.Jul
+        transform: log
     retail:
       trend:
-        arima: (2 1 1)(0 0 1)
-        transform: none
+        ar: []
+        arima: (1 1 2)(0 0 1)
+        calendar:
+        - easter[15]
+        constant: true
+        ma: []
+        outliers:
+        - ls2000.Mar
+        - ls2000.Apr
+        - ls2003.Jan
+        - ls2009.Jan
+        - ls2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ls2021.Jan
+        - ls2021.Mar
+        transform: log
     total_production:
       trend:
-        arima: (0 1 1)
-        transform: none
+        ar:
+        - -0.316631
+        arima: (1 1 0)
+        calendar: []
+        constant: true
+        ma: []
+        outliers:
+        - ao2015.Aug
+        - ls2020.Mar
+        - ao2020.Apr
+        - ao2020.May
+        - ls2020.Jul
+        - ao2025.Jan
+        transform: log
     unemployment:
       trend:
+        ar: []
         arima: (3 1 1)(0 0 1)
+        calendar: []
+        constant: false
+        ma: []
+        outliers:
+        - ls1998.Jan
+        - ls2000.Aug
+        - ls2009.Jan
+        - ao2020.Jan
+        - ls2020.Mar
+        - ls2020.May
+        - ao2020.Jun
         transform: log
     wholesale:
       trend:
+        ar:
+        - -0.382182
+        - -0.267232
         arima: (2 1 0)
+        calendar: []
+        constant: true
+        ma: []
+        outliers: []
         transform: log

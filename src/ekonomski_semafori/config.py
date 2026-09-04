@@ -351,10 +351,12 @@ def load_settings(path: Path = CONFIG_DIR / "settings.yaml") -> Settings:
 
 X13_STEPS = frozenset({"sa", "trend"})
 _ARIMA = re.compile(r"^\(\d \d \d\)(\(\d \d \d\))?$")   # (p d q) with an optional seasonal (P D Q)
+_OUTLIER = re.compile(r"^(ao|ls|tc)\d{4}\.[A-Za-z]{3}$")   # X-13 outlier regressor names, for example ao2020.Apr
+_CALENDAR = re.compile(r"^(td|td1coef|tdnolpyear|td1nolpyear|lpyear|lom|loq|easter\[\d+\])$")   # regressors aictest can select
 
 
-def load_x13_models(path: Path | None) -> dict[tuple[str, str, str], dict[str, str]]:
-    """Read the frozen X-13 model registry: {country: {indicator: {step: {transform, arima}}}}
+def load_x13_models(path: Path | None) -> dict[tuple[str, str, str], dict[str, object]]:
+    """Read the frozen X-13 model registry: {country: {indicator: {step: {transform, arima, constant}}}}
     keyed here as (country, indicator, step). None or a missing file gives an empty
     registry, which means automatic selection everywhere."""
     if path is None or not Path(path).exists():
@@ -363,13 +365,19 @@ def load_x13_models(path: Path | None) -> dict[tuple[str, str, str], dict[str, s
     entries = raw.get("models") if isinstance(raw, dict) else None
     if not isinstance(entries, dict):
         raise ValueError(f"{path}: 'models' must be a mapping country -> indicator -> step")
-    out: dict[tuple[str, str, str], dict[str, str]] = {}
+    out: dict[tuple[str, str, str], dict[str, object]] = {}
     for country, per_indicator in entries.items():
         for indicator, per_step in per_indicator.items():
             for step, model in per_step.items():
-                if step not in X13_STEPS or not isinstance(model, dict) or set(model) != {"transform", "arima"}:
-                    raise ValueError(f"{path}: {country} {indicator} {step}: expected step sa or trend with keys transform and arima")
-                if model["transform"] not in ("log", "none") or not _ARIMA.match(str(model["arima"])):
-                    raise ValueError(f"{path}: {country} {indicator} {step}: transform must be log or none, arima like (0 1 1)(0 1 1)")
-                out[(str(country), str(indicator), step)] = {"transform": model["transform"], "arima": str(model["arima"])}
+                if step not in X13_STEPS or not isinstance(model, dict) or not {"transform", "arima"} <= set(model) <= {"transform", "arima", "constant", "outliers", "calendar", "ar", "ma"}:
+                    raise ValueError(f"{path}: {country} {indicator} {step}: expected step sa or trend with keys transform, arima, optional constant, outliers, calendar, ar, ma")
+                outliers = model.get("outliers") or []
+                calendar = model.get("calendar") or []
+                if not isinstance(calendar, list) or not all(isinstance(c, str) and _CALENDAR.match(c) for c in calendar):
+                    raise ValueError(f"{path}: {country} {indicator} {step}: calendar regressors must be td, easter[n] and the like")
+                if (model["transform"] not in ("log", "none") or not _ARIMA.match(str(model["arima"])) or not isinstance(model.get("constant", False), bool)
+                        or not isinstance(outliers, list) or not all(isinstance(o, str) and _OUTLIER.match(o) for o in outliers)):
+                    raise ValueError(f"{path}: {country} {indicator} {step}: transform log or none, arima like (0 1 1)(0 1 1), constant true or false, outliers like ao2020.Apr")
+                starts = {name: [float(v) for v in (model.get(name) or [])] for name in ("ar", "ma")}
+                out[(str(country), str(indicator), step)] = {"transform": model["transform"], "arima": str(model["arima"]), "constant": bool(model.get("constant", False)), "outliers": list(outliers), "calendar": list(calendar), **starts}
     return out

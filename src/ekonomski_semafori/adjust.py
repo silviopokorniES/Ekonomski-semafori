@@ -57,12 +57,38 @@ def x13_binary() -> Path:
     raise FileNotFoundError("X-13 binary not found: set X13PATH to the folder holding x13as_ascii or x13ashtml (see README)")
 
 
-def model_blocks(model: dict[str, str] | None) -> str:
-    """The transform and model blocks of a spec: automatic selection when model is
-    None, otherwise the frozen transform (log or none) and ARIMA orders."""
+def model_blocks(model: dict[str, object] | None, aictest: str | None, transform: str = "auto") -> str:
+    """The transform, model and regression blocks of a spec. Without a frozen model:
+    the given transform (auto, log or none) and automdl, which also decides on a
+    constant term. With one: its transform, ARIMA orders, constant, outlier
+    regressors and starting values. aictest names the automatic regressor tests
+    (td easter) or None."""
+    aic = f"  aictest = ({aictest})\n" if aictest else ""
     if model is None:
-        return "transform{\n  function = auto\n}\n\nautomdl{\n\n}\n\n"
-    return f"transform{{\n  function = {model['transform']}\n}}\n\narima{{\n  model = {model['arima']}\n}}\n\n"
+        return f"transform{{\n  function = {transform}\n}}\n\nautomdl{{\n\n}}\n\nregression{{\n{aic}}}\n\n"
+    # A frozen model carries the calendar regressors the automatic test chose, so aictest is not repeated.
+    fixed = (["const"] if model.get("constant") else []) + list(model.get("calendar", [])) + list(model.get("outliers", []))
+    aic = ""
+    # X-13 rejects input records longer than 133 characters, so the list is wrapped five names per line
+    rows = [" ".join(fixed[i:i + 5]) for i in range(0, len(fixed), 5)]
+    variables = "  variables = (\n" + "".join(f"    {row}\n" for row in rows) + "  )\n" if fixed else ""
+    starts = "".join(f"  {name} = ({' '.join(f'{v:.10g}' for v in model[name])})\n" for name in ("ar", "ma") if model.get(name))
+    return f"transform{{\n  function = {model['transform']}\n}}\n\narima{{\n  model = {model['arima']}\n{starts}}}\n\nregression{{\n{aic}{variables}}}\n\n"
+
+
+def outlier_block(types: str | None, critical: float | None, series: pd.Series, model: dict[str, object] | None) -> str:
+    """The outlier block: full-sample detection with automatic selection; with a
+    frozen model, detection only over the last 12 months (earlier outliers are
+    part of the frozen regressors)."""
+    lines = []
+    if types:
+        lines.append(f"  types = {types}\n")
+    if critical is not None:
+        lines.append(f"  critical = {critical:g}\n")
+    if model is not None:
+        start = series.index[-1] - pd.DateOffset(months=11)
+        lines.append(f"  span = ({start.year}.{start.month}, )\n")
+    return "outlier{\n" + "".join(lines) + "}\n\n"
 
 
 def run_x13(series: pd.Series, spec: str, tables: tuple[str, ...], diagnostics: bool = False) -> dict[str, pd.Series | dict[str, str]]:
@@ -91,6 +117,11 @@ def run_x13(series: pd.Series, spec: str, tables: tuple[str, ...], diagnostics: 
         for line in errors.splitlines():
             if "WARNING" in line:
                 log.info("x13 %s: %s", series.name, line.strip())
+        if diagnostics and (folder / "iofile.mdl").exists():
+            mdl = (folder / "iofile.mdl").read_text(errors="replace")
+            match = re.search(r"variables=\((.*?)\)", mdl, re.S)
+            regressors = match.group(1).split() if match else []
+            coefficients = {name: [float(v) for v in m.group(1).split()] for name in ("ar", "ma") if (m := re.search(rf"\b{name}\s*=\s*\((.*?)\)", mdl, re.S))}
         out: dict[str, pd.Series] = {}
         for table in tables:
             path = folder / f"iofile.{table}"
@@ -102,6 +133,8 @@ def run_x13(series: pd.Series, spec: str, tables: tuple[str, ...], diagnostics: 
         if diagnostics:
             lines = (folder / "iofile.udg").read_text(errors="replace").splitlines()
             out["udg"] = {k.strip(): v.strip() for k, _, v in (line.partition(":") for line in lines) if k}
+            out["udg"]["regressors"] = regressors
+            out["udg"]["coefficients"] = coefficients
         return out
 
 
@@ -113,16 +146,17 @@ def _plain_text(html: str) -> str:
     return "\n".join(line for line in lines if line)
 
 
-def sa_spec(outlier_types: str, outlier_critical: float, aictest: str | None, model: dict[str, str] | None) -> str:
+ESTIMATE = "estimate{\n  save = (model)\n}\n"   # the model file lists the regressors, read back by run_x13 diagnostics
+
+
+def sa_spec(outlier_types: str, outlier_critical: float, aictest: str | None, model: dict[str, object] | None, series: pd.Series, transform: str = "auto") -> str:
     """Spec of the seasonal adjustment step (SEATS s11) with the reference settings;
     aictest None writes an empty regression block, as regression.aictest = NULL in R."""
-    regression = f"regression{{\n  aictest = ({aictest})\n}}" if aictest else "regression{\n\n}"
     return (
-        model_blocks(model)
+        model_blocks(model, aictest, transform)
         + "seats{\n  noadmiss = yes\n  save = (s11)\n}\n\n"
-        + f"{regression}\n\n"
-        + f"outlier{{\n  types = {outlier_types}\n  critical = {outlier_critical:g}\n}}\n\n"
-        + "estimate{\n\n}\n"
+        + outlier_block(outlier_types, outlier_critical, series, model)
+        + ESTIMATE
     )
 
 
@@ -131,17 +165,18 @@ def seasonal_adjust(
     outlier_types: str = "AO",
     outlier_critical: float = 4.0,
     aictest: str | None = None,
-    model: dict[str, str] | None = None,
+    model: dict[str, object] | None = None,
+    transform: str = "auto",
 ) -> pd.Series:
-    """Final seasonally adjusted series (SEATS s11). With a frozen model (transform
-    and ARIMA orders) the automatic selection is skipped; if that model fails, the
-    automatic one is used and a warning names the series."""
+    """Final seasonally adjusted series (SEATS s11). `transform` (auto, log or none)
+    applies to the automatic model; a frozen model carries its own. If the frozen
+    model fails, the automatic one is used and a warning names the series."""
     if model is not None:
         try:
-            return run_x13(sa_input, sa_spec(outlier_types, outlier_critical, aictest, model), ("s11",))["s11"]
+            return run_x13(sa_input, sa_spec(outlier_types, outlier_critical, aictest, model, sa_input), ("s11",))["s11"]
         except X13Error as err:
             log.warning("seasonal_adjust %s: frozen model %s failed (%s), falling back to automatic selection", sa_input.name, model, str(err)[:120])
-    return run_x13(sa_input, sa_spec(outlier_types, outlier_critical, aictest, None), ("s11",))["s11"]
+    return run_x13(sa_input, sa_spec(outlier_types, outlier_critical, aictest, None, sa_input, transform), ("s11",))["s11"]
 
 
 def disaggregate(quarterly: pd.Series) -> pd.Series:

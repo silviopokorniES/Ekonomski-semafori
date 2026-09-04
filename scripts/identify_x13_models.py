@@ -30,14 +30,23 @@ from ekonomski_semafori import trend  # noqa: E402
 from ekonomski_semafori.adjust import X13Error, run_x13, sa_spec  # noqa: E402
 from ekonomski_semafori.config import load_countries, load_indicators, load_settings, merge_override  # noqa: E402
 from ekonomski_semafori.fetch import EmptyResponseError  # noqa: E402
-from ekonomski_semafori.pipeline import SkippedIndicator, _prepare, fetch_series  # noqa: E402
+from ekonomski_semafori.pipeline import SkippedIndicator, _prepare, fetch_series, x13_transform  # noqa: E402
 
 log = logging.getLogger("identify_x13_models")
 
 
-def selected(udg: dict[str, str]) -> dict[str, str]:
-    transform = "log" if udg.get("aictrans", "").lower().startswith("log") else "none"
-    return {"transform": transform, "arima": udg["arimamdl"]}
+def selected(udg: dict[str, object]) -> dict[str, object]:
+    """Transform, ARIMA orders, whether automdl kept a constant term, and the
+    automatically identified outliers (from the saved model file)."""
+    transform = "log" if str(udg.get("aictrans", udg.get("transform", ""))).lower().startswith("log") else "none"
+    regressors = udg.get("regressors", [])
+    outliers = [r for r in regressors if r[:2] in ("ao", "ls", "tc") and "." in r]
+    calendar = [r for r in regressors if r not in outliers and r != "const"]
+    coefficients = udg.get("coefficients", {})
+    starts = {name: [round(v, 6) for v in coefficients.get(name, [])] for name in ("ar", "ma")}
+    if any(abs(v) >= 0.99 for vals in starts.values() for v in vals):
+        starts = {"ar": [], "ma": []}   # a value on the invertibility or stationarity boundary is rejected as a start
+    return {"transform": transform, "arima": udg["arimamdl"], "constant": "const" in regressors, "calendar": calendar, "outliers": outliers, **starts}
 
 
 def main() -> None:
@@ -63,11 +72,11 @@ def main() -> None:
                 steps: dict[str, dict[str, str]] = {}
                 if not indicator.already_sa:
                     pre = _prepare_input(raw, indicator, settings)   # what the adjustment step receives
-                    result = run_x13(pre, sa_spec(x13["outlier_types"], x13["outlier_critical"], x13["aictest"], None), ("s11",), diagnostics=True)
+                    result = run_x13(pre, sa_spec(x13["outlier_types"], x13["outlier_critical"], x13["aictest"], None, pre, x13_transform(indicator, settings)), ("s11",), diagnostics=True)
                     steps["sa"] = selected(result["udg"])
                 sa = _prepare(raw, indicator, settings, None, date.today(), model=None)
                 if not indicator.skip_henderson:
-                    result = run_x13(sa, trend.trend_spec(None), ("d12",), diagnostics=True)
+                    result = run_x13(sa, trend.trend_spec(None, sa, x13_transform(indicator, settings)), ("d12",), diagnostics=True)
                     steps["trend"] = selected(result["udg"])
                 models.setdefault(code, {})[indicator.id] = steps
                 log.info("%s %s: %s", code, indicator.id, steps)
@@ -75,7 +84,11 @@ def main() -> None:
                 log.warning("%s %s: no model (%s: %s)", code, indicator.id, type(err).__name__, str(err)[:120])
     header = (
         f"# Frozen X-13 models, identified {date.today().isoformat()} by scripts/identify_x13_models.py.\n"
-        "# transform: log or none; arima: (p d q)(P D Q). Re-identify at the annual review and diff before committing.\n"
+        "# transform: log or none; arima: (p d q)(P D Q); constant: whether the automatic procedure kept a mean term;\n"
+        "# calendar: the trading-day and Easter regressors the automatic test chose; outliers: the regressors it\n"
+        "# identified (new ones are still detected over the last 12 months each run);\n"
+        "# ar, ma: the estimated coefficients, used as starting values so monthly re-estimation stays in the same optimum.\n"
+        "# Re-identify at the annual review and diff before committing.\n"
     )
     args.output.write_text(header + yaml.safe_dump({"models": models}, allow_unicode=True, sort_keys=True), encoding="utf-8")
     log.info("wrote %s with %d countries", args.output, len(models))

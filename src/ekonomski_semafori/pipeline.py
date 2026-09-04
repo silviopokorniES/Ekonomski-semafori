@@ -99,6 +99,14 @@ def _contiguous(series: pd.Series, indicator: Indicator) -> pd.Series:
 Models = dict[tuple[str, str, str], dict[str, str]]
 
 
+def x13_transform(indicator: Indicator, settings: Settings) -> str:
+    """X-13 transformation by series type: log (multiplicative) for growth series,
+    none for balances and spreads. The parity mode keeps R's automatic choice."""
+    if settings.trend_method == "hp_on_d12":
+        return "auto"
+    return "log" if indicator.transform == "ratio" else "none"
+
+
 def _prepare(series: pd.Series, indicator: Indicator, settings: Settings, history_start: date | None, as_of: date, model: dict[str, str] | None = None) -> pd.Series:
     """Truncate, make contiguous, reject stale series, disaggregate, seasonally adjust."""
     if not (series.index.day == 1).all():
@@ -117,7 +125,7 @@ def _prepare(series: pd.Series, indicator: Indicator, settings: Settings, histor
     if not indicator.already_sa:
         if len(series) >= settings.min_seasonal_obs:
             x13 = settings.x13
-            series = seasonal_adjust(series, x13["outlier_types"], x13["outlier_critical"], x13["aictest"], model)
+            series = seasonal_adjust(series, x13["outlier_types"], x13["outlier_critical"], x13["aictest"], model, x13_transform(indicator, settings))
         else:
             log.warning("%s: only %d observations, X-13 skipped, raw series used", indicator.id, len(series))
     return series
@@ -140,13 +148,15 @@ def run_indicator(
     models = models or {}
     series = raw if raw is not None else fetch_series(country, indicator)
     sa = _prepare(series.astype(float), indicator, settings, history_start, as_of or date.today(), models.get((country.code, indicator.id, "sa")))
-    short = sa if indicator.skip_henderson else trend.henderson(sa, models.get((country.code, indicator.id, "trend")))
+    short = sa if indicator.skip_henderson else trend.henderson(sa, models.get((country.code, indicator.id, "trend")), x13_transform(indicator, settings))
     short = short.dropna()
     if len(short) < settings.min_observations:
         raise SkippedIndicator(f"{len(short)} observations after trend extraction, need {settings.min_observations}")
     if settings.trend_method == "hp_on_d12":
         return _legacy(short, indicator, settings)
     sa = sa.reindex(short.index)
+    if indicator.transform == "ratio" and ((sa <= 0).any() or (short <= 0).any()):
+        raise SkippedIndicator(f"non-positive values after adjustment (min SA {sa.min():.4g}, min trend {short.min():.4g}); the ratio transform needs a positive series")
     level_sa = cyc.level(sa, indicator.transform)
     if indicator.long_run == "hp":
         long = LONG_RUN_TRENDS[settings.trend_method](level_sa, lam=settings.hp_lambda)
