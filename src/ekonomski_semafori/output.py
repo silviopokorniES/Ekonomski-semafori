@@ -50,7 +50,7 @@ CATEGORY_HR = {
     "external": "Vanjska trgovina",
     "lagging": "Zaostajući pokazatelji",
 }
-CHART_COLUMNS = ["Mjesec", "Mjesečna promjena (z)", "Odstupanje od trenda (z)", "Varijabla", "Kategorija", "Datum"]
+CHART_COLUMNS = ["Mjesec", "Mjesečna promjena", "Odstupanje od trenda", "Varijabla", "Kategorija", "Datum"]
 MASTER_COLUMNS = ["time", "label", "country", "country_name", "category", "panel", "indicator_id",
                   "indicator_name_hr", "indicator_name_en", "mom_z", "cycle_z", "clipped"]
 
@@ -102,8 +102,8 @@ def chart_frame(frame: pd.DataFrame, name: pd.Series, group: pd.Series | None = 
     runs in calendar order."""
     out = pd.DataFrame({
         "Mjesec": frame["label"].to_numpy(),
-        "Mjesečna promjena (z)": frame["mom_z"].round(3).to_numpy(),
-        "Odstupanje od trenda (z)": frame["cycle_z"].round(3).to_numpy(),
+        "Mjesečna promjena": frame["mom_z"].round(3).to_numpy(),
+        "Odstupanje od trenda": frame["cycle_z"].round(3).to_numpy(),
         "Varijabla": name.to_numpy(),
         "Kategorija": frame["category"].map(CATEGORY_HR).to_numpy(),
         "Datum": frame["time"].dt.strftime("%Y-%m-%d").to_numpy(),

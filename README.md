@@ -53,7 +53,7 @@ The run takes about 25 minutes for 21 countries. It writes to `output/`: `all_co
 
 Master file columns: `time` (ISO date), `label` (Croatian month and year), `country`, `country_name`, `category`, `panel` (main, confirmation or financial), `indicator_id`, `indicator_name_hr`, `indicator_name_en`, `mom_z`, `cycle_z`, `clipped`. Files are UTF-8 with a byte order mark so Excel shows diacritics.
 
-The `by_indicator` and `by_country` files are one file per Flourish chart (animated scatter), with Croatian headers: `Mjesec` (time slider), `Mjesečna promjena (z)` (x), `Odstupanje od trenda (z)` (y), `Varijabla` (name: the indicator, or the country in a per-indicator file), `Kategorija`, `Datum`, and `Skupina` (Hrvatska or Ostale zemlje) in the per-indicator files. The first four columns are fixed, so replacing a chart's data keeps its bindings. GDP belongs to two categories and appears once per month in those files, under supply.
+The `by_indicator` and `by_country` files are one file per Flourish chart (animated scatter), with Croatian headers: `Mjesec` (time slider), `Mjesečna promjena` (x), `Odstupanje od trenda` (y), `Varijabla` (name: the indicator, or the country in a per-indicator file), `Kategorija`, `Datum`, and `Skupina` (Hrvatska or Ostale zemlje) in the per-indicator files. The first four columns are fixed, so replacing a chart's data keeps its bindings. GDP belongs to two categories and appears once per month in those files, under supply.
 
 ## Adding an indicator
 

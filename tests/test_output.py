@@ -51,7 +51,7 @@ def test_written_files_round_trip(tmp_path: Path) -> None:
     assert (everything.loc[everything["Varijabla"] == "BDP", "Kategorija"] == "Podudarni: proizvodnja").all()
     assert set(pd.read_csv(hr / "3_podudarni_potrosnja_trgovina.csv")["Varijabla"]) == {"BDP"}
     assert set(pd.read_csv(hr / "1_vodeci_indikatori.csv")["Varijabla"]) == {"Građevinske dozvole"}
-    values = everything["Odstupanje od trenda (z)"]
+    values = everything["Odstupanje od trenda"]
     assert values.abs().max() <= 3 and (values.round(3) == values).all()
     bounds = pd.read_csv(tmp_path / "axis_bounds.csv")
     assert {"country", "all", "indicator"} == set(bounds["scope_type"])
