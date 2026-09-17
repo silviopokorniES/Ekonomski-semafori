@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 from ekonomski_semafori.config import load_countries, load_indicators, load_settings
-from ekonomski_semafori.output import CATEGORY_SHEETS, MASTER_COLUMNS, build_long, write_all
+from ekonomski_semafori.output import CHART_COLUMNS, MASTER_COLUMNS, build_long, write_all
 
 
 def _panel() -> pd.DataFrame:
@@ -39,36 +39,25 @@ def test_written_files_round_trip(tmp_path: Path) -> None:
     master = pd.read_csv(tmp_path / "all_countries_long.csv", parse_dates=["time"])
     assert (tmp_path / "all_countries_long.csv").read_bytes()[:3] == b"\xef\xbb\xbf"
     pd.testing.assert_frame_equal(master, long, check_dtype=False)
-    once = long.drop_duplicates(["country", "indicator_id", "time"])
-    for path in (tmp_path / "by_indicator").glob("*.csv"):
-        view = pd.read_csv(path, parse_dates=["time"])
-        pd.testing.assert_frame_equal(view, once[once["indicator_id"] == path.stem].reset_index(drop=True), check_dtype=False)
+    gdp = pd.read_csv(tmp_path / "by_indicator" / "gdp.csv")
+    assert list(gdp.columns) == CHART_COLUMNS + ["Skupina"]
+    assert not gdp.duplicated(["Datum", "Varijabla"]).any() and set(gdp["Varijabla"]) == {"Hrvatska", "Austrija"}
+    assert set(gdp["Skupina"]) == {"Hrvatska", "Ostale zemlje"} and set(gdp["Kategorija"]) == {"Podudarni: proizvodnja"}
+    assert gdp["Mjesec"].iloc[0] == "veljača 2015" and gdp["Datum"].iloc[0] == "2015-02-01" and gdp["Datum"].is_monotonic_increasing
     hr = tmp_path / "by_country" / "HR"
     assert sorted(p.name for p in hr.glob("*.csv")) == ["1_vodeci_indikatori.csv", "2_podudarni_proizvodnja.csv", "3_podudarni_potrosnja_trgovina.csv", "5_kasni_indikatori_stecaj.csv", "6_svi_indikatori.csv"]
-    everything = pd.read_csv(hr / "6_svi_indikatori.csv", parse_dates=["time"])
-    assert not everything.duplicated(["time", "indicator_id"]).any() and set(everything["country"]) == {"HR"}
-    assert (everything.loc[everything["indicator_id"] == "gdp", "category"] == "supply").all()
-    assert set(pd.read_csv(hr / "3_podudarni_potrosnja_trgovina.csv")["indicator_id"]) == {"gdp"}
-    assert set(pd.read_csv(hr / "1_vodeci_indikatori.csv")["indicator_id"]) == {"building_permits"}
+    everything = pd.read_csv(hr / "6_svi_indikatori.csv")
+    assert list(everything.columns) == CHART_COLUMNS and not everything.duplicated(["Datum", "Varijabla"]).any()
+    assert (everything.loc[everything["Varijabla"] == "BDP", "Kategorija"] == "Podudarni: proizvodnja").all()
+    assert set(pd.read_csv(hr / "3_podudarni_potrosnja_trgovina.csv")["Varijabla"]) == {"BDP"}
+    assert set(pd.read_csv(hr / "1_vodeci_indikatori.csv")["Varijabla"]) == {"Građevinske dozvole"}
+    values = everything["Odstupanje od trenda (z)"]
+    assert values.abs().max() <= 3 and (values.round(3) == values).all()
     bounds = pd.read_csv(tmp_path / "axis_bounds.csv")
     assert {"country", "all", "indicator"} == set(bounds["scope_type"])
     assert bounds.loc[(bounds["scope"] == "ALL") & (bounds["category"] == "ALL"), "cycle_min"].iloc[0] == round(long["cycle_z"].min(), 3)
-    legacy = tmp_path / "legacy"
-    assert (legacy / "combined_standardized_MoM_and_Cycle_Croatia.xlsx").exists()
-    workbook = pd.ExcelFile(legacy / "Business_Cycle_Austria.xlsx")
-    assert workbook.sheet_names[-1] == "6_svi_indikatori"
-    assert set(workbook.sheet_names[:-1]) <= set(CATEGORY_SHEETS.values())
-    sheet = workbook.parse("6_svi_indikatori")
-    assert list(sheet.columns) == ["time", "Mjesečna promjena (%)", "Odstupanje od trenda (%)", "Varijabla"]
-    assert sheet["time"].iloc[0] == "February 2015"
-    assert not sheet.duplicated(["time", "Varijabla"]).any()          # GDP once per month, even though it is in two categories
-    assert (sheet["Varijabla"] == "BDP").sum() == 3
-    assert (workbook.parse("2_podudarni_proizvodnja")["Varijabla"] == "BDP").sum() == 3
-    combined_hr = pd.read_excel(legacy / "combined_standardized_MoM_and_Cycle_Croatia.xlsx")
-    assert not combined_hr.duplicated(["time", "Varijabla"]).any()
     per_indicator = bounds[bounds["scope_type"] == "indicator"].set_index("scope")
-    gdp = long[long["indicator_id"] == "gdp"]
-    assert per_indicator.loc["gdp", "cycle_max"] == round(gdp["cycle_z"].max(), 3)
+    assert per_indicator.loc["gdp", "cycle_max"] == round(long.loc[long["indicator_id"] == "gdp", "cycle_z"].max(), 3)
 
 
 def test_rows_follow_category_order_then_registry_order() -> None:

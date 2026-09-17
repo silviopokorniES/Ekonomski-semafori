@@ -4,7 +4,7 @@ Changes that affect the published numbers or the indicator set. Newest first.
 
 ## 2026-09-18
 
-- Output layout for the charts: one file per indicator with every country, one file per country with every indicator, and one file per country and category. The legacy Excel layout is still written for one release cycle. Within a category the indicators keep the display order of the original outputs.
+- Output layout for the charts: one file per Flourish chart, in the chart layout with Croatian headers: one file per indicator with every country, one file per country with every indicator, and one file per country and category. The Excel workbooks in the R layout are no longer written. Within a category the indicators keep the display order of the original outputs.
 
 ## 2026-09-04
 

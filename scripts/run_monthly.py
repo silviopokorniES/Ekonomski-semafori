@@ -4,7 +4,7 @@ Usage (inside the semafori conda environment, from the repository root):
     python scripts/run_monthly.py [--output DIR]
 
 Outputs under DIR (default output/): all_countries_long.csv, by_indicator/,
-by_country/<code>/, axis_bounds.csv, legacy/ (see output.py), logs/<date>.log,
+by_country/<code>/, axis_bounds.csv (see output.py), logs/<date>.log,
 Processing_Summary.csv (country, indicators processed, first and last published
 month, indicators skipped with the first line of each reason, and the pairs that
 ran without their frozen model or Henderson trend), and vintages/<date>.csv, an archive of the unclipped
