@@ -49,9 +49,11 @@ Check it with `python -c "from ekonomski_semafori.adjust import x13_binary; prin
 python scripts/run_monthly.py
 ```
 
-The run takes about 25 minutes for 21 countries. It writes to `output/`: `all_countries_long.csv` (one row per indicator, category, country and month from February 2015), `by_indicator/<id>.csv`, `axis_bounds.csv`, `legacy/` (the Excel layout the current Flourish charts use), `logs/<date>.log`, `Processing_Summary.csv` (what ran and what was skipped, with reasons), and `vintages/<date>.csv` (the unclipped panel, archived for revision analysis). Data problems (a series Eurostat does not publish for a country, a stale series) are skipped and listed; a network failure or a missing binary stops the run, so an outage is never published as missing data.
+The run takes about 25 minutes for 21 countries. It writes to `output/`: `all_countries_long.csv` (one row per indicator, category, country and month from February 2015), `by_indicator/<id>.csv` (every country for one indicator), `by_country/<code>/6_svi_indikatori.csv` (every indicator for one country) and `by_country/<code>/<n>_<category>.csv` (one category of one country, named like the legacy sheets), `axis_bounds.csv`, `legacy/` (the Excel layout the previous Flourish charts used, written for one more release cycle), `logs/<date>.log`, `Processing_Summary.csv` (what ran and what was skipped, with reasons), and `vintages/<date>.csv` (the unclipped panel, archived for revision analysis). Data problems (a series Eurostat does not publish for a country, a stale series) are skipped and listed; a network failure or a missing binary stops the run, so an outage is never published as missing data.
 
 Master file columns: `time` (ISO date), `label` (Croatian month and year), `country`, `country_name`, `category`, `panel` (main, confirmation or financial), `indicator_id`, `indicator_name_hr`, `indicator_name_en`, `mom_z`, `cycle_z`, `clipped`. Files are UTF-8 with a byte order mark so Excel shows diacritics.
+
+The Flourish charts are animated scatters built from the `by_indicator` and `by_country` files: x = `mom_z`, y = `cycle_z`, name = `indicator_name_hr` (or `country_name` in a per-indicator chart), time = `label`, colour = `category` (or `country`). GDP belongs to two categories and appears once per month in those files, under supply.
 
 ## Adding an indicator
 

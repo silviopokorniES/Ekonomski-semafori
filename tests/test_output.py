@@ -39,9 +39,17 @@ def test_written_files_round_trip(tmp_path: Path) -> None:
     master = pd.read_csv(tmp_path / "all_countries_long.csv", parse_dates=["time"])
     assert (tmp_path / "all_countries_long.csv").read_bytes()[:3] == b"\xef\xbb\xbf"
     pd.testing.assert_frame_equal(master, long, check_dtype=False)
+    once = long.drop_duplicates(["country", "indicator_id", "time"])
     for path in (tmp_path / "by_indicator").glob("*.csv"):
         view = pd.read_csv(path, parse_dates=["time"])
-        pd.testing.assert_frame_equal(view, long[long["indicator_id"] == path.stem].reset_index(drop=True), check_dtype=False)
+        pd.testing.assert_frame_equal(view, once[once["indicator_id"] == path.stem].reset_index(drop=True), check_dtype=False)
+    hr = tmp_path / "by_country" / "HR"
+    assert sorted(p.name for p in hr.glob("*.csv")) == ["1_vodeci_indikatori.csv", "2_podudarni_proizvodnja.csv", "3_podudarni_potrosnja_trgovina.csv", "5_kasni_indikatori_stecaj.csv", "6_svi_indikatori.csv"]
+    everything = pd.read_csv(hr / "6_svi_indikatori.csv", parse_dates=["time"])
+    assert not everything.duplicated(["time", "indicator_id"]).any() and set(everything["country"]) == {"HR"}
+    assert (everything.loc[everything["indicator_id"] == "gdp", "category"] == "supply").all()
+    assert set(pd.read_csv(hr / "3_podudarni_potrosnja_trgovina.csv")["indicator_id"]) == {"gdp"}
+    assert set(pd.read_csv(hr / "1_vodeci_indikatori.csv")["indicator_id"]) == {"building_permits"}
     bounds = pd.read_csv(tmp_path / "axis_bounds.csv")
     assert {"country", "all", "indicator"} == set(bounds["scope_type"])
     assert bounds.loc[(bounds["scope"] == "ALL") & (bounds["category"] == "ALL"), "cycle_min"].iloc[0] == round(long["cycle_z"].min(), 3)

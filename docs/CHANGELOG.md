@@ -2,6 +2,10 @@
 
 Changes that affect the published numbers or the indicator set. Newest first.
 
+## 2026-09-18
+
+- Output layout for the charts: one file per indicator with every country, one file per country with every indicator, and one file per country and category. The legacy Excel layout is still written for one release cycle. Within a category the indicators keep the display order of the original outputs.
+
 ## 2026-09-04
 
 - Python pipeline replaces the R scripts. The R output is reproduced by the parity test (tag parity-r) and the scripts stay in legacy/ as the reference.

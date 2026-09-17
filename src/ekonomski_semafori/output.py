@@ -9,7 +9,15 @@ Outputs, under an output directory:
   confirmation or financial), indicator_id,
   indicator_name_hr, indicator_name_en, mom_z, cycle_z (clipped at
   settings.axis_clip), clipped (true where a value was clipped).
-- by_indicator/<indicator_id>.csv: filtered views of the master file.
+- by_indicator/<indicator_id>.csv: every country for one indicator (one row per
+  country and month).
+- by_country/<code>/6_svi_indikatori.csv: every indicator for one country (one row
+  per indicator and month); by_country/<code>/<n>_<category>.csv: the indicators
+  of one category for that country, named like the legacy sheets.
+  These are the files the Flourish animated scatter charts read: x = mom_z,
+  y = cycle_z, name = indicator_name_hr or country_name, time = label, colour =
+  category or country. An indicator in two categories (GDP) appears once per
+  month in the per-indicator and all-indicator files, so a dot is never doubled.
 - axis_bounds.csv: min and max of mom_z and cycle_z per (scope, category) where
   scope is a country code or ALL, plus per indicator across countries.
 - Legacy Excel workbooks in the R layout, kept for one release cycle so the
@@ -88,12 +96,23 @@ def axis_bounds(long: pd.DataFrame) -> pd.DataFrame:
 
 
 def write_csv_outputs(long: pd.DataFrame, out_dir: Path) -> None:
-    """Master file, per-indicator views, and axis bounds, all UTF-8 with BOM."""
+    """Master file, the Flourish views (per indicator, per country, per country and
+    category) and axis bounds, all UTF-8 with BOM."""
+    csv = {"index": False, "encoding": "utf-8-sig", "date_format": "%Y-%m-%d"}
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "by_indicator").mkdir(exist_ok=True)
-    long.to_csv(out_dir / "all_countries_long.csv", index=False, encoding="utf-8-sig", date_format="%Y-%m-%d")
-    for indicator_id, frame in long.groupby("indicator_id", sort=True):
-        frame.to_csv(out_dir / "by_indicator" / f"{indicator_id}.csv", index=False, encoding="utf-8-sig", date_format="%Y-%m-%d")
+    long.to_csv(out_dir / "all_countries_long.csv", **csv)
+    once = long.drop_duplicates(["country", "indicator_id", "time"])   # one dot per month for GDP, listed under supply
+    for indicator_id, frame in once.groupby("indicator_id", sort=False):
+        frame.to_csv(out_dir / "by_indicator" / f"{indicator_id}.csv", **csv)
+    for code, frame in long.groupby("country", sort=True):
+        folder = out_dir / "by_country" / code
+        folder.mkdir(parents=True, exist_ok=True)
+        once[once["country"] == code].to_csv(folder / "6_svi_indikatori.csv", **csv)
+        for category, sheet in CATEGORY_SHEETS.items():
+            rows = frame[frame["category"] == category]
+            if not rows.empty:
+                rows.to_csv(folder / f"{sheet}.csv", **csv)
     axis_bounds(long).to_csv(out_dir / "axis_bounds.csv", index=False, encoding="utf-8-sig")
 
 
