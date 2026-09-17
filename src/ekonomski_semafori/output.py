@@ -61,9 +61,9 @@ def build_long(panel: pd.DataFrame, countries: dict[str, Country], indicators: l
     clip = settings.axis_clip
     rows["clipped"] = (rows["mom_z"].abs() > clip) | (rows["cycle_z"].abs() > clip)
     rows[["mom_z", "cycle_z"]] = rows[["mom_z", "cycle_z"]].clip(-clip, clip)
-    order = {c: n for n, c in enumerate(CATEGORY_SHEETS)}
-    rows["_cat"] = rows["category"].map(order)
-    rows = rows.sort_values(["country", "_cat", "indicator_id", "time"], ignore_index=True).drop(columns="_cat")
+    rows["_cat"] = rows["category"].map({c: n for n, c in enumerate(CATEGORY_SHEETS)})
+    rows["_ind"] = rows["indicator_id"].map({i.id: n for n, i in enumerate(indicators)})   # registry order within a category
+    rows = rows.sort_values(["country", "_cat", "_ind", "time"], ignore_index=True).drop(columns=["_cat", "_ind"])
     return rows[MASTER_COLUMNS]
 
 

@@ -61,3 +61,18 @@ def test_written_files_round_trip(tmp_path: Path) -> None:
     per_indicator = bounds[bounds["scope_type"] == "indicator"].set_index("scope")
     gdp = long[long["indicator_id"] == "gdp"]
     assert per_indicator.loc["gdp", "cycle_max"] == round(gdp["cycle_z"].max(), 3)
+
+
+def test_rows_follow_category_order_then_registry_order() -> None:
+    """Within a category the indicators keep the order of config/indicators.yaml (the R
+    display order), not alphabetical order; GDP leads both supply and demand."""
+    countries, indicators, settings = load_countries(), load_indicators(), load_settings()
+    time = pd.date_range("2015-02-01", periods=2, freq="MS")
+    panel = pd.concat([pd.DataFrame({"country": "HR", "indicator_id": i, "time": time, "mom_z": 0.0, "cycle_z": 0.0})
+                       for i in ("retail", "construction", "gdp", "unemployment", "industrial_production", "building_permits")], ignore_index=True)
+    long = build_long(panel, countries, indicators, settings)
+    assert list(dict.fromkeys(zip(long["category"], long["indicator_id"]))) == [
+        ("leading", "building_permits"), ("supply", "gdp"), ("supply", "industrial_production"), ("supply", "construction"),
+        ("demand", "gdp"), ("demand", "retail"), ("lagging", "unemployment"),
+    ]
+
