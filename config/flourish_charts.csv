@@ -1,0 +1,152 @@
+country,chart,indicator_id,visualisation_id,file,rows,title,data_status
+HR,all,,26112424,output/by_country/HR/6_svi_indikatori.csv,3959,Ekonomski semafor: Hrvatska,upload in editor
+HR,leading,,27383836,output/by_country/HR/1_vodeci_indikatori.csv,1093,Vodeće varijable Hrvatske,upload in editor
+HR,supply,,27383862,output/by_country/HR/2_podudarni_proizvodnja.csv,1099,Podudarne sektorske varijable Hrvatske,upload in editor
+HR,demand,,27383839,output/by_country/HR/3_podudarni_potrosnja_trgovina.csv,686,Podudarne varijable potrošnje Hrvatske,loaded
+HR,external,,27383850,output/by_country/HR/4_vanjska_trgovina.csv,536,Podudarne varijable vanjske trgovine Hrvatske,loaded
+HR,lagging,,27383852,output/by_country/HR/5_kasni_indikatori_stecaj.csv,682,Zaostajuće varijable poslovnog ciklusa Hrvatske,loaded
+AT,all,,27400339,output/by_country/AT/6_svi_indikatori.csv,2470,Ekonomski semafor: Austrija,upload in editor
+AT,leading,,27400363,output/by_country/AT/1_vodeci_indikatori.csv,690,Vodeće varijable Austrije,loaded
+AT,supply,,27400450,output/by_country/AT/2_podudarni_proizvodnja.csv,824,Podudarne sektorske varijable Austrije,loaded
+AT,demand,,27400418,output/by_country/AT/3_podudarni_potrosnja_trgovina.csv,549,Podudarne varijable potrošnje Austrije,loaded
+AT,external,,27400401,,0,Podudarne varijable vanjske trgovine Austrije,no data
+AT,lagging,,27400382,output/by_country/AT/5_kasni_indikatori_stecaj.csv,544,Zaostajuće varijable poslovnog ciklusa Austrije,loaded
+BE,all,,27400516,output/by_country/BE/6_svi_indikatori.csv,3292,Ekonomski semafor: Belgija,upload in editor
+BE,leading,,27400520,output/by_country/BE/1_vodeci_indikatori.csv,827,Vodeće varijable Belgije,loaded
+BE,supply,,27400529,output/by_country/BE/2_podudarni_proizvodnja.csv,824,Podudarne sektorske varijable Belgije,loaded
+BE,demand,,27400528,output/by_country/BE/3_podudarni_potrosnja_trgovina.csv,549,Podudarne varijable potrošnje Belgije,loaded
+BE,external,,27400524,output/by_country/BE/4_vanjska_trgovina.csv,548,Podudarne varijable vanjske trgovine Belgije,loaded
+BE,lagging,,27400521,output/by_country/BE/5_kasni_indikatori_stecaj.csv,681,Zaostajuće varijable poslovnog ciklusa Belgije,loaded
+BG,all,,27400658,output/by_country/BG/6_svi_indikatori.csv,3150,Ekonomski semafor: Bugarska,upload in editor
+BG,leading,,27400661,output/by_country/BG/1_vodeci_indikatori.csv,831,Vodeće varijable Bugarske,loaded
+BG,supply,,27400669,output/by_country/BG/2_podudarni_proizvodnja.csv,684,Podudarne sektorske varijable Bugarske,loaded
+BG,demand,,27400665,output/by_country/BG/3_podudarni_potrosnja_trgovina.csv,680,Podudarne varijable potrošnje Bugarske,loaded
+BG,external,,27400663,output/by_country/BG/4_vanjska_trgovina.csv,548,Podudarne varijable vanjske trgovine Bugarske,loaded
+BG,lagging,,27400662,output/by_country/BG/5_kasni_indikatori_stecaj.csv,544,Zaostajuće varijable poslovnog ciklusa Bugarske,loaded
+EE,all,,27400722,output/by_country/EE/6_svi_indikatori.csv,2733,Ekonomski semafor: Estonija,upload in editor
+EE,leading,,27400723,output/by_country/EE/1_vodeci_indikatori.csv,681,Vodeće varijable Estonije,loaded
+EE,supply,,27400729,output/by_country/EE/2_podudarni_proizvodnja.csv,548,Podudarne sektorske varijable Estonije,loaded
+EE,demand,,27400728,output/by_country/EE/3_podudarni_potrosnja_trgovina.csv,549,Podudarne varijable potrošnje Estonije,loaded
+EE,external,,27400727,output/by_country/EE/4_vanjska_trgovina.csv,548,Podudarne varijable vanjske trgovine Estonije,loaded
+EE,lagging,,27400724,output/by_country/EE/5_kasni_indikatori_stecaj.csv,544,Zaostajuće varijable poslovnog ciklusa Estonije,loaded
+FI,all,,27400913,output/by_country/FI/6_svi_indikatori.csv,3293,Ekonomski semafor: Finska,upload in editor
+FI,leading,,27400914,output/by_country/FI/1_vodeci_indikatori.csv,690,Vodeće varijable Finske,loaded
+FI,supply,,27400915,output/by_country/FI/2_podudarni_proizvodnja.csv,961,Podudarne sektorske varijable Finske,loaded
+FI,demand,,27400916,output/by_country/FI/3_podudarni_potrosnja_trgovina.csv,687,Podudarne varijable potrošnje Finske,loaded
+FI,external,,27400917,output/by_country/FI/4_vanjska_trgovina.csv,548,Podudarne varijable vanjske trgovine Finske,loaded
+FI,lagging,,27400918,output/by_country/FI/5_kasni_indikatori_stecaj.csv,544,Zaostajuće varijable poslovnog ciklusa Finske,loaded
+FR,all,,27401082,output/by_country/FR/6_svi_indikatori.csv,3434,Ekonomski semafor: Francuska,upload in editor
+FR,leading,,27401081,output/by_country/FR/1_vodeci_indikatori.csv,831,Vodeće varijable Francuske,loaded
+FR,supply,,27401087,output/by_country/FR/2_podudarni_proizvodnja.csv,824,Podudarne sektorske varijable Francuske,loaded
+FR,demand,,27401085,output/by_country/FR/3_podudarni_potrosnja_trgovina.csv,686,Podudarne varijable potrošnje Francuske,loaded
+FR,external,,27401083,output/by_country/FR/4_vanjska_trgovina.csv,548,Podudarne varijable vanjske trgovine Francuske,loaded
+FR,lagging,,27401079,output/by_country/FR/5_kasni_indikatori_stecaj.csv,682,Zaostajuće varijable poslovnog ciklusa Francuske,loaded
+EL,all,,27401157,output/by_country/EL/6_svi_indikatori.csv,2734,Ekonomski semafor: Grčka,upload in editor
+EL,leading,,27401159,output/by_country/EL/1_vodeci_indikatori.csv,690,Vodeće varijable Grčke,loaded
+EL,supply,,27401150,output/by_country/EL/2_podudarni_proizvodnja.csv,681,Podudarne sektorske varijable Grčke,loaded
+EL,demand,,27401152,output/by_country/EL/3_podudarni_potrosnja_trgovina.csv,539,Podudarne varijable potrošnje Grčke,loaded
+EL,external,,27401155,output/by_country/EL/4_vanjska_trgovina.csv,548,Podudarne varijable vanjske trgovine Grčke,loaded
+EL,lagging,,27401162,output/by_country/EL/5_kasni_indikatori_stecaj.csv,410,Zaostajuće varijable poslovnog ciklusa Grčke,loaded
+IT,all,,27401213,output/by_country/IT/6_svi_indikatori.csv,3017,Ekonomski semafor: Italija,upload in editor
+IT,leading,,27401212,output/by_country/IT/1_vodeci_indikatori.csv,690,Vodeće varijable Italije,loaded
+IT,supply,,27401209,output/by_country/IT/2_podudarni_proizvodnja.csv,823,Podudarne sektorske varijable Italije,loaded
+IT,demand,,27401215,output/by_country/IT/3_podudarni_potrosnja_trgovina.csv,549,Podudarne varijable potrošnje Italije,loaded
+IT,external,,27401214,output/by_country/IT/4_vanjska_trgovina.csv,548,Podudarne varijable vanjske trgovine Italije,loaded
+IT,lagging,,27401211,output/by_country/IT/5_kasni_indikatori_stecaj.csv,544,Zaostajuće varijable poslovnog ciklusa Italije,loaded
+LV,all,,27401290,output/by_country/LV/6_svi_indikatori.csv,3431,Ekonomski semafor: Latvija,upload in editor
+LV,leading,,27401291,output/by_country/LV/1_vodeci_indikatori.csv,830,Vodeće varijable Latvije,loaded
+LV,supply,,27401287,output/by_country/LV/2_podudarni_proizvodnja.csv,823,Podudarne sektorske varijable Latvije,loaded
+LV,demand,,27401288,output/by_country/LV/3_podudarni_potrosnja_trgovina.csv,686,Podudarne varijable potrošnje Latvije,loaded
+LV,external,,27401289,output/by_country/LV/4_vanjska_trgovina.csv,548,Podudarne varijable vanjske trgovine Latvije,loaded
+LV,lagging,,27401292,output/by_country/LV/5_kasni_indikatori_stecaj.csv,681,Zaostajuće varijable poslovnog ciklusa Latvije,loaded
+LT,all,,27401336,output/by_country/LT/6_svi_indikatori.csv,3022,Ekonomski semafor: Litva,upload in editor
+LT,leading,,27401335,output/by_country/LT/1_vodeci_indikatori.csv,693,Vodeće varijable Litve,loaded
+LT,supply,,27401332,output/by_country/LT/2_podudarni_proizvodnja.csv,688,Podudarne sektorske varijable Litve,loaded
+LT,demand,,27401340,output/by_country/LT/3_podudarni_potrosnja_trgovina.csv,686,Podudarne varijable potrošnje Litve,loaded
+LT,external,,27401339,output/by_country/LT/4_vanjska_trgovina.csv,548,Podudarne varijable vanjske trgovine Litve,loaded
+LT,lagging,,27401333,output/by_country/LT/5_kasni_indikatori_stecaj.csv,544,Zaostajuće varijable poslovnog ciklusa Litve,loaded
+LU,all,,27401375,output/by_country/LU/6_svi_indikatori.csv,3143,Ekonomski semafor: Luksemburg,upload in editor
+LU,leading,,27401378,output/by_country/LU/1_vodeci_indikatori.csv,690,Vodeće varijable Luksemburga,loaded
+LU,supply,,27401372,output/by_country/LU/2_podudarni_proizvodnja.csv,818,Podudarne sektorske varijable Luksemburga,loaded
+LU,demand,,27401373,output/by_country/LU/3_podudarni_potrosnja_trgovina.csv,677,Podudarne varijable potrošnje Luksemburga,loaded
+LU,external,,27401374,output/by_country/LU/4_vanjska_trgovina.csv,548,Podudarne varijable vanjske trgovine Luksemburga,loaded
+LU,lagging,,27401379,output/by_country/LU/5_kasni_indikatori_stecaj.csv,544,Zaostajuće varijable poslovnog ciklusa Luksemburga,loaded
+MT,all,,27401418,output/by_country/MT/6_svi_indikatori.csv,3145,Ekonomski semafor: Malta,upload in editor
+MT,leading,,27401417,output/by_country/MT/1_vodeci_indikatori.csv,819,Vodeće varijable Malte,loaded
+MT,supply,,27401415,output/by_country/MT/2_podudarni_proizvodnja.csv,685,Podudarne sektorske varijable Malte,loaded
+MT,demand,,27401424,output/by_country/MT/3_podudarni_potrosnja_trgovina.csv,686,Podudarne varijable potrošnje Malte,loaded
+MT,external,,27401421,output/by_country/MT/4_vanjska_trgovina.csv,548,Podudarne varijable vanjske trgovine Malte,loaded
+MT,lagging,,27401416,output/by_country/MT/5_kasni_indikatori_stecaj.csv,544,Zaostajuće varijable poslovnog ciklusa Malte,loaded
+DE,all,,27401458,output/by_country/DE/6_svi_indikatori.csv,3567,Ekonomski semafor: Njemačka,upload in editor
+DE,leading,,27401459,output/by_country/DE/1_vodeci_indikatori.csv,830,Vodeće varijable Njemačke,loaded
+DE,supply,,27401461,output/by_country/DE/2_podudarni_proizvodnja.csv,960,Podudarne sektorske varijable Njemačke,loaded
+DE,demand,,27401462,output/by_country/DE/3_podudarni_potrosnja_trgovina.csv,686,Podudarne varijable potrošnje Njemačke,loaded
+DE,external,,27401457,output/by_country/DE/4_vanjska_trgovina.csv,548,Podudarne varijable vanjske trgovine Njemačke,loaded
+DE,lagging,,27401460,output/by_country/DE/5_kasni_indikatori_stecaj.csv,680,Zaostajuće varijable poslovnog ciklusa Njemačke,loaded
+PT,all,,27401506,output/by_country/PT/6_svi_indikatori.csv,3296,Ekonomski semafor: Portugal,upload in editor
+PT,leading,,27401505,output/by_country/PT/1_vodeci_indikatori.csv,830,Vodeće varijable Portugala,loaded
+PT,supply,,27401501,output/by_country/PT/2_podudarni_proizvodnja.csv,825,Podudarne sektorske varijable Portugala,loaded
+PT,demand,,27401500,output/by_country/PT/3_podudarni_potrosnja_trgovina.csv,549,Podudarne varijable potrošnje Portugala,loaded
+PT,external,,27401499,output/by_country/PT/4_vanjska_trgovina.csv,548,Podudarne varijable vanjske trgovine Portugala,loaded
+PT,lagging,,27401502,output/by_country/PT/5_kasni_indikatori_stecaj.csv,681,Zaostajuće varijable poslovnog ciklusa Portugala,loaded
+SK,all,,27401572,output/by_country/SK/6_svi_indikatori.csv,3255,Ekonomski semafor: Slovačka,upload in editor
+SK,leading,,27401636,output/by_country/SK/1_vodeci_indikatori.csv,690,Vodeće varijable Slovačke,loaded
+SK,supply,,27401640,output/by_country/SK/2_podudarni_proizvodnja.csv,960,Podudarne sektorske varijable Slovačke,loaded
+SK,demand,,27401641,output/by_country/SK/3_podudarni_potrosnja_trgovina.csv,686,Podudarne varijable potrošnje Slovačke,loaded
+SK,external,,27401642,output/by_country/SK/4_vanjska_trgovina.csv,548,Podudarne varijable vanjske trgovine Slovačke,loaded
+SK,lagging,,27401637,output/by_country/SK/5_kasni_indikatori_stecaj.csv,508,Zaostajuće varijable poslovnog ciklusa Slovačke,loaded
+SI,all,,27401537,output/by_country/SI/6_svi_indikatori.csv,3569,Ekonomski semafor: Slovenija,upload in editor
+SI,leading,,27401540,output/by_country/SI/1_vodeci_indikatori.csv,830,Vodeće varijable Slovenije,loaded
+SI,supply,,27401542,output/by_country/SI/2_podudarni_proizvodnja.csv,961,Podudarne sektorske varijable Slovenije,loaded
+SI,demand,,27401543,output/by_country/SI/3_podudarni_potrosnja_trgovina.csv,686,Podudarne varijable potrošnje Slovenije,loaded
+SI,external,,27401536,output/by_country/SI/4_vanjska_trgovina.csv,548,Podudarne varijable vanjske trgovine Slovenije,loaded
+SI,lagging,,27401541,output/by_country/SI/5_kasni_indikatori_stecaj.csv,681,Zaostajuće varijable poslovnog ciklusa Slovenije,loaded
+NL,all,,27401573,output/by_country/NL/6_svi_indikatori.csv,2611,Ekonomski semafor: Nizozemska,upload in editor
+NL,leading,,30291729,output/by_country/NL/1_vodeci_indikatori.csv,693,Vodeće varijable Nizozemske,loaded
+NL,supply,,30291733,output/by_country/NL/2_podudarni_proizvodnja.csv,824,Podudarne sektorske varijable Nizozemske,loaded
+NL,demand,,30291737,output/by_country/NL/3_podudarni_potrosnja_trgovina.csv,549,Podudarne varijable potrošnje Nizozemske,loaded
+NL,lagging,,30291742,output/by_country/NL/5_kasni_indikatori_stecaj.csv,682,Zaostajuće varijable poslovnog ciklusa Nizozemske,loaded
+IE,all,,27401574,output/by_country/IE/6_svi_indikatori.csv,2059,Ekonomski semafor: Irska,upload in editor
+IE,leading,,30291731,output/by_country/IE/1_vodeci_indikatori.csv,690,Vodeće varijable Irske,loaded
+IE,supply,,30291735,output/by_country/IE/2_podudarni_proizvodnja.csv,550,Podudarne sektorske varijable Irske,loaded
+IE,demand,,30291740,output/by_country/IE/3_podudarni_potrosnja_trgovina.csv,411,Podudarne varijable potrošnje Irske,loaded
+IE,lagging,,30291746,output/by_country/IE/5_kasni_indikatori_stecaj.csv,545,Zaostajuće varijable poslovnog ciklusa Irske,loaded
+ES,all,,27401576,output/by_country/ES/6_svi_indikatori.csv,2470,Ekonomski semafor: Španjolska,upload in editor
+ES,leading,,30291730,output/by_country/ES/1_vodeci_indikatori.csv,827,Vodeće varijable Španjolske,loaded
+ES,supply,,30291734,output/by_country/ES/2_podudarni_proizvodnja.csv,687,Podudarne sektorske varijable Španjolske,loaded
+ES,demand,,30291738,output/by_country/ES/3_podudarni_potrosnja_trgovina.csv,549,Podudarne varijable potrošnje Španjolske,loaded
+ES,lagging,,30291743,output/by_country/ES/5_kasni_indikatori_stecaj.csv,544,Zaostajuće varijable poslovnog ciklusa Španjolske,loaded
+CY,all,,27401581,output/by_country/CY/6_svi_indikatori.csv,2333,Ekonomski semafor: Cipar,upload in editor
+CY,leading,,30291744,output/by_country/CY/1_vodeci_indikatori.csv,690,Vodeće varijable Cipra,loaded
+CY,supply,,30291748,output/by_country/CY/2_podudarni_proizvodnja.csv,687,Podudarne sektorske varijable Cipra,loaded
+CY,demand,,30291751,output/by_country/CY/3_podudarni_potrosnja_trgovina.csv,549,Podudarne varijable potrošnje Cipra,loaded
+CY,lagging,,30291755,output/by_country/CY/5_kasni_indikatori_stecaj.csv,544,Zaostajuće varijable poslovnog ciklusa Cipra,loaded
+,indicator,building_permits,30291728,output/by_indicator/building_permits.csv,2844,Ekonomski semafor po zemljama: Građevinske dozvole,upload in editor
+,indicator,registrations,30291732,output/by_indicator/registrations.csv,1373,Ekonomski semafor po zemljama: Registracija novih poduzeća,upload in editor
+,indicator,cars_registered,30291794,output/by_indicator/cars_registered.csv,131,Ekonomski semafor po zemljama: Novo registrirana osobna vozila (DZS),loaded
+,indicator,trucks_registered,30291796,output/by_indicator/trucks_registered.csv,131,Ekonomski semafor po zemljama: Novo registrirana teretna vozila (DZS),loaded
+,indicator,esi,30291736,output/by_indicator/esi.csv,2911,Ekonomski semafor po zemljama: Indeks ekonomskog raspoloženja (ESI),upload in editor
+,indicator,consumer_confidence,30291741,output/by_indicator/consumer_confidence.csv,2915,Ekonomski semafor po zemljama: Pouzdanje potrošača,upload in editor
+,indicator,order_books,30291747,output/by_indicator/order_books.csv,2911,Ekonomski semafor po zemljama: Knjige narudžbi u industriji,upload in editor
+,indicator,term_spread,30291749,output/by_indicator/term_spread.csv,2919,Ekonomski semafor po zemljama: Kamatni raspon europodručja (10 g. minus 3 mj.),upload in editor
+,indicator,gdp,30291752,output/by_indicator/gdp.csv,2871,Ekonomski semafor po zemljama: BDP,upload in editor
+,indicator,industrial_production,30291756,output/by_indicator/industrial_production.csv,2880,Ekonomski semafor po zemljama: Industrijska proizvodnja,upload in editor
+,indicator,construction,30291759,output/by_indicator/construction.csv,1917,Ekonomski semafor po zemljama: Građevinarstvo,upload in editor
+,indicator,total_production,30291765,output/by_indicator/total_production.csv,816,Ekonomski semafor po zemljama: Ukupna proizvodnja,loaded
+,indicator,overnight_stays,30291768,output/by_indicator/overnight_stays.csv,2331,Ekonomski semafor po zemljama: Broj noćenja,upload in editor
+,indicator,insured_persons,30291770,output/by_indicator/insured_persons.csv,138,Ekonomski semafor po zemljama: Broj osiguranika (HZMO),loaded
+,indicator,gva,30291773,output/by_indicator/gva.csv,2868,Ekonomski semafor po zemljama: Realna bruto dodana vrijednost,upload in editor
+,indicator,capacity_utilisation,30291777,output/by_indicator/capacity_utilisation.csv,2915,Ekonomski semafor po zemljama: Iskorištenost kapaciteta u industriji,upload in editor
+,indicator,retail,30291784,output/by_indicator/retail.csv,2759,Ekonomski semafor po zemljama: Trgovina na malo,upload in editor
+,indicator,wholesale,30291786,output/by_indicator/wholesale.csv,1508,Ekonomski semafor po zemljama: Veleprodaja,upload in editor
+,indicator,household_consumption,30291788,output/by_indicator/household_consumption.csv,2868,Ekonomski semafor po zemljama: Potrošnja kućanstava,upload in editor
+,indicator,investment,30291791,output/by_indicator/investment.csv,2868,Ekonomski semafor po zemljama: Investicije,upload in editor
+,indicator,exports_goods,30291750,output/by_indicator/exports_goods.csv,2189,Ekonomski semafor po zemljama: Izvoz dobara,upload in editor
+,indicator,exports_services,30291754,output/by_indicator/exports_services.csv,2189,Ekonomski semafor po zemljama: Izvoz usluga,upload in editor
+,indicator,imports_goods,30291758,output/by_indicator/imports_goods.csv,2189,Ekonomski semafor po zemljama: Uvoz dobara,upload in editor
+,indicator,imports_services,30291762,output/by_indicator/imports_services.csv,2189,Ekonomski semafor po zemljama: Uvoz usluga,upload in editor
+,indicator,bankruptcies,30291769,output/by_indicator/bankruptcies.csv,1236,Ekonomski semafor po zemljama: Stečajne prijave,upload in editor
+,indicator,unemployment,30291771,output/by_indicator/unemployment.csv,2899,Ekonomski semafor po zemljama: Nezaposlenost,upload in editor
+,indicator,npl,30291774,output/by_indicator/npl.csv,2778,Ekonomski semafor po zemljama: Neprihodonosni krediti (ECB),upload in editor
+,indicator,house_prices,30291776,output/by_indicator/house_prices.csv,2680,Ekonomski semafor po zemljama: Indeks cijena stambenih nekretnina,upload in editor
+,indicator,loans_nfc,30291783,output/by_indicator/loans_nfc.csv,2760,Ekonomski semafor po zemljama: Krediti nefinancijskim poduzećima (ECB),upload in editor

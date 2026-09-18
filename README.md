@@ -55,6 +55,8 @@ Master file columns: `time` (ISO date), `label` (Croatian month and year), `coun
 
 The `by_indicator` and `by_country` files are one file per Flourish chart (animated scatter), with Croatian headers: `Mjesec` (time slider), `Mjesečna promjena` (x), `Odstupanje od trenda` (y), `Varijabla` (name: the indicator, or the country in a per-indicator file), `Kategorija`, `Datum`, and `Skupina` (Hrvatska or Ostale zemlje) in the per-indicator files. The first four columns are fixed, so replacing a chart's data keeps its bindings. GDP belongs to two categories and appears once per month in those files, under supply.
 
+`config/flourish_charts.csv` is the chart registry: one row per Flourish visualisation with its id, the file it reads, its title and `data_status`. Charts marked `loaded` fit the Flourish connector's limit of 1,000 rows and can be refreshed from a Claude session; the 48 marked `upload in editor` (every all-indicator chart, 25 per-indicator charts, Croatia's leading and production charts) are refreshed in the Flourish editor with Import data, which keeps the bindings because the first four columns are fixed. Visualisation 30290575 holds the house style and is the template to duplicate for a new chart.
+
 ## Adding an indicator
 
 Add an entry to `config/indicators.yaml` (source, dataset and filters or series key or local file, frequency, whether adjusted at source, transform, long-run trend, category, names in both languages) and, if it applies to a subset of countries, list them. Country-specific deviations go into `config/countries.yaml` as overrides. No code change should be needed; if one is, the schema is what to fix.
