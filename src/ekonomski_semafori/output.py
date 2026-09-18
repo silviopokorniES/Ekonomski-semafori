@@ -115,7 +115,8 @@ def chart_frame(frame: pd.DataFrame, name: pd.Series, group: pd.Series | None = 
 
 def write_csv_outputs(long: pd.DataFrame, countries: dict[str, Country], out_dir: Path) -> None:
     """Master file, axis bounds and the chart files, all UTF-8 with BOM."""
-    csv = {"index": False, "encoding": "utf-8-sig", "date_format": "%Y-%m-%d"}
+    csv = {"index": False, "encoding": "utf-8-sig", "date_format": "%Y-%m-%d", "lineterminator": "
+"}   # LF on every platform
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "by_indicator").mkdir(exist_ok=True)
     long.to_csv(out_dir / "all_countries_long.csv", **csv)
